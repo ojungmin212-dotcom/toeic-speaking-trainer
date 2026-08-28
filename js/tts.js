@@ -6,8 +6,56 @@
 import { getSettings } from './store.js';
 
 let voicesCache = [];
-let currentAudio = null;
 let cancelled = false;
+
+// ── 공유 오디오 엘리먼트 (모바일 자동재생 정책 대응) ──────────
+// iOS/Android는 사용자 제스처 없이 new Audio().play()를 차단한다.
+// 하나의 <audio> 엘리먼트를 첫 터치에서 잠금 해제한 뒤 src만 바꿔 재사용하면
+// 운동 모드의 연속 자동 재생이 휴대폰에서도 끊기지 않는다.
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+const fileAudio = typeof Audio !== 'undefined' ? new Audio() : null;
+let pendingResolve = null; // 진행 중인 파일 재생의 resolve (취소/교체 시 반드시 풀어준다)
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked || !fileAudio) return;
+  audioUnlocked = true;
+  try {
+    fileAudio.muted = true;
+    fileAudio.src = SILENT_WAV;
+    fileAudio.play().then(
+      () => { fileAudio.pause(); fileAudio.muted = false; },
+      () => { fileAudio.muted = false; audioUnlocked = false; } // 실패 시 다음 제스처에서 재시도
+    );
+  } catch { audioUnlocked = false; }
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch {}
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', unlockAudio, { capture: true });
+  document.addEventListener('touchend', unlockAudio, { capture: true });
+}
+
+function settlePending(ok) {
+  if (pendingResolve) { const r = pendingResolve; pendingResolve = null; r(ok); }
+}
+
+// 공유 엘리먼트로 URL 재생. ended/error/pause 어느 경우든 promise가 반드시 풀린다.
+function playUrl(url, rate = 1) {
+  if (!fileAudio) return Promise.resolve(false);
+  settlePending(false); // 이전 재생이 걸려 있으면 정리
+  return new Promise((resolve) => {
+    pendingResolve = resolve;
+    fileAudio.onended = () => settlePending(true);
+    fileAudio.onerror = () => settlePending(false);
+    fileAudio.onpause = () => { if (fileAudio.ended === false && fileAudio.currentTime > 0) settlePending(false); };
+    fileAudio.src = url;
+    fileAudio.playbackRate = Math.max(0.6, Math.min(rate, 1.5));
+    fileAudio.play().then(() => {}, () => settlePending(false));
+  });
+}
 
 function loadVoices() {
   return new Promise((resolve) => {
@@ -125,18 +173,6 @@ export async function generatedAudioCount() {
   return Object.keys(m).length;
 }
 
-function playFile(url, rate) {
-  return new Promise((resolve) => {
-    const audio = new Audio(url);
-    currentAudio = audio;
-    // 파일은 이미 시험 안내 속도(-5%)로 생성됨 → 기본 설정(0.92)에서 1.0배로 재생
-    audio.playbackRate = Math.max(0.6, Math.min(rate / 0.92, 1.5));
-    audio.onended = () => resolve(true);
-    audio.onerror = () => resolve(false);
-    audio.play().then(() => {}, () => resolve(false));
-  });
-}
-
 async function speakGenerated(text, lang) {
   const s = getSettings();
   const m = await loadManifest();
@@ -144,7 +180,8 @@ async function speakGenerated(text, lang) {
   if (!entry) return null; // 파일 없음 → 다른 Provider로
   const url = entry[s.voiceGender === 'male' ? 'm' : 'f'] || entry.f || entry.m;
   if (!url) return null;
-  return playFile(url, s.rate);
+  // 파일은 이미 시험 안내 속도(-5%)로 생성됨 → 기본 설정(0.92)에서 1.0배로 재생
+  return playUrl(url, s.rate / 0.92);
 }
 
 // ── OpenAI TTS Provider (server.js 프록시) ─────────────────────
@@ -164,13 +201,7 @@ async function speakOpenAI(text, lang) {
     url = URL.createObjectURL(blob);
     audioCache.set(key, url);
   }
-  return new Promise((resolve) => {
-    const audio = new Audio(url);
-    currentAudio = audio;
-    audio.onended = () => resolve(true);
-    audio.onerror = () => resolve(false);
-    audio.play().catch(() => resolve(false));
-  });
+  return playUrl(url, 1);
 }
 
 // ── 공개 API ───────────────────────────────────────────────────
@@ -197,7 +228,8 @@ export async function speak(text, lang = 'en-US') {
 export function cancel() {
   cancelled = true;
   try { speechSynthesis.cancel(); } catch {}
-  if (currentAudio) { try { currentAudio.pause(); } catch {} currentAudio = null; }
+  settlePending(false);
+  if (fileAudio) { try { fileAudio.pause(); } catch {} }
 }
 
 export function isCancelled() { return cancelled; }
