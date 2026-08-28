@@ -1,0 +1,225 @@
+// TTS Provider Adapter — 호출부는 speak()만 사용하고 Provider 구현을 모른다.
+// 기본: Web Speech API (키 불필요). 선택: OpenAI TTS (server.js 프록시 /api/tts 경유).
+// 목표 음성: 명확한 발음, 자연스러운 속도, 중립적 억양의 시험 안내 스타일.
+// (실제 시험 음성이나 특정 화자의 목소리는 복제하지 않는다)
+
+import { getSettings } from './store.js';
+
+let voicesCache = [];
+let currentAudio = null;
+let cancelled = false;
+
+function loadVoices() {
+  return new Promise((resolve) => {
+    const got = speechSynthesis.getVoices();
+    if (got.length) { voicesCache = got; return resolve(got); }
+    speechSynthesis.onvoiceschanged = () => {
+      voicesCache = speechSynthesis.getVoices();
+      resolve(voicesCache);
+    };
+    // 일부 브라우저는 이벤트가 안 올 수 있으므로 타임아웃 폴백
+    setTimeout(() => resolve(speechSynthesis.getVoices()), 1500);
+  });
+}
+
+export async function getEnglishVoices() {
+  const voices = await loadVoices();
+  return voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith('en'));
+}
+export async function getKoreanVoices() {
+  const voices = await loadVoices();
+  return voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith('ko'));
+}
+
+const FEMALE_HINTS = /female|woman|zira|jenny|aria|ava|samantha|susan|karen|hazel|michelle|ana|emma|jane|sun-hi|sunhi|heami|yuna/i;
+const MALE_HINTS = /male|man|david|mark|guy|christopher|eric|andrew|brian|alex|daniel|tom|injoon|hyunsu/i;
+
+// 음성 품질 점수 — 시험 안내 방송에 가까운 자연스러운 음성을 자동 선택한다.
+// 1순위: Edge 내장 자연(Natural/Neural) 음성  2순위: Chrome의 Google 음성  3순위: 일반 OS 음성
+export function voiceQualityScore(v, langPrefix, gender) {
+  let score = 0;
+  if (/natural|neural|online/i.test(v.name)) score += 100; // Edge "… Online (Natural)"
+  if (/^google/i.test(v.name)) score += 50;                // Chrome "Google US English"
+  if (langPrefix === 'en' && /en[-_]us/i.test(v.lang)) score += 20; // 미국 영어 우선
+  const hints = gender === 'male' ? MALE_HINTS : FEMALE_HINTS;
+  if (hints.test(v.name)) score += 10;
+  return score;
+}
+
+function pickVoice(voices, langPrefix, gender, preferredName) {
+  const pool = voices.filter((v) => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
+  if (!pool.length) return null;
+  if (preferredName) {
+    const exact = pool.find((v) => v.name === preferredName);
+    if (exact) return exact;
+  }
+  return pool.slice().sort((a, b) =>
+    voiceQualityScore(b, langPrefix, gender) - voiceQualityScore(a, langPrefix, gender))[0];
+}
+
+// ── 시험 신호음 (질문 후 "삐—") ────────────────────────────────
+let audioCtx = null;
+export function beep(freq = 880, duration = 0.3) {
+  return new Promise((resolve) => {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + duration + 0.05);
+      osc.onended = () => resolve();
+      setTimeout(resolve, (duration + 0.3) * 1000); // 폴백
+    } catch { resolve(); }
+  });
+}
+
+// ── Web Speech Provider ────────────────────────────────────────
+function speakWebSpeech(text, lang) {
+  return new Promise(async (resolve) => {
+    const s = getSettings();
+    await loadVoices();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang;
+    utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
+    utter.pitch = 1.0; // 중립적 억양
+    const voice = pickVoice(
+      voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
+      s.voiceGender,
+      lang.startsWith('ko') ? s.voiceKoName : s.voiceEnName
+    );
+    if (voice) utter.voice = voice;
+    utter.onend = () => resolve(true);
+    utter.onerror = () => resolve(false);
+    // Chrome 버그 대응: cancel() 직후 speak()가 무시될 수 있어 resume + 짧은 지연 후 재생
+    try { speechSynthesis.resume(); } catch {}
+    setTimeout(() => {
+      if (cancelled) return resolve(false);
+      speechSynthesis.speak(utter);
+    }, 60);
+  });
+}
+
+// ── 사전 생성 음성 Provider (audio/*.mp3 + manifest.json) ──────
+// 음성생성.bat 로 만든 신경망 TTS 파일. 가장 자연스럽고 어떤 브라우저에서도 동일 품질.
+let manifest = null;
+
+async function loadManifest() {
+  if (manifest !== null) return manifest;
+  try {
+    const r = await fetch('audio/manifest.json');
+    manifest = r.ok ? await r.json() : {};
+  } catch { manifest = {}; }
+  return manifest;
+}
+
+export async function generatedAudioCount() {
+  const m = await loadManifest();
+  return Object.keys(m).length;
+}
+
+function playFile(url, rate) {
+  return new Promise((resolve) => {
+    const audio = new Audio(url);
+    currentAudio = audio;
+    // 파일은 이미 시험 안내 속도(-5%)로 생성됨 → 기본 설정(0.92)에서 1.0배로 재생
+    audio.playbackRate = Math.max(0.6, Math.min(rate / 0.92, 1.5));
+    audio.onended = () => resolve(true);
+    audio.onerror = () => resolve(false);
+    audio.play().then(() => {}, () => resolve(false));
+  });
+}
+
+async function speakGenerated(text, lang) {
+  const s = getSettings();
+  const m = await loadManifest();
+  const entry = m[(lang.startsWith('ko') ? 'ko' : 'en') + '|' + text];
+  if (!entry) return null; // 파일 없음 → 다른 Provider로
+  const url = entry[s.voiceGender === 'male' ? 'm' : 'f'] || entry.f || entry.m;
+  if (!url) return null;
+  return playFile(url, s.rate);
+}
+
+// ── OpenAI TTS Provider (server.js 프록시) ─────────────────────
+const audioCache = new Map(); // text|lang → object URL
+
+async function speakOpenAI(text, lang) {
+  const key = lang + '|' + text;
+  let url = audioCache.get(key);
+  if (!url) {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, lang }),
+    });
+    if (!res.ok) throw new Error('TTS 서버 오류: ' + res.status);
+    const blob = await res.blob();
+    url = URL.createObjectURL(blob);
+    audioCache.set(key, url);
+  }
+  return new Promise((resolve) => {
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.onended = () => resolve(true);
+    audio.onerror = () => resolve(false);
+    audio.play().catch(() => resolve(false));
+  });
+}
+
+// ── 공개 API ───────────────────────────────────────────────────
+export async function speak(text, lang = 'en-US') {
+  cancelled = false;
+  const s = getSettings();
+  // 1순위: 사전 생성 신경망 음성 (가장 자연스러움, 키 불필요)
+  if (s.useGeneratedAudio !== false) {
+    try {
+      const result = await speakGenerated(text, lang);
+      if (result !== null) return result;
+    } catch { /* 폴백 진행 */ }
+  }
+  // 2순위: OpenAI TTS (서버 키 설정 시)
+  try {
+    if (s.ttsProvider === 'openai') return await speakOpenAI(text, lang);
+  } catch (e) {
+    console.warn('OpenAI TTS 실패, Web Speech로 폴백:', e.message);
+  }
+  // 3순위: 브라우저 내장 음성
+  return speakWebSpeech(text, lang);
+}
+
+export function cancel() {
+  cancelled = true;
+  try { speechSynthesis.cancel(); } catch {}
+  if (currentAudio) { try { currentAudio.pause(); } catch {} currentAudio = null; }
+}
+
+export function isCancelled() { return cancelled; }
+
+// 취소 가능한 대기 (운동 모드 생각 시간 등)
+export function wait(seconds) {
+  return new Promise((resolve) => {
+    const start = Date.now();
+    const timer = setInterval(() => {
+      if (cancelled || Date.now() - start >= seconds * 1000) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 100);
+  });
+}
+
+// 서버 TTS 사용 가능 여부 (설정 화면에서 표시)
+export async function checkServerTts() {
+  try {
+    const res = await fetch('/api/health');
+    if (!res.ok) return { tts: false, llm: false };
+    return await res.json();
+  } catch { return { tts: false, llm: false }; }
+}

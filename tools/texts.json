@@ -1,0 +1,3402 @@
+[
+ {
+  "name": "seed-001-q",
+  "text": "When do you usually get up in the morning?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-001-a",
+  "text": "I usually get up at seven.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-001-qk",
+  "text": "아침에 보통 언제 일어납니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-001-ak",
+  "text": "저는 보통 7시에 일어납니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-002-q",
+  "text": "When did you last go shopping?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-002-a",
+  "text": "I went shopping last weekend.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-002-qk",
+  "text": "마지막으로 쇼핑한 것은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-002-ak",
+  "text": "지난 주말에 쇼핑을 했습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-003-q",
+  "text": "When do you usually watch TV?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-003-a",
+  "text": "I usually watch TV at night.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-003-qk",
+  "text": "보통 언제 TV를 봅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-003-ak",
+  "text": "저는 보통 밤에 TV를 봅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-004-q",
+  "text": "What time do you usually have lunch?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-004-a",
+  "text": "I have lunch at noon.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-004-qk",
+  "text": "보통 몇 시에 점심을 먹습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-004-ak",
+  "text": "저는 정오에 점심을 먹습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-005-q",
+  "text": "When do you usually exercise?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-005-a",
+  "text": "I exercise in the evening.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-005-qk",
+  "text": "보통 언제 운동합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-005-ak",
+  "text": "저는 저녁에 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-006-q",
+  "text": "When did you last see a movie?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-006-a",
+  "text": "I saw a movie last month.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-006-qk",
+  "text": "마지막으로 영화를 본 것은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-006-ak",
+  "text": "지난달에 영화를 봤습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-007-q",
+  "text": "When do you usually meet your friends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-007-a",
+  "text": "I meet my friends on weekends.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-007-qk",
+  "text": "보통 언제 친구들을 만납니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-007-ak",
+  "text": "저는 주말에 친구들을 만납니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-008-q",
+  "text": "What time do you usually go to bed?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-008-a",
+  "text": "I go to bed at eleven.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-008-qk",
+  "text": "보통 몇 시에 잠자리에 듭니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-008-ak",
+  "text": "저는 11시에 잠자리에 듭니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-009-q",
+  "text": "When do you use your phone the most?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-009-a",
+  "text": "I use it the most at night.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-009-qk",
+  "text": "휴대폰을 가장 많이 사용하는 때는 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-009-ak",
+  "text": "밤에 가장 많이 사용합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-010-q",
+  "text": "When did you last take a trip?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-010-a",
+  "text": "I took a trip last summer.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-010-qk",
+  "text": "마지막으로 여행을 간 것은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-010-ak",
+  "text": "지난여름에 여행을 갔습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-011-q",
+  "text": "Where do you usually buy groceries?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-011-a",
+  "text": "I buy groceries at a supermarket near my home.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-011-qk",
+  "text": "보통 어디에서 장을 봅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-011-ak",
+  "text": "집 근처 슈퍼마켓에서 장을 봅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-012-q",
+  "text": "Where do you usually exercise?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-012-a",
+  "text": "I exercise at a gym.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-012-qk",
+  "text": "보통 어디에서 운동합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-012-ak",
+  "text": "저는 헬스장에서 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-013-q",
+  "text": "Where do you like to meet your friends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-013-a",
+  "text": "I like to meet them at a cafe.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-013-qk",
+  "text": "친구들을 어디에서 만나는 것을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-013-ak",
+  "text": "카페에서 만나는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-014-q",
+  "text": "Where do you usually study English?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-014-a",
+  "text": "I study English at home.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-014-qk",
+  "text": "보통 어디에서 영어를 공부합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-014-ak",
+  "text": "저는 집에서 영어를 공부합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-015-q",
+  "text": "Where did you go last weekend?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-015-a",
+  "text": "I went to a park.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-015-qk",
+  "text": "지난 주말에 어디에 갔습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-015-ak",
+  "text": "공원에 갔습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-016-q",
+  "text": "Where do you usually eat lunch?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-016-a",
+  "text": "I eat lunch near my office.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-016-qk",
+  "text": "보통 어디에서 점심을 먹습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-016-ak",
+  "text": "회사 근처에서 점심을 먹습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-017-q",
+  "text": "Where is your favorite place in your city?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-017-a",
+  "text": "My favorite place is the river park.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-017-qk",
+  "text": "당신의 도시에서 가장 좋아하는 장소는 어디입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-017-ak",
+  "text": "제가 가장 좋아하는 곳은 강변 공원입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-018-q",
+  "text": "Where do you usually listen to music?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-018-a",
+  "text": "I listen to music on the bus.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-018-qk",
+  "text": "보통 어디에서 음악을 듣습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-018-ak",
+  "text": "저는 버스에서 음악을 듣습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-019-q",
+  "text": "Where do you usually shop for clothes?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-019-a",
+  "text": "I usually shop for clothes online.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-019-qk",
+  "text": "보통 어디에서 옷을 삽니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-019-ak",
+  "text": "저는 보통 온라인에서 옷을 삽니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-020-q",
+  "text": "Where would you like to travel someday?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-020-a",
+  "text": "I would like to visit Jeju Island.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-020-qk",
+  "text": "언젠가 어디로 여행을 가고 싶습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-020-ak",
+  "text": "제주도에 가 보고 싶습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-021-q",
+  "text": "How often do you exercise?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-021-a",
+  "text": "I exercise three times a week.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-021-qk",
+  "text": "얼마나 자주 운동합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-021-ak",
+  "text": "일주일에 세 번 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-022-q",
+  "text": "How often do you eat out?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-022-a",
+  "text": "I eat out once a week.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-022-qk",
+  "text": "얼마나 자주 외식합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-022-ak",
+  "text": "일주일에 한 번 외식합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-023-q",
+  "text": "How often do you go to the movies?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-023-a",
+  "text": "I go about once a month.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-023-qk",
+  "text": "얼마나 자주 영화관에 갑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-023-ak",
+  "text": "한 달에 한 번 정도 갑니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-024-q",
+  "text": "How often do you use public transportation?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-024-a",
+  "text": "I use it every day.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-024-qk",
+  "text": "얼마나 자주 대중교통을 이용합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-024-ak",
+  "text": "매일 이용합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-025-q",
+  "text": "How often do you drink coffee?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-025-a",
+  "text": "I drink coffee twice a day.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-025-qk",
+  "text": "얼마나 자주 커피를 마십니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-025-ak",
+  "text": "하루에 두 번 커피를 마십니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-026-q",
+  "text": "How often do you travel?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-026-a",
+  "text": "I travel once or twice a year.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-026-qk",
+  "text": "얼마나 자주 여행을 갑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-026-ak",
+  "text": "일 년에 한두 번 여행을 갑니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-027-q",
+  "text": "How often do you clean your room?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-027-a",
+  "text": "I clean my room every weekend.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-027-qk",
+  "text": "얼마나 자주 방을 청소합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-027-ak",
+  "text": "주말마다 방을 청소합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-028-q",
+  "text": "How often do you shop online?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-028-a",
+  "text": "I shop online two or three times a month.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-028-qk",
+  "text": "얼마나 자주 온라인 쇼핑을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-028-ak",
+  "text": "한 달에 두세 번 온라인 쇼핑을 합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-029-q",
+  "text": "How often do you call your family?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-029-a",
+  "text": "I call my family every day.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-029-qk",
+  "text": "얼마나 자주 가족에게 전화합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-029-ak",
+  "text": "매일 가족에게 전화합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-030-q",
+  "text": "How often do you read books?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-030-a",
+  "text": "I read books a few times a week.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-030-qk",
+  "text": "얼마나 자주 책을 읽습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-030-ak",
+  "text": "일주일에 몇 번 책을 읽습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-031-q",
+  "text": "Why do you exercise?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-031-a",
+  "text": "I exercise to stay healthy.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-031-qk",
+  "text": "왜 운동을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-031-ak",
+  "text": "건강을 유지하기 위해 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-032-q",
+  "text": "Why do you study English?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-032-a",
+  "text": "I study English for my job.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-032-qk",
+  "text": "왜 영어를 공부합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-032-ak",
+  "text": "일 때문에 영어를 공부합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-033-q",
+  "text": "Why do people like online shopping?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-033-a",
+  "text": "Because it is fast and easy.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-033-qk",
+  "text": "사람들은 왜 온라인 쇼핑을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-033-ak",
+  "text": "빠르고 편리하기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-034-q",
+  "text": "Why do you like your favorite restaurant?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-034-a",
+  "text": "Because the food is delicious and cheap.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-034-qk",
+  "text": "가장 좋아하는 식당을 왜 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-034-ak",
+  "text": "음식이 맛있고 저렴하기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-035-q",
+  "text": "Why do people use social media?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-035-a",
+  "text": "To keep in touch with friends.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-035-qk",
+  "text": "사람들은 왜 소셜 미디어를 사용합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-035-ak",
+  "text": "친구들과 연락하기 위해서입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-036-q",
+  "text": "Why did you choose your major?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-036-a",
+  "text": "Because I was interested in it.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-036-qk",
+  "text": "왜 그 전공을 선택했습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-036-ak",
+  "text": "그 분야에 관심이 있었기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-037-q",
+  "text": "Why do people drink coffee in the morning?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-037-a",
+  "text": "To wake up.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-037-qk",
+  "text": "사람들은 왜 아침에 커피를 마십니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-037-ak",
+  "text": "잠을 깨기 위해서입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-038-q",
+  "text": "Why do you like weekends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-038-a",
+  "text": "Because I can rest.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-038-qk",
+  "text": "왜 주말을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-038-ak",
+  "text": "쉴 수 있기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-039-q",
+  "text": "Why do people travel?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-039-a",
+  "text": "To relax and see new things.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-039-qk",
+  "text": "사람들은 왜 여행을 갑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-039-ak",
+  "text": "쉬면서 새로운 것을 보기 위해서입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-040-q",
+  "text": "Why do you use your smartphone every day?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-040-a",
+  "text": "Because it is very useful.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-040-qk",
+  "text": "왜 매일 스마트폰을 사용합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-040-ak",
+  "text": "매우 유용하기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-041-q",
+  "text": "What kind of music do you like?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-041-a",
+  "text": "I like pop music.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-041-qk",
+  "text": "어떤 종류의 음악을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-041-ak",
+  "text": "저는 팝 음악을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-042-q",
+  "text": "What is your favorite food?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-042-a",
+  "text": "My favorite food is pizza.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-042-qk",
+  "text": "가장 좋아하는 음식은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-042-ak",
+  "text": "제가 가장 좋아하는 음식은 피자입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-043-q",
+  "text": "What kind of movies do you like?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-043-a",
+  "text": "I like comedy movies.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-043-qk",
+  "text": "어떤 종류의 영화를 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-043-ak",
+  "text": "저는 코미디 영화를 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-044-q",
+  "text": "What is your favorite season?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-044-a",
+  "text": "My favorite season is spring.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-044-qk",
+  "text": "가장 좋아하는 계절은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-044-ak",
+  "text": "제가 가장 좋아하는 계절은 봄입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-045-q",
+  "text": "What sports do you like to watch?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-045-a",
+  "text": "I like to watch soccer.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-045-qk",
+  "text": "어떤 스포츠 보는 것을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-045-ak",
+  "text": "저는 축구 보는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-046-q",
+  "text": "What is your favorite way to relax?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-046-a",
+  "text": "I relax by listening to music.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-046-qk",
+  "text": "가장 좋아하는 휴식 방법은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-046-ak",
+  "text": "저는 음악을 들으며 쉽니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-047-q",
+  "text": "What kind of books do you like to read?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-047-a",
+  "text": "I like reading novels.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-047-qk",
+  "text": "어떤 종류의 책을 읽는 것을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-047-ak",
+  "text": "저는 소설 읽는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-048-q",
+  "text": "What is your favorite app on your phone?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-048-a",
+  "text": "My favorite app is a music app.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-048-qk",
+  "text": "휴대폰에서 가장 좋아하는 앱은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-048-ak",
+  "text": "제가 가장 좋아하는 앱은 음악 앱입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-049-q",
+  "text": "What is your favorite drink?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-049-a",
+  "text": "My favorite drink is iced coffee.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-049-qk",
+  "text": "가장 좋아하는 음료는 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-049-ak",
+  "text": "제가 가장 좋아하는 음료는 아이스커피입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-050-q",
+  "text": "What kind of TV shows do you like?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-050-a",
+  "text": "I like cooking shows.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-050-qk",
+  "text": "어떤 종류의 TV 프로그램을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-050-ak",
+  "text": "저는 요리 프로그램을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-051-q",
+  "text": "Have you ever traveled abroad?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-051-a",
+  "text": "Yes, I have been to Japan.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-051-qk",
+  "text": "해외여행을 해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-051-ak",
+  "text": "네, 일본에 가 본 적이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-052-q",
+  "text": "Have you ever cooked for your family?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-052-a",
+  "text": "Yes, I made dinner last week.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-052-qk",
+  "text": "가족을 위해 요리해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-052-ak",
+  "text": "네, 지난주에 저녁을 만들었습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-053-q",
+  "text": "Have you ever taken an online class?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-053-a",
+  "text": "Yes, I took one last year.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-053-qk",
+  "text": "온라인 수업을 들어 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-053-ak",
+  "text": "네, 작년에 하나 들었습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-054-q",
+  "text": "Have you ever lost your phone?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-054-a",
+  "text": "No, I have never lost my phone.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-054-qk",
+  "text": "휴대폰을 잃어버린 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-054-ak",
+  "text": "아니요, 잃어버린 적이 없습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-055-q",
+  "text": "Have you ever run in a race?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-055-a",
+  "text": "No, but I want to try someday.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-055-qk",
+  "text": "달리기 대회에 나가 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-055-ak",
+  "text": "아니요, 하지만 언젠가 해 보고 싶습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-056-q",
+  "text": "Have you ever worked part-time?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-056-a",
+  "text": "Yes, I worked at a cafe.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-056-qk",
+  "text": "아르바이트를 해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-056-ak",
+  "text": "네, 카페에서 일했습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-057-q",
+  "text": "Have you ever been camping?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-057-a",
+  "text": "Yes, I went camping last fall.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-057-qk",
+  "text": "캠핑을 가 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-057-ak",
+  "text": "네, 지난가을에 캠핑을 갔습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-058-q",
+  "text": "Have you ever met a famous person?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-058-a",
+  "text": "No, I have not.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-058-qk",
+  "text": "유명한 사람을 만나 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-058-ak",
+  "text": "아니요, 없습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-059-q",
+  "text": "Have you ever moved to a new city?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-059-a",
+  "text": "Yes, I moved two years ago.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-059-qk",
+  "text": "새로운 도시로 이사해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-059-ak",
+  "text": "네, 2년 전에 이사했습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-060-q",
+  "text": "Have you ever returned something you bought online?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-060-a",
+  "text": "Yes, I returned some shoes.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-060-qk",
+  "text": "온라인에서 산 물건을 반품해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-060-ak",
+  "text": "네, 신발을 반품한 적이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-061-q",
+  "text": "Who do you usually eat lunch with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-061-a",
+  "text": "I eat lunch with my coworkers.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-061-qk",
+  "text": "보통 누구와 점심을 먹습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-061-ak",
+  "text": "동료들과 점심을 먹습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-062-q",
+  "text": "Who taught you to cook?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-062-a",
+  "text": "My mother taught me.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-062-qk",
+  "text": "누가 요리를 가르쳐 주었습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-062-ak",
+  "text": "어머니가 가르쳐 주셨습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-063-q",
+  "text": "Who do you usually go shopping with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-063-a",
+  "text": "I go shopping with my friend.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-063-qk",
+  "text": "보통 누구와 쇼핑을 갑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-063-ak",
+  "text": "친구와 쇼핑을 갑니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-064-q",
+  "text": "Who do you call when you have a problem?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-064-a",
+  "text": "I call my best friend.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-064-qk",
+  "text": "문제가 있을 때 누구에게 전화합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-064-ak",
+  "text": "가장 친한 친구에게 전화합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-065-q",
+  "text": "Who do you usually exercise with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-065-a",
+  "text": "I usually exercise alone.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-065-qk",
+  "text": "보통 누구와 운동합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-065-ak",
+  "text": "저는 보통 혼자 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-066-q",
+  "text": "Who in your family do you talk to the most?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-066-a",
+  "text": "I talk to my sister the most.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-066-qk",
+  "text": "가족 중 누구와 가장 많이 이야기합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-066-ak",
+  "text": "언니(누나/여동생)와 가장 많이 이야기합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-067-q",
+  "text": "Who do you usually watch movies with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-067-a",
+  "text": "I watch movies with my friends.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-067-qk",
+  "text": "보통 누구와 영화를 봅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-067-ak",
+  "text": "친구들과 영화를 봅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-068-q",
+  "text": "Who helps you the most at work?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-068-a",
+  "text": "My team leader helps me the most.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-068-qk",
+  "text": "직장에서 누가 가장 많이 도와줍니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-068-ak",
+  "text": "팀장님이 가장 많이 도와주십니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-069-q",
+  "text": "Who do you usually spend weekends with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-069-a",
+  "text": "I spend weekends with my family.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-069-qk",
+  "text": "보통 누구와 주말을 보냅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-069-ak",
+  "text": "가족과 주말을 보냅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-070-q",
+  "text": "Who cooks at your home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-070-a",
+  "text": "My father usually cooks.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-070-qk",
+  "text": "집에서 누가 요리를 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-070-ak",
+  "text": "보통 아버지가 요리를 하십니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-071-q",
+  "text": "What do you usually do on weekends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-071-a",
+  "text": "I usually exercise at home.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-071-qk",
+  "text": "주말에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-071-ak",
+  "text": "저는 보통 집에서 운동합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-072-q",
+  "text": "What do you usually do after work?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-072-a",
+  "text": "I watch TV and rest.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-072-qk",
+  "text": "퇴근 후에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-072-ak",
+  "text": "TV를 보며 쉽니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-073-q",
+  "text": "What do you do in your free time?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-073-a",
+  "text": "I listen to music.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-073-qk",
+  "text": "여가 시간에 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-073-ak",
+  "text": "음악을 듣습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-074-q",
+  "text": "What do you usually do in the morning?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-074-a",
+  "text": "I drink coffee and check my phone.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-074-qk",
+  "text": "아침에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-074-ak",
+  "text": "커피를 마시고 휴대폰을 확인합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-075-q",
+  "text": "What did you do last night?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-075-a",
+  "text": "I had dinner and watched a movie.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-075-qk",
+  "text": "어젯밤에 무엇을 했습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-075-ak",
+  "text": "저녁을 먹고 영화를 봤습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-076-q",
+  "text": "What do you usually do on the subway?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-076-a",
+  "text": "I listen to music on the subway.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-076-qk",
+  "text": "지하철에서 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-076-ak",
+  "text": "지하철에서 음악을 듣습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-077-q",
+  "text": "What do you do when you feel stressed?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-077-a",
+  "text": "I take a walk.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-077-qk",
+  "text": "스트레스를 받을 때 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-077-ak",
+  "text": "산책을 합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-078-q",
+  "text": "What do you usually do during lunch time?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-078-a",
+  "text": "I eat and take a short walk.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-078-qk",
+  "text": "점심시간에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-078-ak",
+  "text": "밥을 먹고 잠깐 산책합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-079-q",
+  "text": "What are you going to do this weekend?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-079-a",
+  "text": "I am going to meet my friends.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-079-qk",
+  "text": "이번 주말에 무엇을 할 예정입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-079-ak",
+  "text": "친구들을 만날 예정입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-080-q",
+  "text": "What do you usually do before going to bed?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-080-a",
+  "text": "I usually watch short videos.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-080-qk",
+  "text": "자기 전에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-080-ak",
+  "text": "저는 보통 짧은 영상을 봅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-081-q",
+  "text": "Which do you prefer, shopping online or shopping in stores?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-081-a",
+  "text": "I prefer shopping online because it is convenient.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-081-qk",
+  "text": "온라인 쇼핑과 매장 쇼핑 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-081-ak",
+  "text": "편리하기 때문에 온라인 쇼핑을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-082-q",
+  "text": "Which do you prefer, watching movies at home or at a theater?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-082-a",
+  "text": "I prefer watching movies at home because it is comfortable.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-082-qk",
+  "text": "집에서 영화 보기와 영화관에서 보기 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-082-ak",
+  "text": "편안하기 때문에 집에서 보는 것을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-083-q",
+  "text": "Do you prefer coffee or tea?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-083-a",
+  "text": "I prefer coffee because it wakes me up.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-083-qk",
+  "text": "커피와 차 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-083-ak",
+  "text": "잠을 깨워 주기 때문에 커피를 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-084-q",
+  "text": "Do you prefer texting or calling?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-084-a",
+  "text": "I prefer texting because it is quick and easy.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-084-qk",
+  "text": "문자와 전화 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-084-ak",
+  "text": "빠르고 쉽기 때문에 문자를 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-085-q",
+  "text": "Do you prefer working alone or working with a team?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-085-a",
+  "text": "I prefer working with a team because we can share ideas.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-085-qk",
+  "text": "혼자 일하기와 팀으로 일하기 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-085-ak",
+  "text": "아이디어를 나눌 수 있어서 팀으로 일하는 것을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-086-q",
+  "text": "Which do you prefer, eating out or cooking at home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-086-a",
+  "text": "I prefer cooking at home because it is cheaper.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-086-qk",
+  "text": "외식과 집에서 요리하기 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-086-ak",
+  "text": "더 저렴하기 때문에 집에서 요리하는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-087-q",
+  "text": "Do you prefer traveling alone or traveling with friends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-087-a",
+  "text": "I prefer traveling with friends because it is more fun.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-087-qk",
+  "text": "혼자 여행과 친구와 여행 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-087-ak",
+  "text": "더 재미있기 때문에 친구와 여행하는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-088-q",
+  "text": "Which do you prefer, paper books or e-books?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-088-a",
+  "text": "I prefer e-books because they are easy to carry.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-088-qk",
+  "text": "종이책과 전자책 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-088-ak",
+  "text": "들고 다니기 편해서 전자책을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-089-q",
+  "text": "Do you prefer morning exercise or evening exercise?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-089-a",
+  "text": "I prefer evening exercise because I have more time.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-089-qk",
+  "text": "아침 운동과 저녁 운동 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-089-ak",
+  "text": "시간이 더 많아서 저녁 운동을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-090-q",
+  "text": "Which do you prefer, living in a city or living in the countryside?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-090-a",
+  "text": "I prefer living in a city because it is convenient.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-090-qk",
+  "text": "도시 생활과 시골 생활 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-090-ak",
+  "text": "편리하기 때문에 도시에 사는 것을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-091-q",
+  "text": "Do you think students should wear school uniforms?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-091-a",
+  "text": "Yes, I think so. Uniforms are simple and save time.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-091-qk",
+  "text": "학생들이 교복을 입어야 한다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-091-ak",
+  "text": "네, 그렇게 생각합니다. 교복은 간편하고 시간을 아껴 줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-092-q",
+  "text": "What are the advantages of working from home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-092-a",
+  "text": "You can save time because you do not commute.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-092-qk",
+  "text": "재택근무의 장점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-092-ak",
+  "text": "출퇴근을 하지 않아 시간을 아낄 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-093-q",
+  "text": "Do you agree that smartphones are good for children?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-093-a",
+  "text": "No, I do not agree. Children need more time outside.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-093-qk",
+  "text": "스마트폰이 아이들에게 좋다는 것에 동의합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-093-ak",
+  "text": "아니요, 동의하지 않습니다. 아이들은 바깥 활동 시간이 더 필요합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-094-q",
+  "text": "What are the disadvantages of living in a big city?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-094-a",
+  "text": "It is crowded and expensive.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-094-qk",
+  "text": "대도시 생활의 단점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-094-ak",
+  "text": "붐비고 물가가 비쌉니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-095-q",
+  "text": "Do you think exercise is important?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-095-a",
+  "text": "Yes, it keeps us healthy and happy.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-095-qk",
+  "text": "운동이 중요하다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-095-ak",
+  "text": "네, 운동은 우리를 건강하고 행복하게 해 줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-096-q",
+  "text": "What are the advantages of online classes?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-096-a",
+  "text": "You can study anywhere, anytime.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-096-qk",
+  "text": "온라인 수업의 장점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-096-ak",
+  "text": "언제 어디서나 공부할 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-097-q",
+  "text": "Do you agree that people should take a vacation every year?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-097-a",
+  "text": "Yes, rest helps people work better.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-097-qk",
+  "text": "사람들이 매년 휴가를 가야 한다는 것에 동의합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-097-ak",
+  "text": "네, 휴식은 일을 더 잘하게 도와줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-098-q",
+  "text": "Do you think it is better to save money or to enjoy it now?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-098-a",
+  "text": "I think saving money is better because the future is important.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-098-qk",
+  "text": "돈을 모으는 것과 지금 쓰는 것 중 무엇이 더 낫다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-098-ak",
+  "text": "미래가 중요하기 때문에 저축이 더 낫다고 생각합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-099-q",
+  "text": "What are the disadvantages of social media?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-099-a",
+  "text": "It wastes time and can cause stress.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-099-qk",
+  "text": "소셜 미디어의 단점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-099-ak",
+  "text": "시간을 낭비하게 하고 스트레스를 줄 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-100-q",
+  "text": "Do you think pets are good for families?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-100-a",
+  "text": "Yes, pets make people happy.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-100-qk",
+  "text": "반려동물이 가족에게 좋다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-100-ak",
+  "text": "네, 반려동물은 사람들을 행복하게 해 줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-101-q",
+  "text": "What time does the conference start, and where is it held?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-101-a",
+  "text": "It starts at 9 a.m. in the Grand Hall.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-101-qk",
+  "text": "회의는 몇 시에 시작하고 어디에서 열립니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-101-ak",
+  "text": "오전 9시에 그랜드 홀에서 시작합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-102-q",
+  "text": "Who is the first speaker, and what is the topic?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-102-a",
+  "text": "Ms. Kim will speak about marketing.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-102-qk",
+  "text": "첫 번째 발표자는 누구이고 주제는 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-102-ak",
+  "text": "김 선생님이 마케팅에 대해 발표합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-103-q",
+  "text": "How much is the registration fee?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-103-a",
+  "text": "It is thirty dollars.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-103-qk",
+  "text": "등록비는 얼마입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-103-ak",
+  "text": "30달러입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-104-q",
+  "text": "When is the lunch break?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-104-a",
+  "text": "It is from noon to 1 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-104-qk",
+  "text": "점심시간은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-104-ak",
+  "text": "정오부터 오후 1시까지입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-105-q",
+  "text": "I heard the workshop is on Friday. Is that right?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-105-a",
+  "text": "Actually, it is on Thursday.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-105-qk",
+  "text": "워크숍이 금요일이라고 들었는데, 맞습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-105-ak",
+  "text": "사실은 목요일입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-106-q",
+  "text": "Where will the closing session take place?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-106-a",
+  "text": "It will take place in Room 201.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-106-qk",
+  "text": "폐회 세션은 어디에서 열립니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-106-ak",
+  "text": "201호에서 열립니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-107-q",
+  "text": "How long is the training session?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-107-a",
+  "text": "It is two hours, from 2 to 4 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-107-qk",
+  "text": "교육 세션은 얼마나 걸립니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-107-ak",
+  "text": "오후 2시부터 4시까지 두 시간입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-108-q",
+  "text": "Is there a session about time management?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-108-a",
+  "text": "Yes, there is one at 3 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-108-qk",
+  "text": "시간 관리에 관한 세션이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-108-ak",
+  "text": "네, 오후 3시에 하나 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-109-q",
+  "text": "What should I bring to the seminar?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-109-a",
+  "text": "You should bring your laptop.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-109-qk",
+  "text": "세미나에 무엇을 가져가야 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-109-ak",
+  "text": "노트북을 가져오셔야 합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-110-q",
+  "text": "Could you tell me who is leading the afternoon session?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-110-a",
+  "text": "Mr. Lee is leading it.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-110-qk",
+  "text": "오후 세션은 누가 진행하는지 알려 주시겠습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-110-ak",
+  "text": "이 선생님이 진행합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-111-q",
+  "text": "When do you usually check your email?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-111-a",
+  "text": "I check it in the morning.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-111-qk",
+  "text": "보통 언제 이메일을 확인합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-111-ak",
+  "text": "아침에 확인합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-112-q",
+  "text": "When was the last time you visited a park?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-112-a",
+  "text": "I visited one last Sunday.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-112-qk",
+  "text": "마지막으로 공원에 간 것은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-112-ak",
+  "text": "지난 일요일에 갔습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-113-q",
+  "text": "What time do you usually leave home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-113-a",
+  "text": "I leave home at eight.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-113-qk",
+  "text": "보통 몇 시에 집에서 나갑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-113-ak",
+  "text": "8시에 집에서 나갑니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-114-q",
+  "text": "Where do you usually drink coffee?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-114-a",
+  "text": "I drink coffee at a cafe nearby.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-114-qk",
+  "text": "보통 어디에서 커피를 마십니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-114-ak",
+  "text": "근처 카페에서 커피를 마십니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-115-q",
+  "text": "Where did you eat dinner yesterday?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-115-a",
+  "text": "I ate dinner at home.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-115-qk",
+  "text": "어제 어디에서 저녁을 먹었습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-115-ak",
+  "text": "집에서 저녁을 먹었습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-116-q",
+  "text": "Where do you keep your phone at night?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-116-a",
+  "text": "I keep it next to my bed.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-116-qk",
+  "text": "밤에 휴대폰을 어디에 둡니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-116-ak",
+  "text": "침대 옆에 둡니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-117-q",
+  "text": "How often do you watch videos online?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-117-a",
+  "text": "I watch them every day.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-117-qk",
+  "text": "얼마나 자주 온라인 영상을 봅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-117-ak",
+  "text": "매일 봅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-118-q",
+  "text": "How often do you buy coffee at a cafe?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-118-a",
+  "text": "About three times a week.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-118-qk",
+  "text": "얼마나 자주 카페에서 커피를 삽니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-118-ak",
+  "text": "일주일에 세 번 정도입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-119-q",
+  "text": "How often do you take a taxi?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-119-a",
+  "text": "Only once or twice a month.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-119-qk",
+  "text": "얼마나 자주 택시를 탑니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-119-ak",
+  "text": "한 달에 한두 번뿐입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-120-q",
+  "text": "Why do you like listening to music?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-120-a",
+  "text": "Because it makes me feel good.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-120-qk",
+  "text": "왜 음악 듣는 것을 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-120-ak",
+  "text": "기분이 좋아지기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-121-q",
+  "text": "Why do people exercise at a gym?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-121-a",
+  "text": "Because they can use many machines.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-121-qk",
+  "text": "사람들은 왜 헬스장에서 운동합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-121-ak",
+  "text": "다양한 기구를 사용할 수 있기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-122-q",
+  "text": "Why do you like your neighborhood?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-122-a",
+  "text": "Because it is quiet and safe.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-122-qk",
+  "text": "왜 당신의 동네를 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-122-ak",
+  "text": "조용하고 안전하기 때문입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-123-q",
+  "text": "What is your favorite day of the week?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-123-a",
+  "text": "My favorite day is Saturday.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-123-qk",
+  "text": "일주일 중 가장 좋아하는 요일은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-123-ak",
+  "text": "가장 좋아하는 요일은 토요일입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-124-q",
+  "text": "What kind of weather do you like?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-124-a",
+  "text": "I like sunny weather.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-124-qk",
+  "text": "어떤 날씨를 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-124-ak",
+  "text": "맑은 날씨를 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-125-q",
+  "text": "Have you ever tried a new sport?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-125-a",
+  "text": "Yes, I tried swimming last year.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-125-qk",
+  "text": "새로운 운동을 시도해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-125-ak",
+  "text": "네, 작년에 수영을 해 봤습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-126-q",
+  "text": "Have you ever ordered food late at night?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-126-a",
+  "text": "Yes, I have, many times.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-126-qk",
+  "text": "늦은 밤에 음식을 주문해 본 적이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-126-ak",
+  "text": "네, 여러 번 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-127-q",
+  "text": "Who do you usually have dinner with?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-127-a",
+  "text": "I have dinner with my family.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-127-qk",
+  "text": "보통 누구와 저녁을 먹습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-127-ak",
+  "text": "가족과 저녁을 먹습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-128-q",
+  "text": "Who do you text the most?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-128-a",
+  "text": "I text my best friend the most.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-128-qk",
+  "text": "누구에게 문자를 가장 많이 보냅니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-128-ak",
+  "text": "가장 친한 친구에게 가장 많이 보냅니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-129-q",
+  "text": "What do you usually do on Sunday mornings?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-129-a",
+  "text": "I sleep late and relax.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-129-qk",
+  "text": "일요일 아침에 보통 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-129-ak",
+  "text": "늦잠을 자고 쉽니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-130-q",
+  "text": "What do you do first when you get home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-130-a",
+  "text": "I wash my hands and change clothes.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-130-qk",
+  "text": "집에 오면 가장 먼저 무엇을 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-130-ak",
+  "text": "손을 씻고 옷을 갈아입습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-131-q",
+  "text": "What time does the first class begin?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-131-a",
+  "text": "It begins at 10 a.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-131-qk",
+  "text": "첫 수업은 몇 시에 시작합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-131-ak",
+  "text": "오전 10시에 시작합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-132-q",
+  "text": "Where will the staff meeting be held?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-132-a",
+  "text": "It will be held in Meeting Room A.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-132-qk",
+  "text": "직원 회의는 어디에서 열립니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-132-ak",
+  "text": "회의실 A에서 열립니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-133-q",
+  "text": "How much does the full-day workshop cost?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-133-a",
+  "text": "It costs fifty dollars.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-133-qk",
+  "text": "종일 워크숍 비용은 얼마입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-133-ak",
+  "text": "50달러입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-134-q",
+  "text": "When does the museum tour end?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-134-a",
+  "text": "It ends at 5 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-134-qk",
+  "text": "박물관 투어는 언제 끝납니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-134-ak",
+  "text": "오후 5시에 끝납니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-135-q",
+  "text": "Who is giving the presentation on sales?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-135-a",
+  "text": "Ms. Park is giving it.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-135-qk",
+  "text": "영업에 관한 발표는 누가 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-135-ak",
+  "text": "박 선생님이 합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-136-q",
+  "text": "I heard the seminar starts at 10. Is that correct?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-136-a",
+  "text": "Actually, it starts at 9:30.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-136-qk",
+  "text": "세미나가 10시에 시작한다고 들었는데, 맞습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-136-ak",
+  "text": "사실은 9시 30분에 시작합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-137-q",
+  "text": "How long is the lunch meeting?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-137-a",
+  "text": "It is one hour.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-137-qk",
+  "text": "점심 회의는 얼마나 걸립니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-137-ak",
+  "text": "한 시간입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-138-q",
+  "text": "Is there a break between the sessions?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-138-a",
+  "text": "Yes, there is a 15-minute break.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-138-qk",
+  "text": "세션 사이에 휴식 시간이 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-138-ak",
+  "text": "네, 15분 휴식이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-139-q",
+  "text": "What is the last event of the day?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-139-a",
+  "text": "It is the closing speech.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-139-qk",
+  "text": "그날 마지막 행사는 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-139-ak",
+  "text": "폐회사입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-140-q",
+  "text": "Could you tell me when the bus leaves for the hotel?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-140-a",
+  "text": "It leaves at 6 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-140-qk",
+  "text": "호텔로 가는 버스가 언제 출발하는지 알려 주시겠습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-140-ak",
+  "text": "오후 6시에 출발합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-141-q",
+  "text": "What time does registration open?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-141-a",
+  "text": "It opens at 8:30 a.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-141-qk",
+  "text": "등록은 몇 시에 시작합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-141-ak",
+  "text": "오전 8시 30분에 시작합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-142-q",
+  "text": "Where can I pick up my name tag?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-142-a",
+  "text": "You can pick it up at the front desk.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-142-qk",
+  "text": "이름표는 어디에서 받을 수 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-142-ak",
+  "text": "안내 데스크에서 받을 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-143-q",
+  "text": "Who should I contact if I have questions?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-143-a",
+  "text": "You can contact Mr. Choi.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-143-qk",
+  "text": "질문이 있으면 누구에게 연락해야 합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-143-ak",
+  "text": "최 선생님에게 연락하시면 됩니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-144-q",
+  "text": "Is lunch included in the program?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-144-a",
+  "text": "Yes, lunch is included.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-144-qk",
+  "text": "프로그램에 점심이 포함되어 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-144-ak",
+  "text": "네, 점심이 포함되어 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-145-q",
+  "text": "I heard the interview is at 2 p.m. Is that right?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-145-a",
+  "text": "Actually, it is at 3 p.m.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-145-qk",
+  "text": "면접이 오후 2시라고 들었는데, 맞습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-145-ak",
+  "text": "사실은 오후 3시입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-146-q",
+  "text": "How many sessions are there in the morning?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-146-a",
+  "text": "There are three sessions.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-146-qk",
+  "text": "오전에 세션이 몇 개 있습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-146-ak",
+  "text": "세 개 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-147-q",
+  "text": "When is the deadline for registration?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-147-a",
+  "text": "It is this Friday.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-147-qk",
+  "text": "등록 마감일은 언제입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-147-ak",
+  "text": "이번 주 금요일입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-148-q",
+  "text": "What topic will be covered in the final session?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-148-a",
+  "text": "It will cover customer service.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-148-qk",
+  "text": "마지막 세션에서는 어떤 주제를 다룹니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-148-ak",
+  "text": "고객 서비스를 다룹니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-149-q",
+  "text": "Could you tell me where the parking area is?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-149-a",
+  "text": "It is behind the main building.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-149-qk",
+  "text": "주차장이 어디인지 알려 주시겠습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-149-ak",
+  "text": "본관 뒤에 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-150-q",
+  "text": "Is the schedule the same on both days?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-150-a",
+  "text": "No, the second day ends earlier.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-150-qk",
+  "text": "이틀 모두 일정이 같습니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-150-ak",
+  "text": "아니요, 둘째 날은 더 일찍 끝납니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-151-q",
+  "text": "Which do you prefer, studying in the morning or at night?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-151-a",
+  "text": "I prefer studying at night because it is quiet.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-151-qk",
+  "text": "아침 공부와 밤 공부 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-151-ak",
+  "text": "조용하기 때문에 밤에 공부하는 것을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-152-q",
+  "text": "Do you prefer taking a bus or taking the subway?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-152-a",
+  "text": "I prefer the subway because it is faster.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-152-qk",
+  "text": "버스와 지하철 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-152-ak",
+  "text": "더 빠르기 때문에 지하철을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-153-q",
+  "text": "Which do you prefer, cash or credit cards?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-153-a",
+  "text": "I prefer credit cards because they are easy to use.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-153-qk",
+  "text": "현금과 신용카드 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-153-ak",
+  "text": "사용하기 편해서 신용카드를 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-154-q",
+  "text": "Do you prefer watching sports or playing sports?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-154-a",
+  "text": "I prefer playing sports because it is good exercise.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-154-qk",
+  "text": "스포츠 관람과 직접 하기 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-154-ak",
+  "text": "좋은 운동이 되기 때문에 직접 하는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-155-q",
+  "text": "Which do you prefer, a city trip or a beach trip?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-155-a",
+  "text": "I prefer a beach trip because I can relax.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-155-qk",
+  "text": "도시 여행과 바다 여행 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-155-ak",
+  "text": "쉴 수 있어서 바다 여행을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-156-q",
+  "text": "Do you prefer listening to music or watching videos?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-156-a",
+  "text": "I prefer music because I can do other things too.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-156-qk",
+  "text": "음악 듣기와 영상 보기 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-156-ak",
+  "text": "다른 일도 같이 할 수 있어서 음악을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-157-q",
+  "text": "Which do you prefer, working in an office or working from home?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-157-a",
+  "text": "I prefer working from home because I save time.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-157-qk",
+  "text": "사무실 근무와 재택근무 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-157-ak",
+  "text": "시간을 아낄 수 있어서 재택근무를 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-158-q",
+  "text": "Do you prefer spicy food or mild food?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-158-a",
+  "text": "I prefer spicy food because it is exciting.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-158-qk",
+  "text": "매운 음식과 순한 음식 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-158-ak",
+  "text": "자극적이어서 매운 음식을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-159-q",
+  "text": "Which do you prefer, shopping alone or shopping with friends?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-159-a",
+  "text": "I prefer shopping alone because it is faster.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-159-qk",
+  "text": "혼자 쇼핑과 친구와 쇼핑 중 무엇을 더 선호합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-159-ak",
+  "text": "더 빠르기 때문에 혼자 쇼핑하는 것을 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-160-q",
+  "text": "Do you prefer summer or winter?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-160-a",
+  "text": "I prefer summer because I like outdoor activities.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-160-qk",
+  "text": "여름과 겨울 중 무엇을 더 좋아합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-160-ak",
+  "text": "야외 활동을 좋아해서 여름을 더 좋아합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-161-q",
+  "text": "Do you think breakfast is important?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-161-a",
+  "text": "Yes, it gives us energy for the day.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-161-qk",
+  "text": "아침 식사가 중요하다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-161-ak",
+  "text": "네, 하루를 위한 에너지를 줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-162-q",
+  "text": "What are the advantages of using public transportation?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-162-a",
+  "text": "It is cheap and good for the environment.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-162-qk",
+  "text": "대중교통 이용의 장점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-162-ak",
+  "text": "저렴하고 환경에 좋습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-163-q",
+  "text": "Do you agree that reading books is better than watching TV?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-163-a",
+  "text": "Yes, books help us think more deeply.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-163-qk",
+  "text": "독서가 TV 시청보다 낫다는 것에 동의합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-163-ak",
+  "text": "네, 책은 더 깊이 생각하게 도와줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-164-q",
+  "text": "What are the disadvantages of online shopping?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-164-a",
+  "text": "You cannot see or try the products.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-164-qk",
+  "text": "온라인 쇼핑의 단점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-164-ak",
+  "text": "상품을 직접 보거나 써 볼 수 없습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-165-q",
+  "text": "Do you think companies should allow casual clothes at work?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-165-a",
+  "text": "Yes, comfortable clothes help people work better.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-165-qk",
+  "text": "회사가 자유로운 복장을 허용해야 한다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-165-ak",
+  "text": "네, 편한 옷은 일을 더 잘하게 도와줍니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-166-q",
+  "text": "What are the advantages of living near your workplace?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-166-a",
+  "text": "You can save time and sleep more.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-166-qk",
+  "text": "직장 근처에 사는 것의 장점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-166-ak",
+  "text": "시간을 아끼고 잠을 더 잘 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-167-q",
+  "text": "Do you think children should learn a second language early?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-167-a",
+  "text": "Yes, they can learn languages faster when young.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-167-qk",
+  "text": "아이들이 외국어를 일찍 배워야 한다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-167-ak",
+  "text": "네, 어릴 때 언어를 더 빨리 배웁니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-168-q",
+  "text": "Do you agree that eating at home is healthier than eating out?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-168-a",
+  "text": "Yes, you can choose fresh ingredients.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-168-qk",
+  "text": "집밥이 외식보다 건강하다는 것에 동의합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-168-ak",
+  "text": "네, 신선한 재료를 고를 수 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-169-q",
+  "text": "What are the disadvantages of working long hours?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-169-a",
+  "text": "People get tired and stressed.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-169-qk",
+  "text": "장시간 근무의 단점은 무엇입니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-169-ak",
+  "text": "사람들이 지치고 스트레스를 받습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-170-q",
+  "text": "Do you think music helps people study?",
+  "lang": "en"
+ },
+ {
+  "name": "seed-170-a",
+  "text": "Yes, quiet music helps people focus.",
+  "lang": "en"
+ },
+ {
+  "name": "seed-170-qk",
+  "text": "음악이 공부에 도움이 된다고 생각합니까?",
+  "lang": "ko"
+ },
+ {
+  "name": "seed-170-ak",
+  "text": "네, 조용한 음악은 집중을 도와줍니다.",
+  "lang": "ko"
+ }
+]
