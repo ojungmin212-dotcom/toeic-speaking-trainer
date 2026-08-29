@@ -40,6 +40,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
   const weakTypes = new Set(store.getWeakTypes().map((w) => w.type));
   const playlist = pickWeighted(pool, store.getProgress, weakTypes, Math.min(pool.length, 20));
   let index = 0;
+  let done = false; // 세션 완료 상태 — 완료 화면에서 🔊/질문확인이 죽지 않도록 가드
   sessionStart = Date.now();
 
   root.innerHTML = `
@@ -65,6 +66,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
   const $ = (sel) => root.querySelector(sel);
 
   function playCurrent() {
+    if (done) return;
     tts.cancel();
     const q = playlist[index];
     tts.speak(q.questionEnglish, 'en-US');
@@ -72,7 +74,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
   }
 
   function show() {
-    const q = playlist[index];
+    done = false;
     $('#lCount').textContent = `QUESTION ${index + 1} / ${playlist.length}`;
     $('#lStep').textContent = '🎧 질문을 듣고 의미를 판단해 보세요';
     $('#lText').innerHTML = '';
@@ -82,6 +84,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
   }
 
   function reveal() {
+    if (done) return;
     const q = playlist[index];
     const s = store.getSettings();
     const typeInfo = QUESTION_TYPES[q.questionType];
@@ -103,14 +106,16 @@ export function renderListening(root, { mode = 'all' } = {}) {
   }
 
   function next() {
-    if (index + 1 >= playlist.length) {
+    if (!done && index + 1 >= playlist.length) {
+      done = true;
+      tts.cancel();
       $('#lStep').textContent = '🎉 세션 완료!';
       $('#lText').innerHTML = '<div class="p-ko">모든 질문을 확인했습니다.<br>다시 시작하려면 다음 버튼을 누르세요.</div>';
       $('#lJudge').classList.add('hidden');
-      index = -1;
+      $('#lReveal').classList.add('hidden');
       return;
     }
-    index += 1;
+    index = done ? 0 : index + 1;
     show();
   }
 
@@ -119,7 +124,10 @@ export function renderListening(root, { mode = 'all' } = {}) {
   $('#lOk').addEventListener('click', () => judge(true));
   $('#lNo').addEventListener('click', () => judge(false));
   $('#lNext').addEventListener('click', next);
-  $('#lPrev').addEventListener('click', () => { if (index > 0) { index -= 1; show(); } });
+  $('#lPrev').addEventListener('click', () => {
+    if (done) { index = playlist.length - 1; show(); } // 완료 화면에서 마지막 문제로 복귀
+    else if (index > 0) { index -= 1; show(); }
+  });
 
   show();
 }

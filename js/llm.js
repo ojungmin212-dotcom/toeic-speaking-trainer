@@ -28,6 +28,9 @@ export async function generateQuestions({ part, type, count = 10 }) {
     body: JSON.stringify({ prompt: buildPrompt(part, type, count) }),
   });
   if (!res.ok) {
+    if (res.status === 404 || res.status === 501) {
+      throw new Error('AI 생성은 PC에서 시작.bat으로 실행할 때만 사용할 수 있습니다 (.env에 LLM 키 필요). 배포된 웹 주소에서는 동작하지 않습니다.');
+    }
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || 'LLM 서버 오류: ' + res.status);
   }

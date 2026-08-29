@@ -22,7 +22,7 @@ export function renderHome(root) {
       </nav>
 
       <div class="stat-cards">
-        <div class="stat-card"><div class="stat-num">${today.listened}</div><div class="stat-label">오늘 들은 질문</div></div>
+        <div class="stat-card"><div class="stat-num">${today.listened}</div><div class="stat-label">오늘 듣기 횟수</div></div>
         <div class="stat-card"><div class="stat-num">${rate == null ? '–' : rate + '%'}</div><div class="stat-label">오늘 정답률</div></div>
       </div>
 

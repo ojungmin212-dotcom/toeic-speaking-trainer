@@ -34,8 +34,8 @@ export function renderStats(root) {
   root.innerHTML = `
     ${backBar('학습 통계')}
     <div class="stat-cards four">
-      <div class="stat-card"><div class="stat-num">${today.listened}</div><div class="stat-label">오늘 들은 질문</div></div>
-      <div class="stat-card"><div class="stat-num">${totals.listened}</div><div class="stat-label">누적 질문</div></div>
+      <div class="stat-card"><div class="stat-num">${today.listened}</div><div class="stat-label">오늘 듣기 횟수</div></div>
+      <div class="stat-card"><div class="stat-num">${totals.listened}</div><div class="stat-label">누적 듣기 횟수</div></div>
       <div class="stat-card"><div class="stat-num">${streak}일</div><div class="stat-label">연속 학습</div></div>
       <div class="stat-card"><div class="stat-num">${fmtTime(totals.studySeconds)}</div><div class="stat-label">총 학습시간</div></div>
     </div>

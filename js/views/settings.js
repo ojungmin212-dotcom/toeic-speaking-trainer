@@ -6,10 +6,13 @@ import { backBar } from './study.js';
 
 export async function renderSettings(root) {
   const s = store.getSettings();
-  const enVoices = await tts.getEnglishVoices();
-  const koVoices = await tts.getKoreanVoices();
-  const server = await tts.checkServerTts();
-  const genCount = await tts.generatedAudioCount();
+  // 음성 목록/서버 확인은 느릴 수 있으므로 골격을 먼저 그린다 (빈 화면 방지)
+  root.innerHTML = `${backBar('설정')}<p class="desc">설정을 불러오는 중…</p>`;
+  const [enVoices, koVoices, server, genCount] = await Promise.all([
+    tts.getEnglishVoices(), tts.getKoreanVoices(), tts.checkServerTts(), tts.generatedAudioCount(),
+  ]);
+  // 기다리는 동안 다른 화면으로 이동했으면 덮어쓰지 않는다
+  if (!location.hash.startsWith('#/settings')) return;
 
   root.innerHTML = `
     ${backBar('설정')}
@@ -44,7 +47,8 @@ export async function renderSettings(root) {
       <button class="sub-btn" id="testVoice">🔊 음성 테스트</button>
       <p class="desc small">🎙 <b>고품질 사전 생성 음성</b>이 켜져 있으면 기본 문항 전체가 자연스러운
         신경망 음성(mp3)으로 재생됩니다. 직접 추가한 질문 등 파일이 없는 문항만 아래 TTS 방식으로 폴백됩니다.
-        새 질문을 추가한 뒤에는 <code>음성생성.bat</code>을 다시 실행하면 됩니다.<br>
+        직접 추가한 질문의 음성을 만들려면: 아래 <b>JSON 백업</b>으로 받은 파일을 프로젝트 폴더에
+        <code>questions.json</code>으로 저장한 뒤 <code>음성생성.bat</code>을 실행하세요 (PC 전용).<br>
         ※ 실제 ETS 시험 성우의 목소리를 그대로 복제하는 것은 저작권 문제로 지원하지 않습니다.</p>
     </div>
 
@@ -100,7 +104,7 @@ export async function renderSettings(root) {
     } catch (e) { toast('복원 실패: ' + e.message); }
   });
   root.querySelector('#resetSeed').addEventListener('click', () => {
-    if (confirm('사용자 추가 질문이 삭제되고 기본 110문항으로 돌아갑니다. 계속할까요? (학습 기록은 유지)')) {
+    if (confirm(`사용자 추가 질문이 삭제되고 기본 ${store.seedCount()}문항으로 돌아갑니다. 계속할까요? (학습 기록은 유지)`)) {
       store.resetToSeed();
       toast('기본 문제로 초기화했습니다');
     }

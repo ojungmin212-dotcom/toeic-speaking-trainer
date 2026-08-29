@@ -25,6 +25,18 @@ function shuffle(arr) {
   return a;
 }
 
+// 의미가 겹쳐 정답을 알아도 헷갈리는 유형끼리는 같은 문제의 보기로 내지 않는다
+// (예: "Which do you prefer...?"는 선호로도 선택으로도 읽힘)
+const CONFUSABLE = {
+  preference: ['choice', 'opinion'],
+  choice: ['preference', 'opinion'],
+  opinion: ['choice', 'preference'],
+  time: ['schedule'],
+  schedule: ['time', 'place', 'person'],
+  place: ['schedule'],
+  person: ['schedule'],
+};
+
 export function renderQuiz(root) {
   stopQuiz();
   const pool = store.getQuestions();
@@ -38,7 +50,7 @@ export function renderQuiz(root) {
     ${backBar('질문 유형 퀴즈')}
     <div class="player">
       <div class="player-count" id="qCount"></div>
-      <div class="player-step">What is this question asking about?</div>
+      <div class="player-step">이 질문은 무엇을 묻고 있나요?<br><span class="step-sub">What is this question asking about?</span></div>
       <button class="big-play small" id="qPlay" aria-label="다시 듣기">🔊</button>
       <div class="quiz-options" id="qOptions"></div>
       <div class="player-text" id="qResult"></div>
@@ -58,7 +70,8 @@ export function renderQuiz(root) {
   }
 
   function buildOptions(q) {
-    const others = shuffle(Object.keys(QUESTION_TYPES).filter((t) => t !== q.questionType)).slice(0, 3);
+    const banned = new Set([q.questionType, ...(CONFUSABLE[q.questionType] || [])]);
+    const others = shuffle(Object.keys(QUESTION_TYPES).filter((t) => !banned.has(t))).slice(0, 3);
     return shuffle([q.questionType, ...others]);
   }
 
@@ -110,9 +123,10 @@ export function renderQuiz(root) {
           <div class="stat-card"><div class="stat-num">${rate}%</div><div class="stat-label">정답률</div></div>
         </div>
         <div class="player-nav">
-          <a class="nav-btn" href="#/quiz" onclick="location.reload()">다시 하기</a>
+          <button class="nav-btn" id="qRetry">다시 하기</button>
           <a class="nav-btn" href="#/review">취약 복습 →</a>
         </div>`;
+      root.querySelector('#qRetry').addEventListener('click', () => renderQuiz(root));
       toast('결과가 통계에 반영되었습니다');
       return;
     }

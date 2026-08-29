@@ -1,20 +1,30 @@
 // TTS Provider Adapter — 호출부는 speak()만 사용하고 Provider 구현을 모른다.
-// 기본: Web Speech API (키 불필요). 선택: OpenAI TTS (server.js 프록시 /api/tts 경유).
-// 목표 음성: 명확한 발음, 자연스러운 속도, 중립적 억양의 시험 안내 스타일.
+// 재생 우선순위: ① 사전 생성 신경망 mp3 (audio/manifest.json) ② OpenAI TTS(로컬 서버) ③ 브라우저 내장.
+// 실패 시 다음 Provider로 자동 폴백한다 (무음 진행 방지).
+//
+// 취소는 "세대 토큰" 방식: cancel()이 세대를 올리고, 모든 재생 경로는
+// 자기 세대가 최신인지 확인한 뒤에만 소리를 낸다 → 유령 오디오/겹침 재생 방지.
+//
 // (실제 시험 음성이나 특정 화자의 목소리는 복제하지 않는다)
 
 import { getSettings } from './store.js';
 
 let voicesCache = [];
-let cancelled = false;
+let gen = 0; // 취소 세대 — cancel()마다 +1
+
+export function cancel() {
+  gen += 1;
+  try { speechSynthesis.cancel(); } catch {}
+  settlePending(false);
+  if (fileAudio) { try { fileAudio.pause(); } catch {} }
+}
 
 // ── 공유 오디오 엘리먼트 (모바일 자동재생 정책 대응) ──────────
-// iOS/Android는 사용자 제스처 없이 new Audio().play()를 차단한다.
-// 하나의 <audio> 엘리먼트를 첫 터치에서 잠금 해제한 뒤 src만 바꿔 재사용하면
-// 운동 모드의 연속 자동 재생이 휴대폰에서도 끊기지 않는다.
+// iOS/Android는 사용자 제스처 없이 새 Audio().play()를 차단한다.
+// 하나의 엘리먼트를 첫 터치에서 무음으로 잠금 해제한 뒤 src만 바꿔 재사용한다.
 const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
 const fileAudio = typeof Audio !== 'undefined' ? new Audio() : null;
-let pendingResolve = null; // 진행 중인 파일 재생의 resolve (취소/교체 시 반드시 풀어준다)
+let pendingResolve = null; // 진행 중 파일 재생의 resolve — 취소/교체 시 반드시 풀어준다
 let audioUnlocked = false;
 
 function unlockAudio() {
@@ -43,20 +53,23 @@ function settlePending(ok) {
 }
 
 // 공유 엘리먼트로 URL 재생. ended/error/pause 어느 경우든 promise가 반드시 풀린다.
-function playUrl(url, rate = 1) {
-  if (!fileAudio) return Promise.resolve(false);
-  settlePending(false); // 이전 재생이 걸려 있으면 정리
+function playUrl(url, rate, myGen) {
+  if (!fileAudio || myGen !== gen) return Promise.resolve(false);
+  settlePending(false);
   return new Promise((resolve) => {
     pendingResolve = resolve;
     fileAudio.onended = () => settlePending(true);
     fileAudio.onerror = () => settlePending(false);
-    fileAudio.onpause = () => { if (fileAudio.ended === false && fileAudio.currentTime > 0) settlePending(false); };
+    fileAudio.onpause = () => { if (!fileAudio.ended && fileAudio.currentTime > 0) settlePending(false); };
+    if (myGen !== gen) return settlePending(false);
     fileAudio.src = url;
     fileAudio.playbackRate = Math.max(0.6, Math.min(rate, 1.5));
-    fileAudio.play().then(() => {}, () => settlePending(false));
+    fileAudio.play().then(() => { if (myGen !== gen) { try { fileAudio.pause(); } catch {} } },
+      () => settlePending(false));
   });
 }
 
+// ── 음성 목록 ──────────────────────────────────────────────────
 function loadVoices() {
   return new Promise((resolve) => {
     const got = speechSynthesis.getVoices();
@@ -65,8 +78,8 @@ function loadVoices() {
       voicesCache = speechSynthesis.getVoices();
       resolve(voicesCache);
     };
-    // 일부 브라우저는 이벤트가 안 올 수 있으므로 타임아웃 폴백
-    setTimeout(() => resolve(speechSynthesis.getVoices()), 1500);
+    // 일부 브라우저는 이벤트가 안 올 수 있으므로 타임아웃 폴백 (캐시도 갱신)
+    setTimeout(() => { voicesCache = speechSynthesis.getVoices(); resolve(voicesCache); }, 1500);
   });
 }
 
@@ -82,13 +95,12 @@ export async function getKoreanVoices() {
 const FEMALE_HINTS = /female|woman|zira|jenny|aria|ava|samantha|susan|karen|hazel|michelle|ana|emma|jane|sun-hi|sunhi|heami|yuna/i;
 const MALE_HINTS = /male|man|david|mark|guy|christopher|eric|andrew|brian|alex|daniel|tom|injoon|hyunsu/i;
 
-// 음성 품질 점수 — 시험 안내 방송에 가까운 자연스러운 음성을 자동 선택한다.
-// 1순위: Edge 내장 자연(Natural/Neural) 음성  2순위: Chrome의 Google 음성  3순위: 일반 OS 음성
+// 음성 품질 점수 — 시험 안내 방송에 가까운 자연스러운 음성을 자동 선택
 export function voiceQualityScore(v, langPrefix, gender) {
   let score = 0;
   if (/natural|neural|online/i.test(v.name)) score += 100; // Edge "… Online (Natural)"
   if (/^google/i.test(v.name)) score += 50;                // Chrome "Google US English"
-  if (langPrefix === 'en' && /en[-_]us/i.test(v.lang)) score += 20; // 미국 영어 우선
+  if (langPrefix === 'en' && /en[-_]us/i.test(v.lang)) score += 20;
   const hints = gender === 'male' ? MALE_HINTS : FEMALE_HINTS;
   if (hints.test(v.name)) score += 10;
   return score;
@@ -129,43 +141,73 @@ export function beep(freq = 880, duration = 0.3) {
   });
 }
 
-// ── Web Speech Provider ────────────────────────────────────────
-function speakWebSpeech(text, lang) {
-  return new Promise(async (resolve) => {
-    const s = getSettings();
-    await loadVoices();
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang;
-    utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
-    utter.pitch = 1.0; // 중립적 억양
-    const voice = pickVoice(
-      voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
-      s.voiceGender,
-      lang.startsWith('ko') ? s.voiceKoName : s.voiceEnName
-    );
-    if (voice) utter.voice = voice;
-    utter.onend = () => resolve(true);
-    utter.onerror = () => resolve(false);
-    // Chrome 버그 대응: cancel() 직후 speak()가 무시될 수 있어 resume + 짧은 지연 후 재생
-    try { speechSynthesis.resume(); } catch {}
-    setTimeout(() => {
-      if (cancelled) return resolve(false);
-      speechSynthesis.speak(utter);
-    }, 60);
+// ── 무음 재생 (생각 시간/간격용) ───────────────────────────────
+// 타이머 대신 무음 오디오를 재생해 진행시키면, 화면 잠금/백그라운드에서도
+// 음악 앱처럼 시퀀스가 계속 이어진다 (백그라운드 타이머 스로틀링 회피).
+const silenceCache = new Map();
+function silenceDataUri(seconds) {
+  const rate = 8000;
+  const n = Math.max(1, Math.round(rate * seconds));
+  const buf = new ArrayBuffer(44 + n);
+  const v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVE');
+  w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, rate, true); v.setUint32(28, rate, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true);
+  w(36, 'data'); v.setUint32(40, n, true);
+  new Uint8Array(buf, 44).fill(128); // 8-bit PCM 무음
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 8192) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+  }
+  return 'data:audio/wav;base64,' + btoa(bin);
+}
+
+export async function playSilence(seconds) {
+  const myGen = gen;
+  const key = Math.round(seconds * 10);
+  let uri = silenceCache.get(key);
+  if (!uri) { uri = silenceDataUri(seconds); silenceCache.set(key, uri); }
+  const ok = await playUrl(uri, 1, myGen);
+  if (!ok && myGen === gen) await wait(seconds); // 오디오 불가 환경 폴백
+}
+
+// 취소 가능한 타이머 대기 (무음 오디오가 실패했을 때의 폴백)
+export function wait(seconds) {
+  const myGen = gen;
+  return new Promise((resolve) => {
+    const start = Date.now();
+    const timer = setInterval(() => {
+      if (gen !== myGen || Date.now() - start >= seconds * 1000) {
+        clearInterval(timer);
+        resolve();
+      }
+    }, 100);
   });
 }
 
 // ── 사전 생성 음성 Provider (audio/*.mp3 + manifest.json) ──────
-// 음성생성.bat 로 만든 신경망 TTS 파일. 가장 자연스럽고 어떤 브라우저에서도 동일 품질.
 let manifest = null;
+let manifestPromise = null;
+let manifestFailedAt = 0;
 
 async function loadManifest() {
-  if (manifest !== null) return manifest;
-  try {
-    const r = await fetch('audio/manifest.json');
-    manifest = r.ok ? await r.json() : {};
-  } catch { manifest = {}; }
-  return manifest;
+  if (manifest && Object.keys(manifest).length) return manifest;
+  // 로드 실패(오프라인 첫 진입 등)는 30초 뒤 자동 재시도
+  if (manifest && Date.now() - manifestFailedAt < 30000) return manifest;
+  if (!manifestPromise) {
+    manifestPromise = (async () => {
+      try {
+        const r = await fetch('audio/manifest.json');
+        manifest = r.ok ? await r.json() : {};
+      } catch { manifest = {}; }
+      if (!Object.keys(manifest).length) manifestFailedAt = Date.now();
+      manifestPromise = null;
+      return manifest;
+    })();
+  }
+  return manifestPromise;
 }
 
 export async function generatedAudioCount() {
@@ -173,21 +215,23 @@ export async function generatedAudioCount() {
   return Object.keys(m).length;
 }
 
-async function speakGenerated(text, lang) {
+// true=성공, false=재생 실패(폴백 대상), null=파일 없음(폴백 대상)
+async function speakGenerated(text, lang, myGen) {
   const s = getSettings();
   const m = await loadManifest();
+  if (myGen !== gen) return false;
   const entry = m[(lang.startsWith('ko') ? 'ko' : 'en') + '|' + text];
-  if (!entry) return null; // 파일 없음 → 다른 Provider로
+  if (!entry) return null;
   const url = entry[s.voiceGender === 'male' ? 'm' : 'f'] || entry.f || entry.m;
   if (!url) return null;
   // 파일은 이미 시험 안내 속도(-5%)로 생성됨 → 기본 설정(0.92)에서 1.0배로 재생
-  return playUrl(url, s.rate / 0.92);
+  return playUrl(url, s.rate / 0.92, myGen);
 }
 
-// ── OpenAI TTS Provider (server.js 프록시) ─────────────────────
+// ── OpenAI TTS Provider (server.js 프록시, 로컬 전용) ──────────
 const audioCache = new Map(); // text|lang → object URL
 
-async function speakOpenAI(text, lang) {
+async function speakOpenAI(text, lang, myGen) {
   const key = lang + '|' + text;
   let url = audioCache.get(key);
   if (!url) {
@@ -201,53 +245,72 @@ async function speakOpenAI(text, lang) {
     url = URL.createObjectURL(blob);
     audioCache.set(key, url);
   }
-  return playUrl(url, 1);
+  if (myGen !== gen) return false;
+  return playUrl(url, 1, myGen);
 }
 
-// ── 공개 API ───────────────────────────────────────────────────
-export async function speak(text, lang = 'en-US') {
-  cancelled = false;
-  const s = getSettings();
-  // 1순위: 사전 생성 신경망 음성 (가장 자연스러움, 키 불필요)
-  if (s.useGeneratedAudio !== false) {
-    try {
-      const result = await speakGenerated(text, lang);
-      if (result !== null) return result;
-    } catch { /* 폴백 진행 */ }
-  }
-  // 2순위: OpenAI TTS (서버 키 설정 시)
-  try {
-    if (s.ttsProvider === 'openai') return await speakOpenAI(text, lang);
-  } catch (e) {
-    console.warn('OpenAI TTS 실패, Web Speech로 폴백:', e.message);
-  }
-  // 3순위: 브라우저 내장 음성
-  return speakWebSpeech(text, lang);
-}
-
-export function cancel() {
-  cancelled = true;
-  try { speechSynthesis.cancel(); } catch {}
-  settlePending(false);
-  if (fileAudio) { try { fileAudio.pause(); } catch {} }
-}
-
-export function isCancelled() { return cancelled; }
-
-// 취소 가능한 대기 (운동 모드 생각 시간 등)
-export function wait(seconds) {
-  return new Promise((resolve) => {
-    const start = Date.now();
-    const timer = setInterval(() => {
-      if (cancelled || Date.now() - start >= seconds * 1000) {
-        clearInterval(timer);
-        resolve();
-      }
-    }, 100);
+// ── Web Speech Provider (최후 폴백) ────────────────────────────
+function speakWebSpeech(text, lang, myGen) {
+  return new Promise(async (resolve) => {
+    const s = getSettings();
+    await loadVoices();
+    if (myGen !== gen) return resolve(false);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang;
+    utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
+    utter.pitch = 1.0; // 중립적 억양
+    const voice = pickVoice(
+      voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
+      s.voiceGender,
+      lang.startsWith('ko') ? s.voiceKoName : s.voiceEnName
+    );
+    if (voice) utter.voice = voice;
+    let settled = false;
+    const settle = (ok) => { if (!settled) { settled = true; clearTimeout(safety); resolve(ok); } };
+    // 일부 모바일 브라우저는 onend가 안 올 수 있다 → 텍스트 길이 기반 안전 타임아웃
+    const safety = setTimeout(() => settle(true), Math.max(5000, text.length * 130));
+    utter.onend = () => settle(true);
+    utter.onerror = () => settle(false);
+    // Chrome 버그 대응: cancel() 직후 speak()가 무시될 수 있어 resume + 짧은 지연 후 재생
+    try { speechSynthesis.resume(); } catch {}
+    setTimeout(() => {
+      if (myGen !== gen) return settle(false); // 그 사이 취소됨 — 이전 문장 부활 방지
+      speechSynthesis.speak(utter);
+    }, 60);
   });
 }
 
-// 서버 TTS 사용 가능 여부 (설정 화면에서 표시)
+// ── 공개 API ───────────────────────────────────────────────────
+// true = 소리가 정상 재생됨, false = 취소됐거나 모든 Provider 실패
+export async function speak(text, lang = 'en-US') {
+  const myGen = gen;
+  const s = getSettings();
+
+  if (s.useGeneratedAudio !== false) {
+    try {
+      const r = await speakGenerated(text, lang, myGen);
+      if (r === true) return true;
+      if (myGen !== gen) return false; // 취소됨 — 폴백 금지
+      // r === null(파일 없음) 또는 false(자동재생 차단 등) → 다음 Provider로
+    } catch { /* 폴백 진행 */ }
+  }
+
+  if (myGen !== gen) return false;
+  if (s.ttsProvider === 'openai') {
+    try {
+      const r = await speakOpenAI(text, lang, myGen);
+      if (r === true) return true;
+      if (myGen !== gen) return false;
+    } catch (e) {
+      console.warn('OpenAI TTS 실패, Web Speech로 폴백:', e.message);
+    }
+  }
+
+  if (myGen !== gen) return false;
+  return speakWebSpeech(text, lang, myGen);
+}
+
+// 서버 TTS/LLM 사용 가능 여부 (설정·관리 화면에서 표시)
 export async function checkServerTts() {
   try {
     const res = await fetch('/api/health');

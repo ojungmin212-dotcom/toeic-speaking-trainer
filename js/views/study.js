@@ -32,25 +32,23 @@ export function renderStudyList(root, { part, type }) {
       ${list.map((q) => {
         const p = store.getProgress(q.id);
         return `
-        <a class="q-item with-play" href="#/study/q/${q.id}">
-          <div class="q-item-body">
+        <div class="q-item with-play">
+          <a class="q-item-body" href="#/study/q/${q.id}">
             <div class="q-item-top">${typeBadge(q.questionType)}
               <span class="diff">${'★'.repeat(q.difficulty)}</span>
               ${p.favorite ? '<span class="fav">♥</span>' : ''}
             </div>
             <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
             <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
-          </div>
+          </a>
           <button class="item-play" data-qid="${q.id}" aria-label="질문 듣기">🔊</button>
-        </a>`;
+        </div>`;
       }).join('')}
     </div>`;
 
   // 목록에서 바로 듣기 (상세로 이동하지 않음)
   root.querySelectorAll('.item-play').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+    btn.addEventListener('click', () => {
       const q = store.getQuestion(btn.dataset.qid);
       if (q) {
         tts.cancel();
@@ -69,7 +67,7 @@ export function renderStudyDetail(root, id) {
   const typeInfo = QUESTION_TYPES[q.questionType];
 
   root.innerHTML = `
-    ${backBar('질문 상세')}
+    <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2></div>
     <div class="detail">
       <div class="detail-meta">
         ${typeBadge(q.questionType)}
@@ -110,6 +108,12 @@ export function renderStudyDetail(root, id) {
       tts.speak(btn.dataset.text, btn.dataset.lang);
       store.recordListen(q.id);
     });
+  });
+
+  // 보던 목록(파트/유형, 스크롤 위치)으로 되돌아가기
+  root.querySelector('#detailBack').addEventListener('click', () => {
+    if (history.length > 1) history.back();
+    else location.hash = '#/study';
   });
 
   root.querySelector('#favBtn').addEventListener('click', (e) => {

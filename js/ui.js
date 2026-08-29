@@ -65,8 +65,19 @@ export function pickFile(accept) {
       const f = input.files[0];
       if (!f) return resolve(null);
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.readAsText(f, 'utf-8');
+      reader.onload = () => {
+        // 엑셀 기본 저장(CP949/EUC-KR) 파일도 한글이 깨지지 않도록 인코딩 자동 감지
+        const buf = reader.result;
+        let text = new TextDecoder('utf-8').decode(buf);
+        if (text.includes('�')) {
+          try {
+            const kr = new TextDecoder('euc-kr').decode(buf);
+            if (!kr.includes('�')) text = kr;
+          } catch { /* euc-kr 미지원 환경이면 utf-8 결과 사용 */ }
+        }
+        resolve(text.replace(/^﻿/, '')); // BOM 제거
+      };
+      reader.readAsArrayBuffer(f);
     };
     input.click();
   });

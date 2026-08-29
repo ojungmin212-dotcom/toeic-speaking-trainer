@@ -21,8 +21,8 @@ function buildPlaylist(source) {
   else if (source.startsWith('part')) pool = store.getQuestions({ part: Number(source.slice(4)) });
   else pool = store.getQuestions();
   if (!pool.length) return [];
-  // SRS 가중치로 출제 순서 결정 (틀린 문제·취약 유형·복습 예정 우선)
-  return pickWeighted(pool, store.getProgress, weakTypes, Math.min(pool.length, 30));
+  // SRS 가중치로 출제 순서 결정 (틀린 문제·취약 유형·복습 예정 우선) — 전체 풀 사용
+  return pickWeighted(pool, store.getProgress, weakTypes, pool.length);
 }
 
 export function renderExerciseSetup(root) {
@@ -38,9 +38,9 @@ export function renderExerciseSetup(root) {
       <a class="menu-btn primary" href="#/exercise/play/all">전체 학습<span class="menu-desc">모든 질문 (취약 문제 우선 출제)</span></a>
       ${Object.entries(PARTS).map(([n, p]) =>
         `<a class="menu-btn" href="#/exercise/play/part${n}">${p.name}만<span class="menu-desc">${escapeHtml(p.desc)}</span></a>`).join('')}
-      <a class="menu-btn ${wrong ? '' : 'disabled'}" href="#/exercise/play/wrong">틀린 문제만<span class="menu-desc">${wrong}문항</span></a>
-      <a class="menu-btn ${fav ? '' : 'disabled'}" href="#/exercise/play/fav">즐겨찾기만<span class="menu-desc">${fav}문항</span></a>
-      <a class="menu-btn ${due ? '' : 'disabled'}" href="#/exercise/play/due">복습 예정만<span class="menu-desc">${due}문항</span></a>
+      <a class="menu-btn ${wrong ? '' : 'disabled'}" ${wrong ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/wrong">틀린 문제만<span class="menu-desc">${wrong}문항</span></a>
+      <a class="menu-btn ${fav ? '' : 'disabled'}" ${fav ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/fav">즐겨찾기만<span class="menu-desc">${fav}문항</span></a>
+      <a class="menu-btn ${due ? '' : 'disabled'}" ${due ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/due">복습 예정만<span class="menu-desc">${due}문항</span></a>
     </nav>
 
     <h3 class="section-title">재생 단계</h3>
@@ -106,7 +106,6 @@ export function renderExercisePlay(root, source) {
 
   const $ = (sel) => root.querySelector(sel);
   let revealed = false;
-  let paused = false;
 
   const showQuestion = (q, i, total) => {
     revealed = false;
@@ -122,6 +121,15 @@ export function renderExercisePlay(root, source) {
       if (step === 'questionKo' || step === 'answer' || step === 'answerKo') revealText();
     },
     onFinish: () => toast('한 바퀴 끝! 처음부터 다시 재생합니다.'),
+    // 이어폰/잠금화면에서 조작해도 화면 버튼이 항상 실제 상태와 일치
+    onPlayState: (state) => {
+      const btn = $('#pToggle');
+      if (!btn) return;
+      btn.textContent = state === 'playing' ? '⏸' : '▶';
+      if (state === 'blocked') {
+        toast('오디오를 재생할 수 없어 일시정지했습니다. ▶를 눌러 다시 시작하세요.');
+      }
+    },
   });
 
   function revealText() {
@@ -136,22 +144,10 @@ export function renderExercisePlay(root, source) {
       <div class="p-ans">${escapeHtml(q.answerEnglish)}<br><span class="p-ans-ko">${escapeHtml(q.answerKorean)}</span></div>`;
   }
 
-  $('#pToggle').addEventListener('click', () => {
-    if (paused) {
-      paused = false;
-      $('#pToggle').textContent = '⏸';
-      player.stopped = false;
-      player.replay();
-    } else {
-      paused = true;
-      $('#pToggle').textContent = '▶';
-      player.stop();
-      player.stopped = true;
-    }
-  });
-  $('#pReplay').addEventListener('click', () => { paused = false; $('#pToggle').textContent = '⏸'; player.stopped = false; player.replay(); });
-  $('#pNext').addEventListener('click', () => { paused = false; $('#pToggle').textContent = '⏸'; player.stopped = false; player.next(); });
-  $('#pPrev').addEventListener('click', () => { paused = false; $('#pToggle').textContent = '⏸'; player.stopped = false; player.prev(); });
+  $('#pToggle').addEventListener('click', () => player.toggle());
+  $('#pReplay').addEventListener('click', () => player.replay());
+  $('#pNext').addEventListener('click', () => player.next());
+  $('#pPrev').addEventListener('click', () => player.prev());
   $('#pReveal').addEventListener('click', revealText);
 
   player.start();

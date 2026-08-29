@@ -10,6 +10,7 @@ const K = {
   daily: 'tst.daily.v1',
   settings: 'tst.settings.v1',
   seedVersion: 'tst.seedVersion',
+  deletedSeeds: 'tst.deletedSeedIds', // 사용자가 지운 시드가 업데이트 때 부활하지 않도록
 };
 
 function load(key, fallback) {
@@ -50,6 +51,19 @@ function normalize(q) {
   return { ...q, part: Number(q.part) || 3, difficulty: Number(q.difficulty) || 1 };
 }
 
+// 시드가 늘어나면 새 문항만 병합 (사용자 추가/수정분 보존, 사용자가 지운 시드는 제외)
+function mergeSeeds() {
+  const deleted = new Set(load(K.deletedSeeds, []));
+  const have = new Set(questions.map((q) => q.id));
+  let added = 0;
+  for (const sq of SEED_QUESTIONS) {
+    if (!have.has(sq.id) && !deleted.has(sq.id)) { questions.push({ ...sq }); added++; }
+  }
+  if (added) save(K.questions, questions);
+  save(K.seedVersion, SEED_VERSION);
+  return added;
+}
+
 export function init() {
   questions = load(K.questions, null);
   if (Array.isArray(questions)) questions = questions.map(normalize);
@@ -57,17 +71,8 @@ export function init() {
     questions = SEED_QUESTIONS.map((q) => ({ ...q }));
     save(K.questions, questions);
     save(K.seedVersion, SEED_VERSION);
-  } else {
-    // 시드가 늘어나면 기존 사용자 데이터에 새 문항만 병합 (사용자 추가/수정분은 보존)
-    const storedVersion = load(K.seedVersion, 1);
-    if (storedVersion < SEED_VERSION) {
-      const have = new Set(questions.map((q) => q.id));
-      for (const sq of SEED_QUESTIONS) {
-        if (!have.has(sq.id)) questions.push({ ...sq });
-      }
-      save(K.questions, questions);
-      save(K.seedVersion, SEED_VERSION);
-    }
+  } else if (load(K.seedVersion, 1) < SEED_VERSION) {
+    mergeSeeds();
   }
   progress = load(K.progress, {});
   daily = load(K.daily, {});
@@ -86,7 +91,9 @@ export function getAllQuestions() { return questions.slice(); }
 export function getQuestion(id) { return questions.find((q) => q.id === id) || null; }
 
 export function addQuestion(data) {
-  const id = data.id || 'u-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+  // 외부(CSV 등)에서 온 id는 안전한 문자만 허용 — DOM 속성 주입 방지
+  const providedId = data.id && /^[A-Za-z0-9_-]+$/.test(String(data.id)) ? String(data.id) : null;
+  const id = providedId || 'u-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
   const item = {
     id, part: Number(data.part) || 3,
     questionType: data.questionType || 'action',
@@ -116,6 +123,10 @@ export function updateQuestion(id, patch) {
 export function deleteQuestion(id) {
   questions = questions.filter((q) => q.id !== id);
   delete progress[id];
+  if (String(id).startsWith('seed-')) {
+    const deleted = load(K.deletedSeeds, []);
+    if (!deleted.includes(id)) { deleted.push(id); save(K.deletedSeeds, deleted); }
+  }
   save(K.questions, questions);
   save(K.progress, progress);
 }
@@ -123,7 +134,11 @@ export function deleteQuestion(id) {
 export function resetToSeed() {
   questions = SEED_QUESTIONS.map((q) => ({ ...q }));
   save(K.questions, questions);
+  save(K.seedVersion, SEED_VERSION);
+  save(K.deletedSeeds, []);
 }
+
+export function seedCount() { return SEED_QUESTIONS.length; }
 
 // ── 학습 기록 ──────────────────────────────────────────────────
 export function getProgress(id) {
@@ -196,9 +211,14 @@ export function getStreak() {
     const x = new Date(ms);
     return x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
   };
+  // 실제 활동(청취/응답)이 있는 날만 학습일로 인정
+  const active = (key) => {
+    const v = daily[key];
+    return v && (v.listened + v.correct + v.incorrect > 0);
+  };
   // 오늘 학습이 없으면 어제부터 계산
-  if (!daily[keyOf(t)]) t -= DAY; else { streak = 1; t -= DAY; }
-  while (daily[keyOf(t)]) { streak += 1; t -= DAY; }
+  if (!active(keyOf(t))) t -= DAY; else { streak = 1; t -= DAY; }
+  while (active(keyOf(t))) { streak += 1; t -= DAY; }
   return streak;
 }
 
@@ -228,11 +248,11 @@ export function getWeakTypes(threshold = 80) {
     .map(([type, v]) => ({ type, ...v }));
 }
 
-// 취약/오답 질문: 오답이 있고 정답률 낮은 순
+// 취약/오답 질문: 오답이 있고 아직 연속 정답으로 졸업하지 못한 문제 (box 2 이상이면 졸업)
 export function getWeakQuestions() {
   return getQuestions()
     .map((q) => ({ q, p: getProgress(q.id) }))
-    .filter(({ p }) => p.incorrectCount > 0)
+    .filter(({ p }) => p.incorrectCount > 0 && (p.box || 0) < 2)
     .sort((a, b) => {
       const ra = a.p.correctCount / (a.p.correctCount + a.p.incorrectCount);
       const rb = b.p.correctCount / (b.p.correctCount + b.p.incorrectCount);
@@ -275,6 +295,8 @@ export function importJSON(text) {
   if (data.progress) progress = data.progress;
   if (data.daily) daily = data.daily;
   save(K.questions, questions); save(K.progress, progress); save(K.daily, daily);
+  // 오래된 백업을 복원해도 이후 추가된 시드 문항이 사라지지 않도록 병합
+  mergeSeeds();
   return questions.length;
 }
 
@@ -319,11 +341,20 @@ export function importCSV(text) {
   let count = 0;
   for (const r of rows.slice(1)) {
     const obj = {};
-    header.forEach((h, i) => { obj[h] = r[i]; });
-    if (!obj.questionEnglish) continue;
+    // 행이 헤더보다 짧으면 없는 칸은 건너뛴다 (기존 값을 undefined로 덮지 않도록)
+    header.forEach((h, i) => { if (r[i] !== undefined) obj[h] = r[i]; });
+    if (!obj.questionEnglish || !String(obj.questionEnglish).trim()) continue;
+    // status 오타/외부값은 approved로 정규화 (문항이 학습 화면에서 증발하지 않도록)
+    obj.status = obj.status === 'pending' ? 'pending' : 'approved';
     const existing = obj.id && getQuestion(obj.id);
-    if (existing) updateQuestion(obj.id, obj);
-    else addQuestion(obj);
+    if (existing) {
+      updateQuestion(obj.id, obj);
+    } else {
+      // id가 없으면 같은 영어 질문을 가진 기존 문항에 병합 (재가져오기 시 전체 복제 방지)
+      const dup = questions.find((q) => q.questionEnglish.trim() === String(obj.questionEnglish).trim());
+      if (dup) updateQuestion(dup.id, { ...obj, id: dup.id });
+      else addQuestion(obj);
+    }
     count++;
   }
   return count;
