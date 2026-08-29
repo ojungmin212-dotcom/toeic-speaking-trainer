@@ -4,8 +4,8 @@
   "description": "토익스피킹 질문 듣기 훈련 — 듣자마자 질문 의도 파악",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f6fb",
-  "theme_color": "#1d4ed8",
+  "background_color": "#1d2244",
+  "theme_color": "#262c54",
   "lang": "ko",
   "icons": [
     { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },

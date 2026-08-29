@@ -109,7 +109,7 @@ export function renderQuiz(root) {
 
     const s = store.getSettings();
     $('#qResult').innerHTML = `
-      <div class="quiz-verdict ${correct ? 'ok' : 'no'}">${correct ? '⭕ 정답!' : '❌ 오답 — 취약 목록에 저장'}</div>
+      <div class="quiz-verdict ${correct ? 'ok' : 'no'}">${correct ? '정답입니다' : '오답 — 취약 목록에 저장했습니다'}</div>
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
       <div class="p-meta"><span class="key-expr">${escapeHtml(q.keyExpression)} = ${escapeHtml(typeLabel(q.questionType))}</span></div>`;
@@ -122,7 +122,7 @@ export function renderQuiz(root) {
       const total = score.ok + score.no;
       const rate = total ? Math.round((score.ok / total) * 100) : 0;
       root.querySelector('.player').innerHTML = `
-        <div class="player-step">🎉 퀴즈 완료!</div>
+        <div class="player-step">퀴즈 완료</div>
         <div class="stat-cards">
           <div class="stat-card"><div class="stat-num">${score.ok}/${total}</div><div class="stat-label">정답</div></div>
           <div class="stat-card"><div class="stat-num">${rate}%</div><div class="stat-label">정답률</div></div>

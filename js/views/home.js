@@ -1,35 +1,73 @@
-// 메인 화면
+// 메인 화면 — 대시보드형 (히어로 카드 + 스탯 행 + 메뉴 리스트)
 import * as store from '../store.js';
+import { icon, fmtTime } from '../ui.js';
 
 export function renderHome(root) {
   const today = store.getToday();
+  const totals = store.getTotals();
   const answered = today.correct + today.incorrect;
   const rate = answered ? Math.round((today.correct / answered) * 100) : null;
   const due = store.getDueQuestions().length;
   const weak = store.getWeakQuestions().length;
+  const streak = store.getStreak();
+  const weakTypes = store.getWeakTypes();
+
+  const now = new Date();
+  const dateLabel = `${now.getMonth() + 1}월 ${now.getDate()}일 ${['일', '월', '화', '수', '목', '금', '토'][now.getDay()]}요일`;
+
+  const summary = today.listened
+    ? `오늘 ${today.listened}회 들었습니다.${rate != null ? ` 정답률은 ${rate}%입니다.` : ''}${weak ? ` 취약 질문 ${weak}개가 복습을 기다립니다.` : ''}`
+    : '아직 오늘 학습 기록이 없습니다. 듣기 모드로 시작해 보세요.';
 
   root.innerHTML = `
-    <div class="home">
-      <h1 class="app-title">TOEIC SPEAKING<br>TRAINER</h1>
-      <p class="app-sub">질문 듣기 훈련 — 듣자마자 의도 파악</p>
+    <header class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">TOEIC Speaking Trainer</span>
+    </header>
 
-      <nav class="menu">
-        <a class="menu-btn primary" href="#/exercise">🎧 듣기 모드<span class="menu-desc">이어폰만으로 자동 반복 학습</span></a>
-        <a class="menu-btn" href="#/listening">🎯 실전 듣기<span class="menu-desc">듣고 의미 판단 → 정답 확인</span></a>
-        <a class="menu-btn" href="#/study">📚 파트별 학습<span class="menu-desc">질문·해석·모범답변 보기</span></a>
-        <a class="menu-btn" href="#/quiz">❓ 질문 유형 퀴즈<span class="menu-desc">무엇을 묻는 질문인지 맞히기</span></a>
-        <a class="menu-btn" href="#/review">🔁 취약 질문 복습<span class="menu-desc">틀린 문제 ${weak}개 · 복습 예정 ${due}개</span></a>
-      </nav>
-
-      <div class="stat-cards">
-        <div class="stat-card"><div class="stat-num">${today.listened}</div><div class="stat-label">오늘 듣기 횟수</div></div>
-        <div class="stat-card"><div class="stat-num">${rate == null ? '–' : rate + '%'}</div><div class="stat-label">오늘 정답률</div></div>
+    <section class="hero card">
+      <div class="hero-top">
+        <span class="hero-title">오늘의 학습</span>
+        <span class="hero-date">${dateLabel}</span>
       </div>
-
-      <div class="home-links">
-        <a href="#/stats">📊 학습 통계</a>
-        <a href="#/admin">⚙️ 질문 관리</a>
-        <a href="#/settings">🔧 설정</a>
+      <div class="hero-main">
+        <span class="hero-num">${today.listened}<span class="hero-unit">회</span></span>
+        <div class="hero-side">
+          <div class="hero-side-big">${rate == null ? '—' : rate + '%'}</div>
+          <div class="hero-side-label">오늘 정답률</div>
+        </div>
       </div>
+      <p class="hero-summary">${summary}</p>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-label">연속 학습</span><span class="stat-val">${streak}일</span></div>
+        <div class="stat"><span class="stat-label">복습 예정</span><span class="stat-val">${due}개</span></div>
+        <div class="stat"><span class="stat-label">취약 질문</span><span class="stat-val">${weak}개</span></div>
+        <div class="stat"><span class="stat-label">누적 시간</span><span class="stat-val">${fmtTime(totals.studySeconds)}</span></div>
+        ${weakTypes.length ? `<div class="stat"><span class="stat-label">취약 유형</span><span class="stat-val">${weakTypes.length}개</span></div>` : ''}
+      </div>
+    </section>
+
+    <nav class="menu">
+      <a class="menu-row primary" href="#/exercise">
+        ${icon('headphones')}<span class="menu-body"><b>듣기 모드</b><small>이어폰만으로 자동 반복 학습</small></span>${icon('chevron', 16)}
+      </a>
+      <a class="menu-row" href="#/listening">
+        ${icon('target')}<span class="menu-body"><b>실전 듣기</b><small>듣고 의미 판단 후 정답 확인</small></span>${icon('chevron', 16)}
+      </a>
+      <a class="menu-row" href="#/study">
+        ${icon('book')}<span class="menu-body"><b>파트별 학습</b><small>질문·해석·모범답변 보기</small></span>${icon('chevron', 16)}
+      </a>
+      <a class="menu-row" href="#/quiz">
+        ${icon('quiz')}<span class="menu-body"><b>질문 유형 퀴즈</b><small>무엇을 묻는 질문인지 맞히기</small></span>${icon('chevron', 16)}
+      </a>
+      <a class="menu-row" href="#/review">
+        ${icon('repeat')}<span class="menu-body"><b>취약 질문 복습</b><small>틀린 문제 ${weak}개 · 복습 예정 ${due}개</small></span>${icon('chevron', 16)}
+      </a>
+    </nav>
+
+    <div class="home-links">
+      <a href="#/stats">${icon('chart', 16)} 학습 통계</a>
+      <a href="#/admin">${icon('gear', 16)} 질문 관리</a>
+      <a href="#/settings">${icon('sliders', 16)} 설정</a>
     </div>`;
 }

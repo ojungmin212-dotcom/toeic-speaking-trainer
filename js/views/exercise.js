@@ -72,11 +72,11 @@ function toggleRow(key, label, checked) {
 }
 
 const STEP_LABELS = {
-  question: '🎧 영어 질문',
-  think: '🤔 생각해 보세요…',
-  questionKo: '🇰🇷 질문 해석',
-  answer: '💬 모범답변',
-  answerKo: '🇰🇷 답변 해석',
+  question: '영어 질문',
+  think: '생각해 보세요…',
+  questionKo: '질문 해석',
+  answer: '모범답변',
+  answerKo: '답변 해석',
 };
 
 export function renderExercisePlay(root, source) {

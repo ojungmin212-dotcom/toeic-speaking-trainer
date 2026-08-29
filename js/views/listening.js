@@ -29,7 +29,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
     pool = merged;
     title = '취약 질문 복습';
     if (!pool.length) {
-      root.innerHTML = `${backBar(title)}<p class="desc">아직 복습할 질문이 없습니다.<br>퀴즈나 실전 듣기에서 학습을 시작해 보세요. 🎉</p>`;
+      root.innerHTML = `${backBar(title)}<p class="desc">아직 복습할 질문이 없습니다.<br>퀴즈나 실전 듣기에서 학습을 시작해 보세요.</p>`;
       return;
     }
   } else {
@@ -51,15 +51,15 @@ export function renderListening(root, { mode = 'all' } = {}) {
     ${backBar(title)}
     <div class="player">
       <div class="player-count" id="lCount"></div>
-      <div class="player-step" id="lStep">🎧 질문을 듣고 의미를 판단해 보세요</div>
+      <div class="player-step" id="lStep">질문을 듣고 의미를 판단해 보세요</div>
       <div class="player-text" id="lText"></div>
       <button class="big-play" id="lPlay" aria-label="다시 듣기">🔊</button>
       <div class="player-sub-btns">
         <button class="sub-btn primary-btn" id="lReveal">질문 확인</button>
       </div>
       <div class="judge-btns hidden" id="lJudge">
-        <button class="judge ok" id="lOk">✅ 의미를 알았어요</button>
-        <button class="judge no" id="lNo">❌ 몰랐어요</button>
+        <button class="judge ok" id="lOk">의미를 알았어요</button>
+        <button class="judge no" id="lNo">몰랐어요</button>
       </div>
       <div class="player-nav">
         <button class="nav-btn" id="lPrev">← 이전</button>
@@ -80,7 +80,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
   function show() {
     done = false;
     $('#lCount').textContent = `QUESTION ${index + 1} / ${playlist.length}`;
-    $('#lStep').textContent = '🎧 질문을 듣고 의미를 판단해 보세요';
+    $('#lStep').textContent = '질문을 듣고 의미를 판단해 보세요';
     $('#lText').innerHTML = '';
     $('#lJudge').classList.add('hidden');
     $('#lReveal').classList.remove('hidden');
@@ -113,7 +113,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
     if (!done && index + 1 >= playlist.length) {
       done = true;
       tts.cancel();
-      $('#lStep').textContent = '🎉 세션 완료!';
+      $('#lStep').textContent = '세션 완료';
       $('#lText').innerHTML = '<div class="p-ko">모든 질문을 확인했습니다.<br>다시 시작하려면 다음 버튼을 누르세요.</div>';
       $('#lJudge').classList.add('hidden');
       $('#lReveal').classList.add('hidden');
