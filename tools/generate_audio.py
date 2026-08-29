@@ -2,6 +2,7 @@
 # 실행: python tools/generate_audio.py   (먼저 node tools/export-texts.mjs)
 # 특정 실존 화자의 목소리 복제가 아니라 Microsoft의 합성 신경망 음성을 사용한다.
 import asyncio
+import hashlib
 import json
 import os
 import sys
@@ -49,9 +50,12 @@ async def main():
         lang, text, name = it["lang"], it["text"], it["name"]
         key = f"{lang}|{text}"
         entry = manifest.setdefault(key, {})
+        # 파일명에 텍스트 해시 포함 — 문장을 수정하면 새 파일이 생성되어
+        # '옛 음성이 새 텍스트에 재생되는' 문제를 원천 차단 (기존 파일은 건너뛰기 안전)
+        th = hashlib.md5(text.encode("utf-8")).hexdigest()[:8]
         genders = ["f", "m"] if lang == "en" else ["f"]
         for g in genders:
-            fname = f"{name}-{g}.mp3"
+            fname = f"{name}-{th}-{g}.mp3"
             entry[g] = "audio/" + fname
             tasks.append(gen_one(sem, text, VOICES[(lang, g)], os.path.join(AUDIO_DIR, fname)))
 

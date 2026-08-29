@@ -40,6 +40,10 @@ const CONFUSABLE = {
 export function renderQuiz(root) {
   stopQuiz();
   const pool = store.getQuestions();
+  if (!pool.length) {
+    root.innerHTML = `${backBar('질문 유형 퀴즈')}<p class="desc">질문이 없습니다.<br>질문 관리에서 문항을 추가하거나 설정에서 기본 문제로 초기화해 주세요.</p>`;
+    return;
+  }
   const weakTypes = new Set(store.getWeakTypes().map((w) => w.type));
   const playlist = pickWeighted(pool, store.getProgress, weakTypes, Math.min(pool.length, 15));
   let index = 0;
@@ -114,6 +118,7 @@ export function renderQuiz(root) {
 
   function next() {
     if (index + 1 >= playlist.length) {
+      tts.cancel();
       const total = score.ok + score.no;
       const rate = total ? Math.round((score.ok / total) * 100) : 0;
       root.querySelector('.player').innerHTML = `

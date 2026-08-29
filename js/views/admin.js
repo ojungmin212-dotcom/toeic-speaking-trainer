@@ -63,15 +63,15 @@ export function renderAdmin(root, editId = null) {
     ${pending.length ? `
     <h3 class="section-title">검토 대기 (${pending.length})</h3>
     <div class="q-list">${pending.map((q) => `
-      <div class="q-item pending" data-id="${q.id}">
+      <div class="q-item pending" data-id="${escapeHtml(q.id)}">
         <div class="q-item-top">${typeBadge(q.questionType)} <span class="badge badge-part">Part ${q.part}</span></div>
         <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
         <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
         <div class="q-item-ko">답: ${escapeHtml(q.answerEnglish)} — ${escapeHtml(q.answerKorean)}</div>
         <div class="btn-row">
-          <button class="sub-btn small-btn approve" data-id="${q.id}">✅ 승인</button>
-          <button class="sub-btn small-btn listen" data-id="${q.id}">🔊 듣기</button>
-          <button class="sub-btn small-btn danger reject" data-id="${q.id}">🗑 거부</button>
+          <button class="sub-btn small-btn approve" data-id="${escapeHtml(q.id)}">✅ 승인</button>
+          <button class="sub-btn small-btn listen" data-id="${escapeHtml(q.id)}">🔊 듣기</button>
+          <button class="sub-btn small-btn danger reject" data-id="${escapeHtml(q.id)}">🗑 거부</button>
         </div>
       </div>`).join('')}</div>` : ''}
 
@@ -87,15 +87,15 @@ export function renderAdmin(root, editId = null) {
 
     <h3 class="section-title">전체 질문</h3>
     <div class="q-list">${all.map((q) => `
-      <div class="q-item" data-id="${q.id}">
+      <div class="q-item" data-id="${escapeHtml(q.id)}">
         <div class="q-item-top">${typeBadge(q.questionType)} <span class="badge badge-part">Part ${q.part}</span>
           <span class="diff">${'★'.repeat(q.difficulty)}</span></div>
         <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
         <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
         <div class="btn-row">
-          <button class="sub-btn small-btn edit" data-id="${q.id}">✏️ 수정</button>
-          <button class="sub-btn small-btn listen" data-id="${q.id}">🔊 듣기</button>
-          <button class="sub-btn small-btn danger del" data-id="${q.id}">🗑 삭제</button>
+          <button class="sub-btn small-btn edit" data-id="${escapeHtml(q.id)}">✏️ 수정</button>
+          <button class="sub-btn small-btn listen" data-id="${escapeHtml(q.id)}">🔊 듣기</button>
+          <button class="sub-btn small-btn danger del" data-id="${escapeHtml(q.id)}">🗑 삭제</button>
         </div>
       </div>`).join('')}</div>`;
 

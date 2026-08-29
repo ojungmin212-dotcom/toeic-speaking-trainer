@@ -52,7 +52,7 @@ export function renderStats(root) {
     ${weakQuestions.length ? `<h3 class="section-title">자주 틀리는 질문</h3>
       <div class="q-list">${weakQuestions.map((q) => {
         const p = store.getProgress(q.id);
-        return `<a class="q-item" href="#/study/q/${q.id}">
+        return `<a class="q-item" href="#/study/q/${escapeHtml(q.id)}">
           <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
           <div class="q-item-ko">오답 ${p.incorrectCount}회 · 정답 ${p.correctCount}회</div></a>`;
       }).join('')}</div>` : ''}`;

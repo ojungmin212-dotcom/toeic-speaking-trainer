@@ -22,25 +22,31 @@ export function cancel() {
 // ── 공유 오디오 엘리먼트 (모바일 자동재생 정책 대응) ──────────
 // iOS/Android는 사용자 제스처 없이 새 Audio().play()를 차단한다.
 // 하나의 엘리먼트를 첫 터치에서 무음으로 잠금 해제한 뒤 src만 바꿔 재사용한다.
-const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
 const fileAudio = typeof Audio !== 'undefined' ? new Audio() : null;
 let pendingResolve = null; // 진행 중 파일 재생의 resolve — 취소/교체 시 반드시 풀어준다
 let audioUnlocked = false;
+let unlockSrc = null; // unlock에 사용한 무음 src (실제 재생과 구분용)
 
 function unlockAudio() {
   if (audioUnlocked || !fileAudio) return;
+  // 이미 제스처 체인에서 실제 재생이 진행/대기 중이면 엘리먼트는 이미 unlock된 것 —
+  // 재생 중인 음성을 무음 wav로 덮어쓰지 않는다.
+  if (pendingResolve || (fileAudio.src && !fileAudio.paused)) { audioUnlocked = true; return; }
   audioUnlocked = true;
   try {
-    fileAudio.muted = true;
-    fileAudio.src = SILENT_WAV;
+    if (!unlockSrc) unlockSrc = silenceDataUri(0.06); // 실제 샘플이 있는 짧은 무음 (0바이트 wav는 일부 WebKit에서 거부)
+    fileAudio.src = unlockSrc;
     fileAudio.play().then(
-      () => { fileAudio.pause(); fileAudio.muted = false; },
-      () => { fileAudio.muted = false; audioUnlocked = false; } // 실패 시 다음 제스처에서 재시도
+      () => { if (fileAudio.src === unlockSrc) fileAudio.pause(); },
+      (err) => {
+        // 자동재생 정책 거부일 때만 재시도 대상. 실제 재생에 밀려난 Abort는 이미 unlock 성공.
+        if (err && err.name === 'NotAllowedError') audioUnlocked = false;
+      }
     );
   } catch { audioUnlocked = false; }
   try {
     audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state !== 'running') audioCtx.resume();
   } catch {}
 }
 if (typeof document !== 'undefined') {
@@ -52,6 +58,10 @@ function settlePending(ok) {
   if (pendingResolve) { const r = pendingResolve; pendingResolve = null; r(ok); }
 }
 
+// 외부 인터럽션(전화 수신, 다른 앱의 오디오 포커스 등) 알림 — player가 자동 일시정지로 전파
+let interruptHandler = null;
+export function setInterruptHandler(fn) { interruptHandler = fn; }
+
 // 공유 엘리먼트로 URL 재생. ended/error/pause 어느 경우든 promise가 반드시 풀린다.
 function playUrl(url, rate, myGen) {
   if (!fileAudio || myGen !== gen) return Promise.resolve(false);
@@ -60,7 +70,13 @@ function playUrl(url, rate, myGen) {
     pendingResolve = resolve;
     fileAudio.onended = () => settlePending(true);
     fileAudio.onerror = () => settlePending(false);
-    fileAudio.onpause = () => { if (!fileAudio.ended && fileAudio.currentTime > 0) settlePending(false); };
+    fileAudio.onpause = () => {
+      if (fileAudio.ended || fileAudio.currentTime === 0) return;
+      if (unlockSrc && fileAudio.src === unlockSrc) return; // unlock 무음의 정지는 인터럽션이 아님
+      const external = myGen === gen; // 우리 cancel()이 아닌 외부 요인(통화 등)의 정지
+      settlePending(false);
+      if (external && interruptHandler) interruptHandler();
+    };
     if (myGen !== gen) return settlePending(false);
     fileAudio.src = url;
     fileAudio.playbackRate = Math.max(0.6, Math.min(rate, 1.5));
@@ -129,6 +145,8 @@ export function beep(freq = 880, duration = 0.3) {
       osc.type = 'sine';
       osc.frequency.value = freq;
       const t = audioCtx.currentTime;
+      // iOS는 잠금/세션 중단 시 비표준 'interrupted' 상태를 쓰므로 running이 아니면 모두 resume
+      if (audioCtx.state !== 'running') { try { audioCtx.resume(); } catch {} }
       gain.gain.setValueAtTime(0.0001, t);
       gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
@@ -252,31 +270,51 @@ async function speakOpenAI(text, lang, myGen) {
 // ── Web Speech Provider (최후 폴백) ────────────────────────────
 function speakWebSpeech(text, lang, myGen) {
   return new Promise(async (resolve) => {
-    const s = getSettings();
-    await loadVoices();
-    if (myGen !== gen) return resolve(false);
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = lang;
-    utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
-    utter.pitch = 1.0; // 중립적 억양
-    const voice = pickVoice(
-      voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
-      s.voiceGender,
-      lang.startsWith('ko') ? s.voiceKoName : s.voiceEnName
-    );
-    if (voice) utter.voice = voice;
-    let settled = false;
-    const settle = (ok) => { if (!settled) { settled = true; clearTimeout(safety); resolve(ok); } };
-    // 일부 모바일 브라우저는 onend가 안 올 수 있다 → 텍스트 길이 기반 안전 타임아웃
-    const safety = setTimeout(() => settle(true), Math.max(5000, text.length * 130));
-    utter.onend = () => settle(true);
-    utter.onerror = () => settle(false);
-    // Chrome 버그 대응: cancel() 직후 speak()가 무시될 수 있어 resume + 짧은 지연 후 재생
-    try { speechSynthesis.resume(); } catch {}
-    setTimeout(() => {
-      if (myGen !== gen) return settle(false); // 그 사이 취소됨 — 이전 문장 부활 방지
-      speechSynthesis.speak(utter);
-    }, 60);
+    try {
+      if (typeof speechSynthesis === 'undefined') return resolve(false);
+      const s = getSettings();
+      await loadVoices();
+      if (myGen !== gen) return resolve(false);
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = lang;
+      utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
+      utter.pitch = 1.0; // 중립적 억양
+      const voice = pickVoice(
+        voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
+        s.voiceGender,
+        lang.startsWith('ko') ? s.voiceKoName : s.voiceEnName
+      );
+      if (voice) utter.voice = voice;
+
+      let settled = false;
+      let started = false;
+      let safety = null;
+      const settle = (ok) => { if (!settled) { settled = true; clearTimeout(safety); resolve(ok); } };
+      utter.onstart = () => { started = true; };
+      utter.onend = () => settle(true);
+      utter.onerror = () => settle(false);
+
+      // 안전 타임아웃: onend가 안 오는 브라우저 대응.
+      // 발화가 시작된 적도 없고 지금도 말하고 있지 않으면 '무음 실패'로 판정한다
+      // (iOS는 제스처 없는 speak를 이벤트 없이 조용히 무시하므로 true로 오판하면 안 됨).
+      const deadline = Date.now() + 60000; // 아직 말하는 중이면 최대 60초까지 연장
+      const check = () => {
+        if (settled) return;
+        if (speechSynthesis.speaking && Date.now() < deadline) {
+          safety = setTimeout(check, 500);
+        } else {
+          settle(started || speechSynthesis.speaking);
+        }
+      };
+      safety = setTimeout(check, Math.max(5000, text.length * 130));
+
+      // Chrome 버그 대응: cancel() 직후 speak()가 무시될 수 있어 resume + 짧은 지연 후 재생
+      try { speechSynthesis.resume(); } catch {}
+      setTimeout(() => {
+        if (myGen !== gen) return settle(false); // 그 사이 취소됨 — 이전 문장 부활 방지
+        speechSynthesis.speak(utter);
+      }, 60);
+    } catch { resolve(false); }
   });
 }
 

@@ -33,7 +33,7 @@ export function renderStudyList(root, { part, type }) {
         const p = store.getProgress(q.id);
         return `
         <div class="q-item with-play">
-          <a class="q-item-body" href="#/study/q/${q.id}">
+          <a class="q-item-body" href="#/study/q/${escapeHtml(q.id)}">
             <div class="q-item-top">${typeBadge(q.questionType)}
               <span class="diff">${'★'.repeat(q.difficulty)}</span>
               ${p.favorite ? '<span class="fav">♥</span>' : ''}
@@ -41,7 +41,7 @@ export function renderStudyList(root, { part, type }) {
             <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
             <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
           </a>
-          <button class="item-play" data-qid="${q.id}" aria-label="질문 듣기">🔊</button>
+          <button class="item-play" data-qid="${escapeHtml(q.id)}" aria-label="질문 듣기">🔊</button>
         </div>`;
       }).join('')}
     </div>`;

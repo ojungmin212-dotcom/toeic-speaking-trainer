@@ -285,17 +285,41 @@ const CSV_FIELDS = ['id', 'part', 'questionType', 'difficulty', 'keyExpression',
   'questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'status'];
 
 export function exportJSON() {
-  return JSON.stringify({ questions, progress, daily, exportedAt: new Date().toISOString() }, null, 2);
+  return JSON.stringify({
+    questions, progress, daily,
+    settings,
+    deletedSeedIds: load(K.deletedSeeds, []), // 새 기기 복원 시 삭제한 시드가 부활하지 않도록
+    exportedAt: new Date().toISOString(),
+  }, null, 2);
 }
 
 export function importJSON(text) {
   const data = JSON.parse(text);
   if (!Array.isArray(data.questions)) throw new Error('questions 배열이 없습니다.');
-  questions = data.questions.map(normalize);
-  if (data.progress) progress = data.progress;
-  if (data.daily) daily = data.daily;
+  const prog = data.progress && typeof data.progress === 'object' ? { ...data.progress } : {};
+
+  // 백업 문항도 addQuestion과 같은 수준으로 검증 (필수 필드, id 형식 — DOM 주입 방지)
+  const cleaned = [];
+  for (const raw of data.questions) {
+    if (!raw || typeof raw.questionEnglish !== 'string' || !raw.questionEnglish.trim()) continue;
+    let id = typeof raw.id === 'string' && /^[A-Za-z0-9_-]+$/.test(raw.id) ? raw.id : null;
+    if (!id) {
+      id = 'u-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '-' + cleaned.length;
+      if (raw.id && prog[raw.id]) { prog[id] = prog[raw.id]; delete prog[raw.id]; }
+    }
+    cleaned.push(normalize({ ...raw, id, status: raw.status === 'pending' ? 'pending' : 'approved' }));
+  }
+
+  questions = cleaned;
+  progress = prog;
+  daily = data.daily && typeof data.daily === 'object' ? data.daily : {};
+  if (Array.isArray(data.deletedSeedIds)) save(K.deletedSeeds, data.deletedSeedIds.filter((x) => typeof x === 'string'));
+  if (data.settings && typeof data.settings === 'object') {
+    settings = { ...DEFAULT_SETTINGS, ...data.settings };
+    save(K.settings, settings);
+  }
   save(K.questions, questions); save(K.progress, progress); save(K.daily, daily);
-  // 오래된 백업을 복원해도 이후 추가된 시드 문항이 사라지지 않도록 병합
+  // 오래된 백업을 복원해도 이후 추가된 시드 문항이 사라지지 않도록 병합 (tombstone 존중)
   mergeSeeds();
   return questions.length;
 }
@@ -344,14 +368,15 @@ export function importCSV(text) {
     // 행이 헤더보다 짧으면 없는 칸은 건너뛴다 (기존 값을 undefined로 덮지 않도록)
     header.forEach((h, i) => { if (r[i] !== undefined) obj[h] = r[i]; });
     if (!obj.questionEnglish || !String(obj.questionEnglish).trim()) continue;
-    // status 오타/외부값은 approved로 정규화 (문항이 학습 화면에서 증발하지 않도록)
-    obj.status = obj.status === 'pending' ? 'pending' : 'approved';
+    // status 열이 있을 때만 정규화 — 열이 없는 CSV로 기존 pending이 소리 없이 승인되지 않도록
+    if (header.includes('status')) obj.status = obj.status === 'pending' ? 'pending' : 'approved';
+    else delete obj.status;
     const existing = obj.id && getQuestion(obj.id);
     if (existing) {
       updateQuestion(obj.id, obj);
     } else {
       // id가 없으면 같은 영어 질문을 가진 기존 문항에 병합 (재가져오기 시 전체 복제 방지)
-      const dup = questions.find((q) => q.questionEnglish.trim() === String(obj.questionEnglish).trim());
+      const dup = questions.find((q) => (q.questionEnglish || '').trim() === String(obj.questionEnglish).trim());
       if (dup) updateQuestion(dup.id, { ...obj, id: dup.id });
       else addQuestion(obj);
     }

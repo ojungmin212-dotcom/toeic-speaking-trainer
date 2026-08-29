@@ -2,7 +2,8 @@
 // - 오류 응답(4xx/5xx)은 절대 캐시하지 않는다 (캐시 오염 방지)
 // - 오디오(불변 mp3)는 캐시 우선: 반복 청취 시 재다운로드 없음, 오프라인 재생 가능
 // - 나머지는 네트워크 우선 + 실패 시 캐시 폴백
-const CACHE = 'tst-v4';
+const CACHE = 'tst-v5';
+const AUDIO_CACHE = 'tst-audio-v1'; // 앱 버전과 분리 — 업데이트해도 받아 둔 음성 유지
 const ASSETS = [
   './', './index.html', './css/style.css', './manifest.webmanifest',
   './icon-180.png', './icon-512.png',
@@ -19,8 +20,9 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
+    caches.keys().then((keys) => Promise.all(
+      keys.filter((k) => k !== CACHE && k !== AUDIO_CACHE).map((k) => caches.delete(k))
+    )).then(() => self.clients.claim())
   );
 });
 
@@ -32,21 +34,51 @@ function putIfOk(request, res) {
   return res;
 }
 
+// 오디오 Range 요청 처리: iOS Safari는 <audio>에 항상 Range 헤더를 붙이므로
+// 캐시된 전체 파일에서 요청 구간을 잘라 206으로 합성해 준다 (오프라인/반복 청취 대응).
+async function audioResponse(request) {
+  const key = new URL(request.url).href.split('#')[0];
+  const cache = await caches.open(AUDIO_CACHE);
+  let full = await cache.match(key);
+  if (!full) {
+    // Range 헤더 없는 전체 GET으로 받아서 캐시
+    const res = await fetch(key);
+    if (!(res.ok && res.status === 200)) return res; // 오류는 캐시하지 않고 그대로 전달
+    await cache.put(key, res.clone());
+    full = res;
+  }
+  const range = request.headers.get('range');
+  if (!range) return full;
+  const buf = await full.arrayBuffer();
+  const m = /bytes=(\d+)-(\d*)/.exec(range);
+  const start = m ? Number(m[1]) : 0;
+  const end = m && m[2] ? Math.min(Number(m[2]), buf.byteLength - 1) : buf.byteLength - 1;
+  if (start >= buf.byteLength) {
+    return new Response(null, { status: 416, headers: { 'Content-Range': `bytes */${buf.byteLength}` } });
+  }
+  return new Response(buf.slice(start, end + 1), {
+    status: 206,
+    headers: {
+      'Content-Type': 'audio/mpeg',
+      'Content-Range': `bytes ${start}-${end}/${buf.byteLength}`,
+      'Content-Length': String(end - start + 1),
+      'Accept-Ranges': 'bytes',
+    },
+  });
+}
+
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.pathname.includes('/api/') || e.request.method !== 'GET') return;
-  // 미디어 Range 요청(206)은 캐시할 수 없으므로 브라우저에 맡긴다
-  if (e.request.headers.has('range')) return;
 
   if (url.pathname.includes('/audio/') && url.pathname.endsWith('.mp3')) {
-    // 불변 오디오: 캐시 우선
-    e.respondWith(
-      caches.match(e.request).then((hit) =>
-        hit || fetch(e.request).then((res) => putIfOk(e.request, res))
-      )
-    );
+    // 불변 오디오: 캐시 우선 + Range 206 합성, 실패 시 원 요청으로 폴백
+    e.respondWith(audioResponse(e.request).catch(() => fetch(e.request)));
     return;
   }
+
+  // 오디오 외 Range 요청은 브라우저에 맡긴다
+  if (e.request.headers.has('range')) return;
 
   // 앱 자원: 네트워크 우선 (항상 최신), 실패 시 캐시 폴백
   e.respondWith(

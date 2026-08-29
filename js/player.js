@@ -26,6 +26,8 @@ export class SequencePlayer {
 
   start() {
     this._setupMediaSession();
+    // 통화 수신 등 외부 인터럽션은 실패가 아니라 일시정지로 처리 — 문항이 무음으로 소모되지 않게
+    tts.setInterruptHandler(() => { if (!this.paused && !this._destroyed) this.pause(); });
     this.resume();
   }
 
@@ -53,6 +55,7 @@ export class SequencePlayer {
   // 화면 이탈 시 완전 정리
   stop() {
     this._destroyed = true;
+    tts.setInterruptHandler(null);
     this.paused = true;
     this._runToken++;
     tts.cancel();
@@ -137,6 +140,9 @@ export class SequencePlayer {
     this.onStepChange('question');
     anyOk = (await tts.speak(q.questionEnglish, 'en-US')) || anyOk;
     if (!alive()) return null;
+    // 질문부터 무음이면(자동재생 차단/오프라인) 나머지 단계를 돌지 않고 즉시 실패 보고
+    // → 수십 초 무음 대신 몇 초 안에 자동 일시정지 안내가 뜬다
+    if (!anyOk) return false;
 
     if (s.repeatQuestion) {
       await tts.playSilence(0.6);
