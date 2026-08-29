@@ -37,7 +37,7 @@ export const DEFAULT_SETTINGS = {
   rate: 0.92,                    // 자연스러운 시험 안내 속도
   thinkSeconds: 4,               // 질문 후 생각 시간
   gapSeconds: 1.2,               // 다음 문제 전 간격
-  playQuestionKo: true,          // 운동 모드 단계 ON/OFF
+  playQuestionKo: true,          // 듣기 모드 단계 ON/OFF
   playAnswerEn: true,
   playAnswerKo: true,
   repeatQuestion: false,         // 영어 질문 2회 반복

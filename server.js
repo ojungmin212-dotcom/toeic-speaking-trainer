@@ -136,7 +136,12 @@ const server = http.createServer(async (req, res) => {
     if (!full.startsWith(__dirname)) { res.writeHead(403); return res.end('Forbidden'); }
     fs.readFile(full, (err, buf) => {
       if (err) { res.writeHead(404); return res.end('Not Found'); }
-      res.writeHead(200, { 'Content-Type': MIME[path.extname(full).toLowerCase()] || 'application/octet-stream' });
+      const ext = path.extname(full).toLowerCase();
+      res.writeHead(200, {
+        'Content-Type': MIME[ext] || 'application/octet-stream',
+        // 개발 편의: 앱 자원은 항상 재검증 (오디오는 불변이라 캐시 허용)
+        'Cache-Control': ext === '.mp3' ? 'public, max-age=31536000, immutable' : 'no-cache',
+      });
       res.end(buf);
     });
   } catch (e) {

@@ -80,9 +80,9 @@ self.addEventListener('fetch', (e) => {
   // 오디오 외 Range 요청은 브라우저에 맡긴다
   if (e.request.headers.has('range')) return;
 
-  // 앱 자원: 네트워크 우선 (항상 최신), 실패 시 캐시 폴백
+  // 앱 자원: 네트워크 우선 + HTTP 캐시 재검증 강제 (배포 후 옛 버전이 남지 않도록), 실패 시 캐시 폴백
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, { cache: 'no-cache' })
       .then((res) => putIfOk(e.request, res))
       .catch(() => caches.match(e.request).then((hit) => hit || caches.match('./index.html')))
   );

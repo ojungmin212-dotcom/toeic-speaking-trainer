@@ -47,7 +47,7 @@ export function renderStats(root) {
     <div class="card">${typeRows}</div>
 
     ${weakKeyRows ? `<h3 class="section-title">취약 의문사</h3><div class="card">${weakKeyRows}</div>
-      <p class="desc">취약 유형은 운동 모드·퀴즈에서 자동으로 더 자주 출제됩니다.</p>` : ''}
+      <p class="desc">취약 유형은 듣기 모드·퀴즈에서 자동으로 더 자주 출제됩니다.</p>` : ''}
 
     ${weakQuestions.length ? `<h3 class="section-title">자주 틀리는 질문</h3>
       <div class="q-list">${weakQuestions.map((q) => {

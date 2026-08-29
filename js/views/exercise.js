@@ -1,4 +1,4 @@
-// 운동 모드 — 화면을 보지 않고 이어폰만으로 자동 반복 학습
+// 듣기 모드 — 화면을 보지 않고 이어폰만으로 자동 반복 학습
 import * as store from '../store.js';
 import { SequencePlayer } from '../player.js';
 import { pickWeighted } from '../srs.js';
@@ -32,7 +32,7 @@ export function renderExerciseSetup(root) {
   const s = store.getSettings();
 
   root.innerHTML = `
-    ${backBar('운동 모드')}
+    ${backBar('듣기 모드')}
     <p class="desc">재생 목록을 고르면 자동으로 재생됩니다.<br>영어 질문 → 생각 시간 → 한국어 해석 → 모범답변 순서로 계속 반복됩니다.</p>
     <nav class="menu">
       <a class="menu-btn primary" href="#/exercise/play/all">전체 학습<span class="menu-desc">모든 질문 (취약 문제 우선 출제)</span></a>
@@ -83,12 +83,12 @@ export function renderExercisePlay(root, source) {
   stopExercise();
   const playlist = buildPlaylist(source);
   if (!playlist.length) {
-    root.innerHTML = `${backBar('운동 모드', '#/exercise')}<p class="desc">재생할 질문이 없습니다.</p>`;
+    root.innerHTML = `${backBar('듣기 모드', '#/exercise')}<p class="desc">재생할 질문이 없습니다.</p>`;
     return;
   }
 
   root.innerHTML = `
-    ${backBar('운동 모드', '#/exercise')}
+    ${backBar('듣기 모드', '#/exercise')}
     <div class="player">
       <div class="player-count" id="pCount">QUESTION 1 / ${playlist.length}</div>
       <div class="player-step" id="pStep">준비…</div>
