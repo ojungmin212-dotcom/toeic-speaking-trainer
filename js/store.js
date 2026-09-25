@@ -51,17 +51,32 @@ function normalize(q) {
   return { ...q, part: Number(q.part) || 3, difficulty: Number(q.difficulty) || 1 };
 }
 
-// 시드가 늘어나면 새 문항만 병합 (사용자 추가/수정분 보존, 사용자가 지운 시드는 제외)
+// 시드 병합: 새 시드 문항 추가 + 기존 시드 문항의 내용 개선분 동기화
+// (사용자가 직접 추가한 문항은 건드리지 않음, 사용자가 지운 시드는 부활 안 함.
+//  시드 문항을 직접 수정한 경우에는 버전 업 시 최신 시드 내용으로 덮어써진다 — 학습 기록은 유지)
 function mergeSeeds() {
   const deleted = new Set(load(K.deletedSeeds, []));
-  const have = new Set(questions.map((q) => q.id));
-  let added = 0;
+  const have = new Map(questions.map((q, i) => [q.id, i]));
+  let changed = 0;
   for (const sq of SEED_QUESTIONS) {
-    if (!have.has(sq.id) && !deleted.has(sq.id)) { questions.push({ ...sq }); added++; }
+    if (deleted.has(sq.id)) continue;
+    if (!have.has(sq.id)) {
+      questions.push({ ...sq });
+      changed++;
+    } else {
+      const i = have.get(sq.id);
+      const cur = questions[i];
+      if (cur.questionEnglish !== sq.questionEnglish || cur.questionKorean !== sq.questionKorean ||
+          cur.answerEnglish !== sq.answerEnglish || cur.answerKorean !== sq.answerKorean ||
+          cur.keyExpression !== sq.keyExpression) {
+        questions[i] = { ...sq };
+        changed++;
+      }
+    }
   }
-  if (added) save(K.questions, questions);
+  if (changed) save(K.questions, questions);
   save(K.seedVersion, SEED_VERSION);
-  return added;
+  return changed;
 }
 
 export function init() {

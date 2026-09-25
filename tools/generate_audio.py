@@ -78,6 +78,16 @@ async def main():
     with open(os.path.join(AUDIO_DIR, "manifest.json"), "w", encoding="utf-8") as f:
         json.dump(ok_manifest, f, ensure_ascii=False)
 
+    # manifest가 참조하지 않는 옛 파일 정리 (텍스트 수정으로 대체된 음성)
+    referenced = {os.path.basename(p) for entry in ok_manifest.values() for p in entry.values()}
+    pruned = 0
+    for fname in os.listdir(AUDIO_DIR):
+        if fname.endswith(".mp3") and fname not in referenced:
+            os.remove(os.path.join(AUDIO_DIR, fname))
+            pruned += 1
+    if pruned:
+        print(f"pruned {pruned} stale audio files")
+
     print(f"manifest: {len(ok_manifest)} texts, failures: {len(failures)}")
     if failures:
         for p in failures[:10]:
