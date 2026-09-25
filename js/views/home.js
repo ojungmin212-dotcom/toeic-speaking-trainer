@@ -39,6 +39,7 @@ export function renderHome(root) {
       </div>
       <p class="hero-summary">${summary}</p>
       <div class="stat-row">
+        <a class="stat" href="#/study"><span class="stat-label">목표 레벨</span><span class="stat-val">${store.getSettings().targetLevel || 'IL'}</span></a>
         <div class="stat"><span class="stat-label">연속 학습</span><span class="stat-val">${streak}일</span></div>
         <div class="stat"><span class="stat-label">복습 예정</span><span class="stat-val">${due}개</span></div>
         <div class="stat"><span class="stat-label">취약 질문</span><span class="stat-val">${weak}개</span></div>
@@ -55,7 +56,7 @@ export function renderHome(root) {
         ${icon('target')}<span class="menu-body"><b>실전 듣기</b><small>듣고 의미 판단 후 정답 확인</small></span>${icon('chevron', 16)}
       </a>
       <a class="menu-row" href="#/study">
-        ${icon('book')}<span class="menu-body"><b>파트별 학습</b><small>질문·해석·모범답변 보기</small></span>${icon('chevron', 16)}
+        ${icon('book')}<span class="menu-body"><b>파트·레벨별 학습</b><small>IL · IM · IH · AL 모범답변 비교</small></span>${icon('chevron', 16)}
       </a>
       <a class="menu-row" href="#/quiz">
         ${icon('quiz')}<span class="menu-body"><b>질문 유형 퀴즈</b><small>무엇을 묻는 질문인지 맞히기</small></span>${icon('chevron', 16)}

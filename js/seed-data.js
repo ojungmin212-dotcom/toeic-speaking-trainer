@@ -1,3 +1,5 @@
+import { LEVEL_ANSWERS } from './level-answers.js';
+
 // 자체 제작 연습 문항 시드 데이터 (실제 ETS 기출 아님 — 시험 구조만 참고)
 // 유형별 10문항, 총 110문항. 영어 초보자가 이해하고 답할 수 있는 짧은 문장.
 
@@ -13,6 +15,15 @@ export const QUESTION_TYPES = {
   choice:     { ko: '선택',   key: 'Which do you prefer, A or B', hint: 'A or B = 선택' },
   opinion:    { ko: '의견/장단점', key: 'Do you think / advantages', hint: 'Do you think = 의견' },
   schedule:   { ko: '일정/정보확인', key: 'What time / Is that right?', hint: '일정표 정보를 묻는 질문' },
+};
+
+// 목표 레벨 (TOEIC Speaking 등급) — 점수대는 대략적인 참고값
+export const LEVEL_ORDER = ['IL', 'IM', 'IH', 'AL'];
+export const LEVELS = {
+  IL: { full: 'Intermediate Low', score: '약 110~120점', desc: '짧고 쉬운 문장으로 핵심만 말하기' },
+  IM: { full: 'Intermediate Mid', score: '약 130~150점', desc: '이유와 세부 정보를 붙여 자연스럽게 연결하기' },
+  IH: { full: 'Intermediate High', score: '약 160~170점', desc: '다양한 연결어와 구체적 경험으로 막힘없이 말하기' },
+  AL: { full: 'Advanced Low', score: '약 180점 이상', desc: '원어민식 표현과 복문으로 설득력 있게 말하기' },
 };
 
 export const PARTS = {
@@ -237,6 +248,12 @@ export const SEED_QUESTIONS = [
   q(5, 'opinion', 1, 'Do you think', 'Do you think music helps people study?', '음악이 공부에 도움이 된다고 생각합니까?', 'Yes, I think music helps people study. I have two reasons. First, quiet music blocks noise. For example, when I study in a cafe, I listen to soft piano music, and I cannot hear the people talking around me. Second, music makes me feel calm. Before an exam, slow music helps me relax and worry less. Of course, loud songs with words can be distracting, so quiet music is best. For these reasons, I think music helps studying.', '네, 음악이 공부에 도움이 된다고 생각합니다. 두 가지 이유가 있습니다. 첫째, 조용한 음악은 소음을 막아 줍니다. 예를 들어 카페에서 공부할 때 잔잔한 피아노 음악을 들으면 주변 사람들의 대화가 들리지 않습니다. 둘째, 음악은 마음을 차분하게 합니다. 시험 전에 느린 음악을 들으면 긴장이 풀리고 걱정이 줄어듭니다. 물론 가사가 있는 시끄러운 노래는 방해가 되니 조용한 음악이 가장 좋습니다. 이런 이유로 음악은 공부에 도움이 된다고 생각합니다.'),
 ];
 
+// 레벨별 모범답변 (IM/IH/AL) 부착 — IL은 answerEnglish/answerKorean 그대로
+for (const sq of SEED_QUESTIONS) {
+  if (LEVEL_ANSWERS[sq.id]) sq.levelAnswers = LEVEL_ANSWERS[sq.id];
+}
+
 // 시드 데이터 버전 — 올리면 기존 사용자에게 새 문항 추가 + 시드 문항 내용 개선분이 자동 반영된다 (store.js)
 // v3: Part 5 모범답변을 60초 IL 수준(입장→이유2개+예시→마무리)으로 전면 확장
-export const SEED_VERSION = 3;
+// v4: 전 문항에 IM/IH/AL 레벨별 모범답변 추가
+export const SEED_VERSION = 4;

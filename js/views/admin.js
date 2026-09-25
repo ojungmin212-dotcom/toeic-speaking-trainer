@@ -2,7 +2,9 @@
 import * as store from '../store.js';
 import * as tts from '../tts.js';
 import { generateQuestions } from '../llm.js';
-import { PARTS, QUESTION_TYPES } from '../seed-data.js';
+import { PARTS, QUESTION_TYPES, LEVEL_ORDER } from '../seed-data.js';
+
+const EXTRA_LEVELS = LEVEL_ORDER.filter((lv) => lv !== 'IL');
 import { escapeHtml, typeBadge, typeLabel, toast, download, pickFile } from '../ui.js';
 import { backBar } from './study.js';
 
@@ -37,10 +39,22 @@ export function renderAdmin(root, editId = null) {
           <input name="questionEnglish" required value="${editing ? escapeHtml(editing.questionEnglish) : ''}"></label>
         <label>질문 한국어 해석 *
           <input name="questionKorean" required value="${editing ? escapeHtml(editing.questionKorean) : ''}"></label>
-        <label>영어 모범답변
-          <input name="answerEnglish" value="${editing ? escapeHtml(editing.answerEnglish) : ''}"></label>
-        <label>답변 한국어 해석
-          <input name="answerKorean" value="${editing ? escapeHtml(editing.answerKorean) : ''}"></label>
+        <label>영어 모범답변 (IL)
+          <textarea name="answerEnglish" rows="2">${editing ? escapeHtml(editing.answerEnglish) : ''}</textarea></label>
+        <label>답변 한국어 해석 (IL)
+          <textarea name="answerKorean" rows="2">${editing ? escapeHtml(editing.answerKorean) : ''}</textarea></label>
+        <details class="lv-fields" ${editing && editing.levelAnswers && Object.keys(editing.levelAnswers).length ? 'open' : ''}>
+          <summary>레벨별 모범답변 (IM · IH · AL, 선택)</summary>
+          ${EXTRA_LEVELS.map((lv) => {
+            const v = (editing && editing.levelAnswers && editing.levelAnswers[lv]) || {};
+            return `
+            <label>${lv} 영어 답변
+              <textarea name="la_${lv}_en" rows="3">${escapeHtml(v.en || '')}</textarea></label>
+            <label>${lv} 한국어 해석
+              <textarea name="la_${lv}_ko" rows="3">${escapeHtml(v.ko || '')}</textarea></label>`;
+          }).join('')}
+          <p class="desc small">비워 둔 레벨은 한 단계 아래 레벨 답변으로 대신 보여줍니다.</p>
+        </details>
         <div class="btn-row">
           <button type="submit" class="sub-btn primary-btn">${editing ? '수정 저장' : '추가'}</button>
           <button type="button" class="sub-btn" id="previewTts">🔊 미리듣기</button>
@@ -106,6 +120,14 @@ export function renderAdmin(root, editId = null) {
     e.preventDefault();
     const fd = new FormData(e.target);
     const data = Object.fromEntries(fd.entries());
+    const levelAnswers = {};
+    for (const lv of EXTRA_LEVELS) {
+      const en = (data[`la_${lv}_en`] || '').trim();
+      const ko = (data[`la_${lv}_ko`] || '').trim();
+      if (en) levelAnswers[lv] = { en, ko };
+      delete data[`la_${lv}_en`]; delete data[`la_${lv}_ko`];
+    }
+    data.levelAnswers = levelAnswers;
     if (editing) {
       store.updateQuestion(editing.id, { ...data, part: Number(data.part), difficulty: Number(data.difficulty) });
       toast('수정했습니다');

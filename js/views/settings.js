@@ -54,6 +54,10 @@ export async function renderSettings(root) {
 
     <h3 class="section-title">학습</h3>
     <div class="card">
+      <div class="setting-row"><span>목표 레벨 (모범답변 수준)</span>
+        <select id="targetLevel">
+          ${['IL', 'IM', 'IH', 'AL'].map((lv) => `<option value="${lv}" ${(s.targetLevel || 'IL') === lv ? 'selected' : ''}>${lv}</option>`).join('')}
+        </select></div>
       <label class="setting-row"><span>초보자 모드 (핵심 의문사 강조)</span>
         <input type="checkbox" id="beginnerMode" ${s.beginnerMode ? 'checked' : ''}></label>
       <label class="setting-row"><span>질문 후 신호음 (실제 시험처럼)</span>
@@ -84,6 +88,7 @@ export async function renderSettings(root) {
   bind('voiceKoName', 'voiceKoName');
   bind('rate', 'rate', false, true);
   bind('beginnerMode', 'beginnerMode', true);
+  bind('targetLevel', 'targetLevel');
   bind('beepAfterQuestion', 'beepAfterQuestion', true);
   bind('useGeneratedAudio', 'useGeneratedAudio', true);
 

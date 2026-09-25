@@ -3,7 +3,7 @@ import * as store from '../store.js';
 import { SequencePlayer } from '../player.js';
 import { pickWeighted } from '../srs.js';
 import { PARTS } from '../seed-data.js';
-import { escapeHtml, typeBadge, highlightKey, toast } from '../ui.js';
+import { escapeHtml, typeBadge, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml } from '../ui.js';
 import { backBar } from './study.js';
 
 let player = null;
@@ -43,6 +43,12 @@ export function renderExerciseSetup(root) {
       <a class="menu-btn ${due ? '' : 'disabled'}" ${due ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/due">복습 예정만<span class="menu-desc">${due}문항</span></a>
     </nav>
 
+    <h3 class="section-title">모범답변 레벨</h3>
+    <div class="card level-card">
+      ${levelPickerHtml(s.targetLevel || 'IL', { id: 'exLevel' })}
+      <div id="exLevelInfo">${levelInfoHtml(s.targetLevel || 'IL')}</div>
+    </div>
+
     <h3 class="section-title">재생 단계</h3>
     <div class="card">
       ${toggleRow('playQuestionKo', '한국어 질문 해석', s.playQuestionKo)}
@@ -63,6 +69,10 @@ export function renderExerciseSetup(root) {
   });
   root.querySelector('#thinkSeconds').addEventListener('change', (e) => {
     store.saveSettings({ thinkSeconds: Number(e.target.value) });
+  });
+  bindLevelPicker(root, 'exLevel', (lv) => {
+    store.saveSettings({ targetLevel: lv });
+    root.querySelector('#exLevelInfo').innerHTML = levelInfoHtml(lv);
   });
 }
 
@@ -137,11 +147,12 @@ export function renderExercisePlay(root, source) {
     revealed = true;
     const q = player.current;
     const s = store.getSettings();
+    const ans = store.getAnswer(q, s.targetLevel);
     $('#pText').innerHTML = `
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
-      <div class="p-meta">${typeBadge(q.questionType)}</div>
+      <div class="p-meta">${typeBadge(q.questionType)} <span class="lv-tag">${ans.level}</span></div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
-      <div class="p-ans">${escapeHtml(q.answerEnglish)}<br><span class="p-ans-ko">${escapeHtml(q.answerKorean)}</span></div>`;
+      <div class="p-ans">${escapeHtml(ans.en)}<br><span class="p-ans-ko">${escapeHtml(ans.ko)}</span></div>`;
   }
 
   $('#pToggle').addEventListener('click', () => player.toggle());

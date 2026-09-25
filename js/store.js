@@ -1,7 +1,7 @@
 // 데이터 계층 — UI는 반드시 이 모듈을 통해서만 데이터에 접근한다.
 // 현재 구현은 localStorage. 추후 DB 교체 시 이 파일만 바꾸면 된다.
 
-import { SEED_QUESTIONS, SEED_VERSION } from './seed-data.js';
+import { SEED_QUESTIONS, SEED_VERSION, LEVEL_ORDER } from './seed-data.js';
 import { applyAnswer } from './srs.js';
 
 const K = {
@@ -44,11 +44,48 @@ export const DEFAULT_SETTINGS = {
   beginnerMode: true,            // 핵심 의문사 강조
   beepAfterQuestion: true,       // 시험처럼 질문 후 신호음(삐)
   useGeneratedAudio: true,       // 사전 생성 신경망 음성 우선 사용
+  targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
 };
+
+// 레벨별 답변 정리: { IM: {en, ko}, ... } 형태만 남긴다 (IL은 answerEnglish/answerKorean)
+function cleanLevelAnswers(la) {
+  const out = {};
+  if (!la || typeof la !== 'object') return out;
+  for (const lv of LEVEL_ORDER) {
+    if (lv === 'IL') continue;
+    const v = la[lv];
+    if (v && typeof v.en === 'string' && v.en.trim()) {
+      out[lv] = { en: v.en.trim(), ko: typeof v.ko === 'string' ? v.ko.trim() : '' };
+    }
+  }
+  return out;
+}
 
 // part/difficulty가 문자열로 저장된 데이터(CSV 가져오기 등)를 숫자로 정규화
 function normalize(q) {
-  return { ...q, part: Number(q.part) || 3, difficulty: Number(q.difficulty) || 1 };
+  return {
+    ...q,
+    part: Number(q.part) || 3,
+    difficulty: Number(q.difficulty) || 1,
+    levelAnswers: cleanLevelAnswers(q.levelAnswers),
+  };
+}
+
+// 문항의 해당 레벨 모범답변. 그 레벨 답변이 없으면 아래 레벨로 내려가며 찾는다 (최종 IL).
+// 반환: { en, ko, level } — level은 실제로 보여주는 레벨
+export function getAnswer(q, level) {
+  const want = LEVEL_ORDER.includes(level) ? level : 'IL';
+  for (let i = LEVEL_ORDER.indexOf(want); i > 0; i--) {
+    const lv = LEVEL_ORDER[i];
+    const v = q.levelAnswers && q.levelAnswers[lv];
+    if (v && v.en) return { en: v.en, ko: v.ko || '', level: lv };
+  }
+  return { en: q.answerEnglish || '', ko: q.answerKorean || '', level: 'IL' };
+}
+
+// 이 문항이 보유한 답변 레벨 목록 (IL 포함)
+export function availableLevels(q) {
+  return LEVEL_ORDER.filter((lv) => lv === 'IL' || (q.levelAnswers && q.levelAnswers[lv] && q.levelAnswers[lv].en));
 }
 
 // 시드 병합: 새 시드 문항 추가 + 기존 시드 문항의 내용 개선분 동기화
@@ -68,8 +105,9 @@ function mergeSeeds() {
       const cur = questions[i];
       if (cur.questionEnglish !== sq.questionEnglish || cur.questionKorean !== sq.questionKorean ||
           cur.answerEnglish !== sq.answerEnglish || cur.answerKorean !== sq.answerKorean ||
-          cur.keyExpression !== sq.keyExpression) {
-        questions[i] = { ...sq };
+          cur.keyExpression !== sq.keyExpression ||
+          JSON.stringify(cleanLevelAnswers(cur.levelAnswers)) !== JSON.stringify(cleanLevelAnswers(sq.levelAnswers))) {
+        questions[i] = normalize({ ...sq });
         changed++;
       }
     }
@@ -83,7 +121,7 @@ export function init() {
   questions = load(K.questions, null);
   if (Array.isArray(questions)) questions = questions.map(normalize);
   if (!questions) {
-    questions = SEED_QUESTIONS.map((q) => ({ ...q }));
+    questions = SEED_QUESTIONS.map((q) => normalize({ ...q }));
     save(K.questions, questions);
     save(K.seedVersion, SEED_VERSION);
   } else if (load(K.seedVersion, 1) < SEED_VERSION) {
@@ -121,6 +159,7 @@ export function addQuestion(data) {
     questionAudioUrl: data.questionAudioUrl || null,
     answerAudioUrl: data.answerAudioUrl || null,
     status: data.status || 'approved',
+    levelAnswers: cleanLevelAnswers(data.levelAnswers),
   };
   questions.push(item);
   save(K.questions, questions);
@@ -298,6 +337,9 @@ export function saveSettings(patch) {
 // ── Import / Export ────────────────────────────────────────────
 const CSV_FIELDS = ['id', 'part', 'questionType', 'difficulty', 'keyExpression',
   'questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'status'];
+// 레벨별 답변 열: answerEnglishIM, answerKoreanIM, answerEnglishIH, ...
+const LEVEL_CSV_FIELDS = LEVEL_ORDER.filter((lv) => lv !== 'IL')
+  .flatMap((lv) => ['answerEnglish' + lv, 'answerKorean' + lv]);
 
 export function exportJSON() {
   return JSON.stringify({
@@ -345,8 +387,16 @@ function csvEscape(v) {
 }
 
 export function exportCSV() {
-  const rows = [CSV_FIELDS.join(',')];
-  for (const q of questions) rows.push(CSV_FIELDS.map((f) => csvEscape(q[f])).join(','));
+  const rows = [[...CSV_FIELDS, ...LEVEL_CSV_FIELDS].join(',')];
+  for (const q of questions) {
+    const base = CSV_FIELDS.map((f) => csvEscape(q[f]));
+    const lv = LEVEL_CSV_FIELDS.map((f) => {
+      const level = f.slice(-2);
+      const v = q.levelAnswers && q.levelAnswers[level];
+      return csvEscape(v ? (f.startsWith('answerEnglish') ? v.en : v.ko) : '');
+    });
+    rows.push([...base, ...lv].join(','));
+  }
   return rows.join('\n');
 }
 
@@ -386,6 +436,20 @@ export function importCSV(text) {
     // status 열이 있을 때만 정규화 — 열이 없는 CSV로 기존 pending이 소리 없이 승인되지 않도록
     if (header.includes('status')) obj.status = obj.status === 'pending' ? 'pending' : 'approved';
     else delete obj.status;
+    // 레벨별 답변 열 → levelAnswers (열이 하나도 없으면 기존 레벨 답변 유지)
+    if (LEVEL_CSV_FIELDS.some((f) => header.includes(f))) {
+      const prev = (obj.id && getQuestion(obj.id)) || {};
+      const la = { ...(prev.levelAnswers || {}) };
+      for (const lv of LEVEL_ORDER.filter((x) => x !== 'IL')) {
+        const en = obj['answerEnglish' + lv], ko = obj['answerKorean' + lv];
+        if (header.includes('answerEnglish' + lv)) {
+          if (en && String(en).trim()) la[lv] = { en: String(en), ko: String(ko || '') };
+          else delete la[lv];
+        }
+        delete obj['answerEnglish' + lv]; delete obj['answerKorean' + lv];
+      }
+      obj.levelAnswers = la;
+    }
     const existing = obj.id && getQuestion(obj.id);
     if (existing) {
       updateQuestion(obj.id, obj);

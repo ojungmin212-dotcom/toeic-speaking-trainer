@@ -1,5 +1,36 @@
 // 공용 UI 헬퍼
-import { QUESTION_TYPES } from './seed-data.js';
+import { QUESTION_TYPES, LEVELS, LEVEL_ORDER } from './seed-data.js';
+
+// 레벨 선택 세그먼트 컨트롤 (IL | IM | IH | AL)
+export function levelPickerHtml(current, { id = 'levelPicker', small = false, levels = LEVEL_ORDER } = {}) {
+  return `<div class="seg ${small ? 'seg-sm' : ''}" id="${id}" role="tablist" aria-label="레벨 선택">${
+    levels.map((lv) => `<button class="seg-btn ${lv === current ? 'on' : ''}" data-level="${lv}" role="tab" aria-selected="${lv === current}">${lv}</button>`).join('')
+  }</div>`;
+}
+
+export function bindLevelPicker(root, id, onPick) {
+  const el = root.querySelector('#' + id);
+  if (!el) return;
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('.seg-btn');
+    if (!b) return;
+    el.querySelectorAll('.seg-btn').forEach((x) => {
+      const on = x === b;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-selected', String(on));
+    });
+    onPick(b.dataset.level);
+  });
+}
+
+export function levelInfoHtml(level) {
+  const L = LEVELS[level] || LEVELS.IL;
+  return `<div class="level-info"><div class="level-name"><b>${level}</b> ${escapeHtml(L.full)} <span class="level-score">${escapeHtml(L.score)}</span></div><p>${escapeHtml(L.desc)}</p></div>`;
+}
+
+export function wordCount(s) {
+  return String(s || '').trim().split(/\s+/).filter(Boolean).length;
+}
 
 // 라인 아이콘 (stroke: currentColor) — 이모지 대신 일관된 아이콘 시스템
 const ICONS = {

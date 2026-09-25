@@ -5,7 +5,7 @@
 // - 오디오가 연속 3문항 무음이면 자동 일시정지하고 사용자에게 알린다 (자동재생 차단 대응).
 
 import * as tts from './tts.js';
-import { getSettings, recordListen, addStudySeconds } from './store.js';
+import { getSettings, getAnswer, recordListen, addStudySeconds } from './store.js';
 
 export class SequencePlayer {
   constructor(questions, { onQuestionChange, onStepChange, onFinish, onPlayState } = {}) {
@@ -170,9 +170,12 @@ export class SequencePlayer {
       if (!alive()) return null;
     }
 
+    // 목표 레벨의 모범답변 (없으면 아래 레벨로 폴백)
+    const ans = getAnswer(q, s.targetLevel);
+
     if (s.playAnswerEn) {
       this.onStepChange('answer');
-      anyOk = (await tts.speak(q.answerEnglish, 'en-US')) || anyOk;
+      anyOk = (await tts.speak(ans.en, 'en-US')) || anyOk;
       if (!alive()) return null;
       await tts.playSilence(0.4);
       if (!alive()) return null;
@@ -180,7 +183,7 @@ export class SequencePlayer {
 
     if (s.playAnswerKo) {
       this.onStepChange('answerKo');
-      anyOk = (await tts.speak(q.answerKorean, 'ko-KR')) || anyOk;
+      anyOk = (await tts.speak(ans.ko, 'ko-KR')) || anyOk;
       if (!alive()) return null;
     }
 

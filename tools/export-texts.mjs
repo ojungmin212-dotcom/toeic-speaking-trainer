@@ -22,6 +22,12 @@ function addQuestion(q) {
   add(id, 'a', q.answerEnglish, 'en');
   add(id, 'qk', q.questionKorean, 'ko');
   add(id, 'ak', q.answerKorean, 'ko');
+  // 레벨별 모범답변 (IM/IH/AL)
+  for (const [lv, v] of Object.entries(q.levelAnswers || {})) {
+    if (!v || !v.en) continue;
+    add(id, 'a' + lv, v.en, 'en');
+    add(id, 'ak' + lv, v.ko, 'ko');
+  }
 }
 
 for (const q of SEED_QUESTIONS) addQuestion(q);

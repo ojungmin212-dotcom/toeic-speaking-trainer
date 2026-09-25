@@ -1,10 +1,15 @@
-// 파트별 학습 — 파트 선택 → 질문 목록 → 상세 (음성/해석/모범답변/즐겨찾기)
+// 파트·레벨별 학습 — 목표 레벨 선택 → 파트/유형 선택 → 질문 목록 → 상세 (레벨별 모범답변 비교)
 import * as store from '../store.js';
 import * as tts from '../tts.js';
-import { PARTS, QUESTION_TYPES } from '../seed-data.js';
-import { escapeHtml, typeBadge, typeLabel, highlightKey, toast } from '../ui.js';
+import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
+import {
+  escapeHtml, typeBadge, typeLabel, highlightKey, toast,
+  levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount,
+} from '../ui.js';
 
 export function renderStudyIndex(root) {
+  const level = store.getSettings().targetLevel || 'IL';
+
   const parts = Object.entries(PARTS).map(([num, p]) => {
     const count = store.getQuestions({ part: Number(num) }).length;
     return `<a class="menu-btn" href="#/study/part/${num}">${p.name}<span class="menu-desc">${escapeHtml(p.desc)} · ${count}문항</span></a>`;
@@ -17,17 +22,35 @@ export function renderStudyIndex(root) {
   }).join('');
 
   root.innerHTML = `
-    ${backBar('파트별 학습')}
+    ${backBar('파트·레벨별 학습')}
+    <section class="card level-card">
+      <div class="card-label">목표 레벨</div>
+      ${levelPickerHtml(level)}
+      <div id="levelInfo">${levelInfoHtml(level)}</div>
+      <p class="desc small">선택한 레벨의 모범답변이 질문 상세와 듣기 모드에 적용됩니다.</p>
+    </section>
+    <h3 class="section-title">파트</h3>
     <nav class="menu">${parts}</nav>
     <h3 class="section-title">유형별 보기</h3>
     <div class="chips">${types}</div>`;
+
+  bindLevelPicker(root, 'levelPicker', (lv) => {
+    store.saveSettings({ targetLevel: lv });
+    root.querySelector('#levelInfo').innerHTML = levelInfoHtml(lv);
+    toast(`목표 레벨을 ${lv}로 설정했습니다`);
+  });
 }
 
 export function renderStudyList(root, { part, type }) {
   const list = store.getQuestions({ part, type });
   const title = part ? PARTS[part].name : typeLabel(type);
+  const level = store.getSettings().targetLevel || 'IL';
   root.innerHTML = `
     ${backBar(title + ' · ' + list.length + '문항', '#/study')}
+    <div class="list-level">
+      <span class="list-level-label">모범답변 레벨</span>
+      ${levelPickerHtml(level, { id: 'listLevel', small: true })}
+    </div>
     <div class="q-list">
       ${list.map((q) => {
         const p = store.getProgress(q.id);
@@ -45,6 +68,11 @@ export function renderStudyList(root, { part, type }) {
         </div>`;
       }).join('')}
     </div>`;
+
+  bindLevelPicker(root, 'listLevel', (lv) => {
+    store.saveSettings({ targetLevel: lv });
+    toast(`목표 레벨을 ${lv}로 설정했습니다`);
+  });
 
   // 목록에서 바로 듣기 (상세로 이동하지 않음)
   root.querySelectorAll('.item-play').forEach((btn) => {
@@ -65,6 +93,9 @@ export function renderStudyDetail(root, id) {
   const s = store.getSettings();
   const p = store.getProgress(id);
   const typeInfo = QUESTION_TYPES[q.questionType];
+  const levels = store.availableLevels(q);
+  // 상세 화면의 레벨 탭은 비교용 — 목표 레벨로 시작하되 탭 전환은 전역 설정을 바꾸지 않는다
+  let current = store.getAnswer(q, s.targetLevel).level;
 
   root.innerHTML = `
     <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2></div>
@@ -80,7 +111,7 @@ export function renderStudyDetail(root, id) {
         <div class="card-label">Question</div>
         <div class="card-en big">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
         ${s.beginnerMode && typeInfo ? `<div class="hint">💡 ${escapeHtml(typeInfo.hint)}</div>` : ''}
-        <button class="speak-btn" data-text="${escapeHtml(q.questionEnglish)}" data-lang="en-US">🔊 질문 듣기</button>
+        <button class="speak-btn" id="qSpeak">🔊 질문 듣기</button>
       </div>
 
       <div class="card">
@@ -89,34 +120,54 @@ export function renderStudyDetail(root, id) {
       </div>
 
       <div class="card">
-        <div class="card-label">Answer</div>
-        <div class="card-en">${escapeHtml(q.answerEnglish)}</div>
-        <button class="speak-btn" data-text="${escapeHtml(q.answerEnglish)}" data-lang="en-US">🔊 답변 듣기</button>
+        <div class="answer-head">
+          <span class="card-label">Answer</span>
+          ${levels.length > 1 ? levelPickerHtml(current, { id: 'ansLevel', small: true, levels }) : ''}
+        </div>
+        <div class="level-note" id="ansNote"></div>
+        <div class="card-en answer-text" id="ansEn"></div>
+        <button class="speak-btn" id="aSpeak">🔊 답변 듣기</button>
       </div>
 
       <div class="card">
         <div class="card-label">답변 해석</div>
-        <div class="card-ko">${escapeHtml(q.answerKorean)}</div>
+        <div class="card-ko answer-text" id="ansKo"></div>
       </div>
 
       <div class="detail-stats">듣기 ${p.listenCount}회 · 정답 ${p.correctCount} · 오답 ${p.incorrectCount}</div>
     </div>`;
 
-  root.querySelectorAll('.speak-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      tts.cancel();
-      tts.speak(btn.dataset.text, btn.dataset.lang);
-      store.recordListen(q.id);
-    });
+  const $ = (sel) => root.querySelector(sel);
+
+  function showAnswer(level) {
+    const a = store.getAnswer(q, level);
+    current = a.level;
+    const L = LEVELS[a.level];
+    $('#ansNote').textContent = `${a.level} · ${L.full} · ${L.score} · ${wordCount(a.en)}단어`;
+    $('#ansEn').textContent = a.en;
+    $('#ansKo').textContent = a.ko;
+  }
+  showAnswer(current);
+
+  bindLevelPicker(root, 'ansLevel', (lv) => { tts.cancel(); showAnswer(lv); });
+
+  $('#qSpeak').addEventListener('click', () => {
+    tts.cancel();
+    tts.speak(q.questionEnglish, 'en-US');
+    store.recordListen(q.id);
+  });
+  $('#aSpeak').addEventListener('click', () => {
+    tts.cancel();
+    tts.speak(store.getAnswer(q, current).en, 'en-US');
   });
 
   // 보던 목록(파트/유형, 스크롤 위치)으로 되돌아가기
-  root.querySelector('#detailBack').addEventListener('click', () => {
+  $('#detailBack').addEventListener('click', () => {
     if (history.length > 1) history.back();
     else location.hash = '#/study';
   });
 
-  root.querySelector('#favBtn').addEventListener('click', (e) => {
+  $('#favBtn').addEventListener('click', (e) => {
     const on = store.toggleFavorite(id);
     e.target.textContent = on ? '♥' : '♡';
     e.target.classList.toggle('on', on);
