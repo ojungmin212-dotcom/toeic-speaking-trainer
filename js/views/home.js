@@ -1,6 +1,6 @@
 // 메인 화면 — 대시보드형 (히어로 카드 + 스탯 행 + 메뉴 리스트)
 import * as store from '../store.js';
-import { icon, fmtTime } from '../ui.js';
+import { icon, fmtTime, escapeHtml } from '../ui.js';
 
 export function renderHome(root) {
   const today = store.getToday();
@@ -39,7 +39,7 @@ export function renderHome(root) {
       </div>
       <p class="hero-summary">${summary}</p>
       <div class="stat-row">
-        <a class="stat" href="#/study"><span class="stat-label">목표 레벨</span><span class="stat-val">${store.getSettings().targetLevel || 'IL'}</span></a>
+        <a class="stat stat-link" href="#/study"><span class="stat-label">목표 레벨 ›</span><span class="stat-val">${escapeHtml(store.getSettings().targetLevel || 'IL')}</span></a>
         <div class="stat"><span class="stat-label">연속 학습</span><span class="stat-val">${streak}일</span></div>
         <div class="stat"><span class="stat-label">복습 예정</span><span class="stat-val">${due}개</span></div>
         <div class="stat"><span class="stat-label">취약 질문</span><span class="stat-val">${weak}개</span></div>

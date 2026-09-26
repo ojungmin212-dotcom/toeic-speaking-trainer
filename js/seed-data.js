@@ -17,13 +17,30 @@ export const QUESTION_TYPES = {
   schedule:   { ko: '일정/정보확인', key: 'What time / Is that right?', hint: '일정표 정보를 묻는 질문' },
 };
 
-// 목표 레벨 (TOEIC Speaking 등급) — 점수대는 대략적인 참고값
+// 목표 레벨 (TOEIC Speaking ACTFL 등급) — 점수 구간은 ETS 등급표 기준
+// (NL 0~30 · NM 40~60 · NH 70~80 · IL 90~100 · IM1 110 · IM2 120 · IM3 130 · IH 140~150 · AL 160~170 · AM 180~190 · AH 200)
 export const LEVEL_ORDER = ['IL', 'IM', 'IH', 'AL'];
 export const LEVELS = {
-  IL: { full: 'Intermediate Low', score: '약 110~120점', desc: '짧고 쉬운 문장으로 핵심만 말하기' },
-  IM: { full: 'Intermediate Mid', score: '약 130~150점', desc: '이유와 세부 정보를 붙여 자연스럽게 연결하기' },
-  IH: { full: 'Intermediate High', score: '약 160~170점', desc: '다양한 연결어와 구체적 경험으로 막힘없이 말하기' },
-  AL: { full: 'Advanced Low', score: '약 180점 이상', desc: '원어민식 표현과 복문으로 설득력 있게 말하기' },
+  IL: {
+    full: 'Intermediate Low', score: '90~100점',
+    desc: '짧고 쉬운 문장으로 핵심만 말하기',
+    guide: 'Part 3: 한 문장으로 답하기 · Part 5: 입장 + 이유 2개를 쉬운 문장으로 (약 75단어)',
+  },
+  IM: {
+    full: 'Intermediate Mid', score: '110~130점 (IM1~IM3)',
+    desc: '이유와 세부 정보를 붙여 자연스럽게 연결하기',
+    guide: 'Part 3: 답 + 이유 1개 (약 20단어) · Part 5: 입장 + 이유 2개 + 예시 1개 (약 90단어)',
+  },
+  IH: {
+    full: 'Intermediate High', score: '140~150점',
+    desc: '다양한 연결어와 구체적 경험으로 막힘없이 말하기',
+    guide: 'Part 3: 답 + 이유 + 경험 (약 30단어) · Part 5: 구체적 경험이 담긴 예시 (약 120단어)',
+  },
+  AL: {
+    full: 'Advanced Low', score: '160~170점',
+    desc: '자연스러운 표현과 복문으로 설득력 있게 말하기',
+    guide: 'Part 3: 다양한 문장 구조 (약 40단어) · Part 5: 논리적 전개와 자연스러운 마무리 (약 140단어)',
+  },
 };
 
 export const PARTS = {
@@ -256,4 +273,5 @@ for (const sq of SEED_QUESTIONS) {
 // 시드 데이터 버전 — 올리면 기존 사용자에게 새 문항 추가 + 시드 문항 내용 개선분이 자동 반영된다 (store.js)
 // v3: Part 5 모범답변을 60초 IL 수준(입장→이유2개+예시→마무리)으로 전면 확장
 // v4: 전 문항에 IM/IH/AL 레벨별 모범답변 추가
-export const SEED_VERSION = 4;
+// v5: 레벨별 답변 검수 반영 (오류 75건 수정, 반복 템플릿 제거·Part 5 구조 다양화 194건)
+export const SEED_VERSION = 5;

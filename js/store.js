@@ -91,16 +91,16 @@ export function availableLevels(q) {
 // 시드 병합: 새 시드 문항 추가 + 기존 시드 문항의 내용 개선분 동기화
 // (사용자가 직접 추가한 문항은 건드리지 않음, 사용자가 지운 시드는 부활 안 함.
 //  시드 문항을 직접 수정한 경우에는 버전 업 시 최신 시드 내용으로 덮어써진다 — 학습 기록은 유지)
-function mergeSeeds() {
+function mergeSeeds({ syncContent = true } = {}) {
   const deleted = new Set(load(K.deletedSeeds, []));
   const have = new Map(questions.map((q, i) => [q.id, i]));
   let changed = 0;
   for (const sq of SEED_QUESTIONS) {
     if (deleted.has(sq.id)) continue;
     if (!have.has(sq.id)) {
-      questions.push({ ...sq });
+      questions.push(normalize({ ...sq }));
       changed++;
-    } else {
+    } else if (syncContent) {
       const i = have.get(sq.id);
       const cur = questions[i];
       if (cur.questionEnglish !== sq.questionEnglish || cur.questionKorean !== sq.questionKorean ||
@@ -129,7 +129,7 @@ export function init() {
   }
   progress = load(K.progress, {});
   daily = load(K.daily, {});
-  settings = { ...DEFAULT_SETTINGS, ...load(K.settings, {}) };
+  settings = sanitizeSettings(load(K.settings, {}));
 }
 
 // ── 질문 CRUD ──────────────────────────────────────────────────
@@ -329,9 +329,18 @@ export function getDueQuestions(now = Date.now()) {
 // ── 설정 ───────────────────────────────────────────────────────
 export function getSettings() { return { ...settings }; }
 export function saveSettings(patch) {
-  settings = { ...settings, ...patch };
+  settings = sanitizeSettings({ ...settings, ...patch });
   save(K.settings, settings);
   return settings;
+}
+
+// 외부 입력(백업 복원 등)으로 들어온 설정값 검증 — 화면에 그대로 출력되는 값은 허용 목록만
+function sanitizeSettings(s) {
+  const out = { ...DEFAULT_SETTINGS, ...s };
+  if (!LEVEL_ORDER.includes(out.targetLevel)) out.targetLevel = 'IL';
+  if (!['female', 'male'].includes(out.voiceGender)) out.voiceGender = 'female';
+  if (!['webspeech', 'openai'].includes(out.ttsProvider)) out.ttsProvider = 'webspeech';
+  return out;
 }
 
 // ── Import / Export ────────────────────────────────────────────
@@ -346,6 +355,7 @@ export function exportJSON() {
     questions, progress, daily,
     settings,
     deletedSeedIds: load(K.deletedSeeds, []), // 새 기기 복원 시 삭제한 시드가 부활하지 않도록
+    seedVersion: SEED_VERSION,
     exportedAt: new Date().toISOString(),
   }, null, 2);
 }
@@ -372,12 +382,14 @@ export function importJSON(text) {
   daily = data.daily && typeof data.daily === 'object' ? data.daily : {};
   if (Array.isArray(data.deletedSeedIds)) save(K.deletedSeeds, data.deletedSeedIds.filter((x) => typeof x === 'string'));
   if (data.settings && typeof data.settings === 'object') {
-    settings = { ...DEFAULT_SETTINGS, ...data.settings };
+    settings = sanitizeSettings(data.settings);
     save(K.settings, settings);
   }
   save(K.questions, questions); save(K.progress, progress); save(K.daily, daily);
-  // 오래된 백업을 복원해도 이후 추가된 시드 문항이 사라지지 않도록 병합 (tombstone 존중)
-  mergeSeeds();
+  // 오래된 백업을 복원해도 이후 추가된 시드 문항이 사라지지 않도록 병합 (tombstone 존중).
+  // 현재 버전에서 만든 백업이면 사용자가 고친 시드 문항 내용을 덮어쓰지 않고 누락 문항만 추가한다.
+  const backupVersion = Number(data.seedVersion) || 0;
+  mergeSeeds({ syncContent: backupVersion < SEED_VERSION });
   return questions.length;
 }
 
@@ -436,29 +448,28 @@ export function importCSV(text) {
     // status 열이 있을 때만 정규화 — 열이 없는 CSV로 기존 pending이 소리 없이 승인되지 않도록
     if (header.includes('status')) obj.status = obj.status === 'pending' ? 'pending' : 'approved';
     else delete obj.status;
-    // 레벨별 답변 열 → levelAnswers (열이 하나도 없으면 기존 레벨 답변 유지)
+    // 대상 문항 결정: id 일치 → 없으면 같은 영어 질문 (재가져오기 시 전체 복제 방지)
+    const target = (obj.id && getQuestion(obj.id)) ||
+      questions.find((q) => (q.questionEnglish || '').trim() === String(obj.questionEnglish).trim()) || null;
+
+    // 레벨별 답변 열 → levelAnswers. 파일에 없는 열은 기존 값을 유지한다.
     if (LEVEL_CSV_FIELDS.some((f) => header.includes(f))) {
-      const prev = (obj.id && getQuestion(obj.id)) || {};
-      const la = { ...(prev.levelAnswers || {}) };
+      const la = { ...((target && target.levelAnswers) || {}) };
       for (const lv of LEVEL_ORDER.filter((x) => x !== 'IL')) {
-        const en = obj['answerEnglish' + lv], ko = obj['answerKorean' + lv];
-        if (header.includes('answerEnglish' + lv)) {
-          if (en && String(en).trim()) la[lv] = { en: String(en), ko: String(ko || '') };
-          else delete la[lv];
-        }
+        const hasEn = header.includes('answerEnglish' + lv);
+        const hasKo = header.includes('answerKorean' + lv);
+        const en = String(obj['answerEnglish' + lv] ?? '').trim();
+        const ko = String(obj['answerKorean' + lv] ?? '').trim();
+        const cur = la[lv] || { en: '', ko: '' };
+        const next = { en: hasEn ? en : cur.en, ko: hasKo ? ko : cur.ko };
+        if (next.en) la[lv] = next; else delete la[lv];
         delete obj['answerEnglish' + lv]; delete obj['answerKorean' + lv];
       }
       obj.levelAnswers = la;
     }
-    const existing = obj.id && getQuestion(obj.id);
-    if (existing) {
-      updateQuestion(obj.id, obj);
-    } else {
-      // id가 없으면 같은 영어 질문을 가진 기존 문항에 병합 (재가져오기 시 전체 복제 방지)
-      const dup = questions.find((q) => (q.questionEnglish || '').trim() === String(obj.questionEnglish).trim());
-      if (dup) updateQuestion(dup.id, { ...obj, id: dup.id });
-      else addQuestion(obj);
-    }
+
+    if (target) updateQuestion(target.id, { ...obj, id: target.id });
+    else addQuestion(obj);
     count++;
   }
   return count;

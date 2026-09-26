@@ -4,7 +4,7 @@ import * as tts from '../tts.js';
 import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
   escapeHtml, typeBadge, typeLabel, highlightKey, toast,
-  levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount,
+  levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount, speakSeconds,
 } from '../ui.js';
 
 export function renderStudyIndex(root) {
@@ -47,10 +47,10 @@ export function renderStudyList(root, { part, type }) {
   const level = store.getSettings().targetLevel || 'IL';
   root.innerHTML = `
     ${backBar(title + ' · ' + list.length + '문항', '#/study')}
-    <div class="list-level">
+    <a class="list-level" href="#/study">
       <span class="list-level-label">모범답변 레벨</span>
-      ${levelPickerHtml(level, { id: 'listLevel', small: true })}
-    </div>
+      <span><span class="lv-tag">${escapeHtml(level)}</span> <span class="list-level-change">변경 ›</span></span>
+    </a>
     <div class="q-list">
       ${list.map((q) => {
         const p = store.getProgress(q.id);
@@ -68,11 +68,6 @@ export function renderStudyList(root, { part, type }) {
         </div>`;
       }).join('')}
     </div>`;
-
-  bindLevelPicker(root, 'listLevel', (lv) => {
-    store.saveSettings({ targetLevel: lv });
-    toast(`목표 레벨을 ${lv}로 설정했습니다`);
-  });
 
   // 목록에서 바로 듣기 (상세로 이동하지 않음)
   root.querySelectorAll('.item-play').forEach((btn) => {
@@ -127,6 +122,7 @@ export function renderStudyDetail(root, id) {
         <div class="level-note" id="ansNote"></div>
         <div class="card-en answer-text" id="ansEn"></div>
         <button class="speak-btn" id="aSpeak">🔊 답변 듣기</button>
+        ${q.part === 4 ? '<p class="desc small">Part 4는 실제 시험에서 화면의 일정표를 보고 답합니다. 이 답변은 가상의 일정표를 기준으로 한 예시입니다.</p>' : ''}
       </div>
 
       <div class="card">
@@ -143,7 +139,7 @@ export function renderStudyDetail(root, id) {
     const a = store.getAnswer(q, level);
     current = a.level;
     const L = LEVELS[a.level];
-    $('#ansNote').textContent = `${a.level} · ${L.full} · ${L.score} · ${wordCount(a.en)}단어`;
+    $('#ansNote').textContent = `${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
     $('#ansEn').textContent = a.en;
     $('#ansKo').textContent = a.ko;
   }

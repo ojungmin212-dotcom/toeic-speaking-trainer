@@ -24,8 +24,14 @@ export function bindLevelPicker(root, id, onPick) {
 }
 
 export function levelInfoHtml(level) {
-  const L = LEVELS[level] || LEVELS.IL;
-  return `<div class="level-info"><div class="level-name"><b>${level}</b> ${escapeHtml(L.full)} <span class="level-score">${escapeHtml(L.score)}</span></div><p>${escapeHtml(L.desc)}</p></div>`;
+  const lv = LEVELS[level] ? level : 'IL';
+  const L = LEVELS[lv];
+  return `<div class="level-info"><div class="level-name"><b>${lv}</b> ${escapeHtml(L.full)} <span class="level-score">${escapeHtml(L.score)}</span></div><p>${escapeHtml(L.desc)}</p>${L.guide ? `<p class="level-guide">${escapeHtml(L.guide)}</p>` : ''}</div>`;
+}
+
+// 원어민 속도(약 150단어/분) 기준 답변 소요 시간 (초)
+export function speakSeconds(text) {
+  return Math.max(1, Math.round(wordCount(text) / 150 * 60));
 }
 
 export function wordCount(s) {

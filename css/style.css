@@ -330,6 +330,15 @@ a.q-item-body { display: block; flex: 1; min-width: 0; padding: 12px 0 12px 14px
   background: var(--accent); color: var(--accent-text); vertical-align: 1px;
 }
 a.stat:hover .stat-val { text-decoration: underline; }
+.stat-link .stat-val { color: var(--link); }
+.level-guide { font-size: 0.8rem !important; margin-top: 4px !important; }
+.list-level-change { font-size: 0.8rem; color: var(--link); }
+.play-summary {
+  display: block; width: 100%; text-align: left; margin-top: 10px; padding: 10px 0 0;
+  border: none; border-top: 1px solid var(--card-line); background: none;
+  font-size: 0.82rem; color: var(--link);
+}
+.muted { color: var(--muted); font-size: 0.76rem; }
 .admin-form textarea {
   display: block; width: 100%; margin-top: 4px; background: var(--field);
   border: 1px solid var(--card-line); border-radius: 8px; padding: 9px 11px; font: inherit; font-size: 0.93rem;

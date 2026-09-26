@@ -34,6 +34,15 @@ export function renderExerciseSetup(root) {
   root.innerHTML = `
     ${backBar('듣기 모드')}
     <p class="desc">재생 목록을 고르면 자동으로 재생됩니다.<br>영어 질문 → 생각 시간 → 한국어 해석 → 모범답변 순서로 계속 반복됩니다.</p>
+
+    <div class="card level-card">
+      <div class="card-label">모범답변 레벨</div>
+      ${levelPickerHtml(s.targetLevel || 'IL', { id: 'exLevel' })}
+      <div id="exLevelInfo">${levelInfoHtml(s.targetLevel || 'IL')}</div>
+      <button type="button" class="play-summary" id="exSummary">${escapeHtml(summaryText(s))}</button>
+    </div>
+
+    <h3 class="section-title">재생 목록</h3>
     <nav class="menu">
       <a class="menu-btn primary" href="#/exercise/play/all">전체 학습<span class="menu-desc">모든 질문 (취약 문제 우선 출제)</span></a>
       ${Object.entries(PARTS).map(([n, p]) =>
@@ -43,13 +52,7 @@ export function renderExerciseSetup(root) {
       <a class="menu-btn ${due ? '' : 'disabled'}" ${due ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/due">복습 예정만<span class="menu-desc">${due}문항</span></a>
     </nav>
 
-    <h3 class="section-title">모범답변 레벨</h3>
-    <div class="card level-card">
-      ${levelPickerHtml(s.targetLevel || 'IL', { id: 'exLevel' })}
-      <div id="exLevelInfo">${levelInfoHtml(s.targetLevel || 'IL')}</div>
-    </div>
-
-    <h3 class="section-title">재생 단계</h3>
+    <h3 class="section-title" id="exSettings">재생 단계</h3>
     <div class="card">
       ${toggleRow('playQuestionKo', '한국어 질문 해석', s.playQuestionKo)}
       ${toggleRow('playAnswerEn', '영어 모범답변', s.playAnswerEn)}
@@ -57,23 +60,38 @@ export function renderExerciseSetup(root) {
       ${toggleRow('repeatQuestion', '영어 질문 2회 반복', s.repeatQuestion)}
       ${toggleRow('beepAfterQuestion', '질문 후 신호음 (실제 시험처럼)', s.beepAfterQuestion)}
       <div class="setting-row">
-        <span>생각 시간</span>
+        <span>생각·답변 시간<br><small class="muted">직접 말해 보려면 15초 이상</small></span>
         <select id="thinkSeconds">
-          ${[3, 4, 5, 7, 10].map((v) => `<option value="${v}" ${s.thinkSeconds === v ? 'selected' : ''}>${v}초</option>`).join('')}
+          ${[3, 4, 5, 7, 10, 15, 30, 45, 60].map((v) => `<option value="${v}" ${s.thinkSeconds === v ? 'selected' : ''}>${v}초</option>`).join('')}
         </select>
       </div>
     </div>`;
 
+  const refreshSummary = () => { root.querySelector('#exSummary').textContent = summaryText(store.getSettings()); };
+  root.querySelector('#exSummary').addEventListener('click', () => {
+    root.querySelector('#exSettings').scrollIntoView({ block: 'start' });
+  });
   root.querySelectorAll('input[type=checkbox][data-key]').forEach((cb) => {
-    cb.addEventListener('change', () => store.saveSettings({ [cb.dataset.key]: cb.checked }));
+    cb.addEventListener('change', () => { store.saveSettings({ [cb.dataset.key]: cb.checked }); refreshSummary(); });
   });
   root.querySelector('#thinkSeconds').addEventListener('change', (e) => {
     store.saveSettings({ thinkSeconds: Number(e.target.value) });
+    refreshSummary();
   });
   bindLevelPicker(root, 'exLevel', (lv) => {
     store.saveSettings({ targetLevel: lv });
     root.querySelector('#exLevelInfo').innerHTML = levelInfoHtml(lv);
+    refreshSummary();
   });
+}
+
+// 재생 설정 한 줄 요약 — 재생 목록을 누르기 전에 무엇이 나올지 보이도록
+function summaryText(s) {
+  const parts = [`${s.targetLevel || 'IL'} 답변`, `생각 ${s.thinkSeconds}초`];
+  parts.push(s.playQuestionKo ? '질문 해석 켬' : '질문 해석 끔');
+  if (!s.playAnswerEn) parts.push('모범답변 끔');
+  else parts.push(s.playAnswerKo ? '답변 해석 켬' : '답변 해석 끔');
+  return parts.join(' · ') + '  (설정 ↓)';
 }
 
 function toggleRow(key, label, checked) {

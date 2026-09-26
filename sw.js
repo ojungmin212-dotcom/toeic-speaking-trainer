@@ -2,7 +2,7 @@
 // - 오류 응답(4xx/5xx)은 절대 캐시하지 않는다 (캐시 오염 방지)
 // - 오디오(불변 mp3)는 캐시 우선: 반복 청취 시 재다운로드 없음, 오프라인 재생 가능
 // - 나머지는 네트워크 우선 + 실패 시 캐시 폴백
-const CACHE = 'tst-v6';
+const CACHE = 'tst-v7';
 const AUDIO_CACHE = 'tst-audio-v1'; // 앱 버전과 분리 — 업데이트해도 받아 둔 음성 유지
 const ASSETS = [
   './', './index.html', './css/style.css', './manifest.webmanifest',
