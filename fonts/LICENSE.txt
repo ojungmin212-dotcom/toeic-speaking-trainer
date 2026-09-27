@@ -1,0 +1,5 @@
+NanumBarunGothic (나눔바른고딕)
+Copyright (c) NAVER Corporation (https://hangeul.naver.com/font)
+Licensed under the SIL Open Font License, Version 1.1 — https://openfontlicense.org
+
+Web subset files (woff2) from https://github.com/moonspam/NanumBarunGothic

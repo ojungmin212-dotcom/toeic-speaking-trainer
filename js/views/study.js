@@ -127,7 +127,13 @@ export function renderStudyDetail(root, id, ctx = {}) {
 
   root.innerHTML = `
     <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2>
-      ${pos >= 0 ? `<span class="detail-pos">${escapeHtml(navTitle)} · ${pos + 1} / ${seq.length}</span>` : ''}</div>
+      ${pos >= 0 ? `<span class="detail-pos">${escapeHtml(navTitle)}</span>` : ''}</div>
+    ${pos >= 0 ? `
+    <div class="title-view">
+      <button class="btn-v" id="tPrev" aria-label="이전 질문" ${prevQ ? '' : 'disabled'}>‹</button>
+      <strong>${escapeHtml(navTitle)} ${pos + 1}번 <span class="tv-count">/ ${seq.length}</span></strong>
+      <button class="btn-v" id="tNext" aria-label="다음 질문" ${nextQ ? '' : 'disabled'}>›</button>
+    </div>` : ''}
     <div class="detail with-bottom-nav">
       <div class="detail-meta">
         ${typeBadge(q.questionType)}
@@ -136,7 +142,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <button class="fav-btn ${p.favorite ? 'on' : ''}" id="favBtn">${p.favorite ? '♥' : '♡'}</button>
       </div>
 
-      <div class="card">
+      <div class="card q-box">
         <div class="card-label">Question</div>
         <div class="card-en big">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
         ${s.beginnerMode && typeInfo ? `<div class="hint">💡 ${escapeHtml(typeInfo.hint)}</div>` : ''}
@@ -207,6 +213,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
   if (pos >= 0) {
     $('#dPrev').addEventListener('click', () => go(prevQ));
     $('#dNext').addEventListener('click', () => go(nextQ));
+    $('#tPrev').addEventListener('click', () => go(prevQ));
+    $('#tNext').addEventListener('click', () => go(nextQ));
     // 휴대폰: 좌우로 밀어서 이동 (세로 스크롤·레벨 탭과 구분되도록 가로 이동이 충분할 때만)
     let sx = 0, sy = 0, tracking = false;
     const area = $('.detail');

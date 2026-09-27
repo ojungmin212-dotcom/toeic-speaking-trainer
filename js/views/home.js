@@ -1,4 +1,4 @@
-// 메인 화면 — 대시보드형 (히어로 카드 + 스탯 행 + 메뉴 리스트)
+// 메인 화면 — 오늘의 학습 요약 + 학습 메뉴 목록
 import * as store from '../store.js';
 import { icon, fmtTime, escapeHtml } from '../ui.js';
 
@@ -10,7 +10,6 @@ export function renderHome(root) {
   const due = store.getDueQuestions().length;
   const weak = store.getWeakQuestions().length;
   const streak = store.getStreak();
-  const weakTypes = store.getWeakTypes();
 
   const now = new Date();
   const dateLabel = `${now.getMonth() + 1}월 ${now.getDate()}일 ${['일', '월', '화', '수', '목', '금', '토'][now.getDay()]}요일`;
@@ -20,11 +19,6 @@ export function renderHome(root) {
     : '아직 오늘 학습 기록이 없습니다. 듣기 모드로 시작해 보세요.';
 
   root.innerHTML = `
-    <header class="brand">
-      <span class="brand-dot"></span>
-      <span class="brand-name">TOEIC Speaking Trainer</span>
-    </header>
-
     <section class="hero card">
       <div class="hero-top">
         <span class="hero-title">오늘의 학습</span>
@@ -43,8 +37,8 @@ export function renderHome(root) {
         <div class="stat"><span class="stat-label">연속 학습</span><span class="stat-val">${streak}일</span></div>
         <div class="stat"><span class="stat-label">복습 예정</span><span class="stat-val">${due}개</span></div>
         <div class="stat"><span class="stat-label">취약 질문</span><span class="stat-val">${weak}개</span></div>
+        <div class="stat"><span class="stat-label">누적 듣기</span><span class="stat-val">${totals.listened}회</span></div>
         <div class="stat"><span class="stat-label">누적 시간</span><span class="stat-val">${fmtTime(totals.studySeconds)}</span></div>
-        ${weakTypes.length ? `<div class="stat"><span class="stat-label">취약 유형</span><span class="stat-val">${weakTypes.length}개</span></div>` : ''}
       </div>
     </section>
 

@@ -12,6 +12,21 @@ import { renderSettings } from './views/settings.js';
 store.init();
 
 const root = document.getElementById('app');
+const drawer = document.getElementById('drawer');
+const menuBtn = document.getElementById('menuBtn');
+
+function setDrawer(open) {
+  if (!drawer) return;
+  drawer.classList.toggle('hidden', !open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.textContent = open ? '✕' : '☰';
+}
+if (menuBtn) menuBtn.addEventListener('click', () => setDrawer(drawer.classList.contains('hidden')));
+
+// 상단 메뉴에서 현재 화면 표시
+function markNav(section) {
+  document.querySelectorAll('[data-route]').forEach((a) => a.classList.toggle('on', a.dataset.route === section));
+}
 
 function route() {
   // 화면 전환 시 진행 중인 재생/세션 정리
@@ -19,10 +34,14 @@ function route() {
   stopListening();
   stopQuiz();
   root.onclick = null;
+  setDrawer(false);
   window.scrollTo(0, 0);
 
   const hash = location.hash || '#/';
   const parts = hash.slice(2).split('/').filter(Boolean); // '#/study/part/3' → ['study','part','3']
+  markNav(parts[0] || 'home');
+  // 질문 상세의 하단 고정 이동 바가 사이트 하단을 가리지 않도록
+  document.body.classList.toggle('has-bottom-nav', parts[0] === 'study' && parts.includes('q'));
 
   if (parts.length === 0) return renderHome(root);
 
