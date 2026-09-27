@@ -28,6 +28,9 @@ function route() {
 
   switch (parts[0]) {
     case 'study':
+      // 목록 경유 상세: #/study/part/5/q/seed-081 · #/study/type/time/q/seed-001 (이전/다음 이동 기준 목록)
+      if (parts[1] === 'part' && parts[3] === 'q') return renderStudyDetail(root, parts[4], { part: Number(parts[2]) });
+      if (parts[1] === 'type' && parts[3] === 'q') return renderStudyDetail(root, parts[4], { type: parts[2] });
       if (parts[1] === 'part') return renderStudyList(root, { part: Number(parts[2]) });
       if (parts[1] === 'type') return renderStudyList(root, { type: parts[2] });
       if (parts[1] === 'q') return renderStudyDetail(root, parts[2]);

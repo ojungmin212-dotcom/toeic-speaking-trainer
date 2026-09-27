@@ -41,10 +41,21 @@ export function renderStudyIndex(root) {
   });
 }
 
+// 상세 화면 간 이동 상태 — 목록 복귀 시 마지막으로 본 문항 위치, 다음 문항에 이어서 보여줄 비교 레벨
+let lastViewedId = null;
+let carryLevel = null;
+
+function listBase({ part, type }) {
+  if (part) return `#/study/part/${part}`;
+  if (type) return `#/study/type/${encodeURIComponent(type)}`;
+  return null;
+}
+
 export function renderStudyList(root, { part, type }) {
   const list = store.getQuestions({ part, type });
   const title = part ? PARTS[part].name : typeLabel(type);
   const level = store.getSettings().targetLevel || 'IL';
+  const base = listBase({ part, type });
   root.innerHTML = `
     ${backBar(title + ' · ' + list.length + '문항', '#/study')}
     <a class="list-level" href="#/study">
@@ -55,8 +66,8 @@ export function renderStudyList(root, { part, type }) {
       ${list.map((q) => {
         const p = store.getProgress(q.id);
         return `
-        <div class="q-item with-play">
-          <a class="q-item-body" href="#/study/q/${escapeHtml(q.id)}">
+        <div class="q-item with-play" data-qid="${escapeHtml(q.id)}">
+          <a class="q-item-body" href="${base}/q/${escapeHtml(q.id)}">
             <div class="q-item-top">${typeBadge(q.questionType)}
               <span class="diff">${'★'.repeat(q.difficulty)}</span>
               ${p.favorite ? '<span class="fav">♥</span>' : ''}
@@ -68,6 +79,16 @@ export function renderStudyList(root, { part, type }) {
         </div>`;
       }).join('')}
     </div>`;
+
+  // 상세에서 여러 문항을 넘겨 본 뒤 돌아오면, 마지막으로 본 문항 위치로 스크롤
+  if (lastViewedId) {
+    const item = [...root.querySelectorAll('.q-item[data-qid]')].find((el) => el.dataset.qid === lastViewedId);
+    if (item) {
+      item.scrollIntoView({ block: 'center' });
+      item.classList.add('just-viewed');
+    }
+    lastViewedId = null;
+  }
 
   // 목록에서 바로 듣기 (상세로 이동하지 않음)
   root.querySelectorAll('.item-play').forEach((btn) => {
@@ -82,19 +103,32 @@ export function renderStudyList(root, { part, type }) {
   });
 }
 
-export function renderStudyDetail(root, id) {
+export function renderStudyDetail(root, id, ctx = {}) {
   const q = store.getQuestion(id);
   if (!q) { root.innerHTML = backBar('질문을 찾을 수 없습니다', '#/study'); return; }
   const s = store.getSettings();
   const p = store.getProgress(id);
   const typeInfo = QUESTION_TYPES[q.questionType];
   const levels = store.availableLevels(q);
-  // 상세 화면의 레벨 탭은 비교용 — 목표 레벨로 시작하되 탭 전환은 전역 설정을 바꾸지 않는다
-  let current = store.getAnswer(q, s.targetLevel).level;
+  // 상세 화면의 레벨 탭은 비교용 — 목표 레벨로 시작하되 탭 전환은 전역 설정을 바꾸지 않는다.
+  // 이전/다음으로 넘어온 경우에는 보던 비교 레벨을 이어서 보여준다.
+  let current = store.getAnswer(q, carryLevel || s.targetLevel).level;
+  carryLevel = null;
+  lastViewedId = q.id;
+
+  // 이동 기준 목록: 목록에서 들어왔으면 그 목록, 아니면(통계 화면 등) 같은 파트
+  const nav = ctx.part || ctx.type ? ctx : { part: q.part };
+  const base = listBase(nav);
+  const seq = store.getQuestions(nav);
+  const pos = seq.findIndex((x) => x.id === q.id);
+  const prevQ = pos > 0 ? seq[pos - 1] : null;
+  const nextQ = pos >= 0 && pos < seq.length - 1 ? seq[pos + 1] : null;
+  const navTitle = nav.part ? PARTS[nav.part].name : typeLabel(nav.type);
 
   root.innerHTML = `
-    <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2></div>
-    <div class="detail">
+    <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2>
+      ${pos >= 0 ? `<span class="detail-pos">${escapeHtml(navTitle)} · ${pos + 1} / ${seq.length}</span>` : ''}</div>
+    <div class="detail with-bottom-nav">
       <div class="detail-meta">
         ${typeBadge(q.questionType)}
         <span class="badge badge-part">Part ${q.part}</span>
@@ -131,7 +165,13 @@ export function renderStudyDetail(root, id) {
       </div>
 
       <div class="detail-stats">듣기 ${p.listenCount}회 · 정답 ${p.correctCount} · 오답 ${p.incorrectCount}</div>
-    </div>`;
+    </div>
+    ${pos >= 0 ? `
+    <nav class="detail-nav" aria-label="질문 이동">
+      <button class="nav-btn" id="dPrev" ${prevQ ? '' : 'disabled'}>← 이전</button>
+      <span class="detail-nav-pos">${pos + 1} / ${seq.length}</span>
+      <button class="nav-btn primary-nav" id="dNext" ${nextQ ? '' : 'disabled'}>${nextQ ? '다음 →' : '마지막 질문'}</button>
+    </nav>` : ''}`;
 
   const $ = (sel) => root.querySelector(sel);
 
@@ -157,10 +197,36 @@ export function renderStudyDetail(root, id) {
     tts.speak(store.getAnswer(q, current).en, 'en-US');
   });
 
-  // 보던 목록(파트/유형, 스크롤 위치)으로 되돌아가기
+  // 이전/다음 질문 — 방문 기록을 쌓지 않고 교체(replace)해서, ← 한 번이면 목록으로 돌아간다
+  const go = (target) => {
+    if (!target) return;
+    tts.cancel();
+    carryLevel = current;
+    location.replace(`${base}/q/${encodeURIComponent(target.id)}`);
+  };
+  if (pos >= 0) {
+    $('#dPrev').addEventListener('click', () => go(prevQ));
+    $('#dNext').addEventListener('click', () => go(nextQ));
+    // 휴대폰: 좌우로 밀어서 이동 (세로 스크롤·레벨 탭과 구분되도록 가로 이동이 충분할 때만)
+    let sx = 0, sy = 0, tracking = false;
+    const area = $('.detail');
+    area.addEventListener('touchstart', (e) => {
+      if (e.touches.length !== 1 || e.target.closest('.seg, button, textarea, input')) { tracking = false; return; }
+      tracking = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    }, { passive: true });
+    area.addEventListener('touchend', (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > 70 && Math.abs(dy) < 45) go(dx < 0 ? nextQ : prevQ);
+    }, { passive: true });
+  }
+
+  // 보던 목록으로 되돌아가기 (마지막으로 본 문항 위치로 스크롤됨)
   $('#detailBack').addEventListener('click', () => {
     if (history.length > 1) history.back();
-    else location.hash = '#/study';
+    else location.hash = base;
   });
 
   $('#favBtn').addEventListener('click', (e) => {

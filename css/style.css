@@ -17,6 +17,7 @@
   --warn: #9a6700;
   --mark: #ffd335;
   --shadow: 0 1px 2px rgba(20, 28, 58, 0.06), 0 4px 14px rgba(20, 28, 58, 0.06);
+  --nav-bg: #eef1f7;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -34,6 +35,7 @@
     --warn: #ffd335;
     --mark: #ffd335;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.22);
+    --nav-bg: #161a37;
   }
 }
 
@@ -348,6 +350,22 @@ a.stat:hover .stat-val { text-decoration: underline; }
 .lv-fields { margin: 4px 0 10px; border: 1px dashed var(--card-line); border-radius: 8px; padding: 8px 12px; }
 .lv-fields summary { cursor: pointer; font-size: 0.86rem; font-weight: 600; padding: 4px 0; }
 .lv-fields[open] summary { margin-bottom: 8px; }
+
+/* ── 질문 상세 이전/다음 ─────────────── */
+.detail-pos { margin-left: auto; font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.detail.with-bottom-nav { padding-bottom: 76px; }
+.detail-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  display: flex; align-items: center; gap: 8px;
+  max-width: 560px; margin: 0 auto;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, transparent, var(--nav-bg) 28%);
+}
+.detail-nav .nav-btn { padding: 13px 0; }
+.detail-nav .nav-btn:disabled { opacity: 0.4; cursor: default; }
+.detail-nav .primary-nav:not(:disabled) { background: var(--accent); color: var(--accent-text); border-color: transparent; }
+.detail-nav-pos { flex: none; min-width: 56px; text-align: center; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.q-item.just-viewed { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 /* ── 기타 ───────────────────────────── */
 .hidden { display: none !important; }
