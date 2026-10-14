@@ -12,6 +12,7 @@ const K = {
   seedVersion: 'tst.seedVersion',
   deletedSeeds: 'tst.deletedSeedIds', // 사용자가 지운 시드가 업데이트 때 부활하지 않도록
   userSets: 'tst.userSets.v1',        // AI 생성·사용자 세트 (Part 3 상황 안내 · Part 4 일정표)
+  deviceId: 'tst.deviceId',           // 기기 간 동기화에서 이 기기의 학습 횟수를 따로 세기 위한 id
 };
 
 function load(key, fallback) {
@@ -30,6 +31,73 @@ let progress = {};   // { [questionId]: Progress }
 let daily = {};      // { 'YYYY-MM-DD': {listened, correct, incorrect, studySeconds} }
 let settings = {};
 let userSets = {};   // { [setId]: Set } — 시드 세트(SEED_SETS)와 같은 모양, id는 'us-…'
+let deviceId = '';
+
+// ── 기기별 횟수 (서버 없는 동기화용) ─────────────────────────────
+// 두 기기의 기록을 합칠 때 같은 학습을 두 번 세지 않도록, 횟수를 기기별로 따로 세고 화면에는 합계를 보여 준다.
+// 합칠 때는 기기별로 큰 값을 취한다 → 몇 번을 어느 방향으로 합쳐도 결과가 같다.
+// 이 기능 이전의 횟수는 'legacy' 몫 (백업 복원으로 두 기기가 같은 옛 기록을 가져도 한 번만 센다).
+// progress[id].dev = { [기기]: { c: 정답, i: 오답, l: 듣기 } } · daily[날짜].dev = { [기기]: { listened, correct, incorrect, studySeconds } }
+const DEV_KEY = /^(legacy|d[a-z0-9]{6,16})$/;
+const P_COUNTS = { c: 'correctCount', i: 'incorrectCount', l: 'listenCount' };
+const D_COUNTS = ['listened', 'correct', 'incorrect', 'studySeconds'];
+const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : 0);
+
+function loadDeviceId() {
+  let id = '';
+  try { id = localStorage.getItem(K.deviceId) || ''; } catch {}
+  if (!/^d[a-z0-9]{6,16}$/.test(id)) {
+    id = 'd' + Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2, 8);
+    try { localStorage.setItem(K.deviceId, id); } catch {}
+  }
+  return id;
+}
+
+// 기기별 횟수 표 (없으면 기존 합계를 legacy 몫으로)
+function devOf(rec, fields) {
+  if (rec && rec.dev && typeof rec.dev === 'object') return rec.dev;
+  const legacy = {};
+  for (const [k, f] of fields) legacy[k] = num(rec && rec[f]);
+  return Object.values(legacy).some(Boolean) ? { legacy } : {};
+}
+const P_FIELDS = Object.entries(P_COUNTS);
+const D_FIELDS = D_COUNTS.map((f) => [f, f]);
+
+function sumDev(dev, key) {
+  return Object.values(dev).reduce((sum, v) => sum + num(v && v[key]), 0);
+}
+function withProgressTotals(rec, dev) {
+  const out = { ...rec, dev };
+  for (const [k, f] of P_FIELDS) out[f] = sumDev(dev, k);
+  return out;
+}
+function withDailyTotals(dev) {
+  const out = { dev };
+  for (const f of D_COUNTS) out[f] = sumDev(dev, f);
+  return out;
+}
+// 이 기기 몫에 더한 새 기기별 표
+function bumpDev(dev, patch) {
+  const next = { ...dev };
+  const mine = { ...(next[deviceId] || {}) };
+  for (const [k, v] of Object.entries(patch)) mine[k] = num(mine[k]) + v;
+  next[deviceId] = mine;
+  return next;
+}
+// 두 기기별 표 합치기 — 기기·항목마다 큰 값
+function maxDev(a, b) {
+  const out = {};
+  for (const src of [a, b]) {
+    for (const [key, v] of Object.entries(src || {})) {
+      if (!DEV_KEY.test(key) || !v || typeof v !== 'object') continue;
+      const cur = out[key] || (out[key] = {});
+      for (const [f, n] of Object.entries(v)) {
+        if (/^[a-zA-Z]{1,16}$/.test(f)) cur[f] = Math.max(num(cur[f]), num(n));
+      }
+    }
+  }
+  return out;
+}
 
 export const DEFAULT_SETTINGS = {
   ttsProvider: 'webspeech',      // webspeech | openai
@@ -216,6 +284,7 @@ export function init() {
   daily = load(K.daily, {});
   settings = sanitizeSettings(load(K.settings, {}));
   userSets = cleanSets(load(K.userSets, {})); // 문항 정규화(setId 확인) 전에 읽는다
+  deviceId = loadDeviceId();
   questions = load(K.questions, null);
   if (Array.isArray(questions)) questions = questions.map(normalize);
   if (!questions) {
@@ -317,32 +386,28 @@ function todayKey() {
 }
 function bumpDaily(patch) {
   const key = todayKey();
-  const cur = daily[key] || { listened: 0, correct: 0, incorrect: 0, studySeconds: 0 };
-  daily[key] = {
-    listened: cur.listened + (patch.listened || 0),
-    correct: cur.correct + (patch.correct || 0),
-    incorrect: cur.incorrect + (patch.incorrect || 0),
-    studySeconds: cur.studySeconds + (patch.studySeconds || 0),
-  };
+  daily[key] = withDailyTotals(bumpDev(devOf(daily[key], D_FIELDS), patch));
   save(K.daily, daily);
 }
 
 export function recordListen(id) {
   const p = getProgress(id);
-  progress[id] = { ...p, listenCount: (p.listenCount || 0) + 1 };
+  progress[id] = withProgressTotals(p, bumpDev(devOf(p, P_FIELDS), { l: 1 }));
   save(K.progress, progress);
   bumpDaily({ listened: 1 });
 }
 
 export function recordAnswer(id, correct) {
-  progress[id] = applyAnswer(getProgress(id), correct);
+  const p = getProgress(id);
+  // 복습 박스·다음 복습일은 applyAnswer, 횟수는 기기별 표에서 다시 합산
+  progress[id] = withProgressTotals(applyAnswer(p, correct), bumpDev(devOf(p, P_FIELDS), correct ? { c: 1 } : { i: 1 }));
   save(K.progress, progress);
   bumpDaily(correct ? { correct: 1 } : { incorrect: 1 });
 }
 
 export function toggleFavorite(id) {
   const p = getProgress(id);
-  progress[id] = { ...p, favorite: !p.favorite };
+  progress[id] = { ...p, favorite: !p.favorite, favoriteAt: Date.now() }; // 합칠 때 나중에 바꾼 쪽을 따른다
   save(K.progress, progress);
   return progress[id].favorite;
 }
@@ -505,6 +570,96 @@ export function importJSON(text) {
   mergeSeeds({ syncContent: backupVersion < SEED_VERSION });
   pruneUserSets();
   return questions.length;
+}
+
+// ── 기기 간 동기화 (서버 없이 코드·파일로) ─────────────────────────
+// 내보내기: 학습 기록 + 직접 추가·AI 생성 문항과 세트 + 지운 시드 목록. 설정과 시드 문항 내용은 기기마다 그대로 둔다.
+export function exportSync() {
+  return {
+    app: 'tst-sync', v: 1, deviceId, exportedAt: new Date().toISOString(),
+    seedVersion: SEED_VERSION,
+    questions: questions.filter((q) => !isSeedId(q.id)),
+    userSets,
+    deletedSeedIds: load(K.deletedSeeds, []),
+    progress, daily,
+  };
+}
+
+function cleanProgress(rec) {
+  if (!rec || typeof rec !== 'object') return null;
+  const out = {
+    favorite: rec.favorite === true,
+    box: Math.min(5, Math.max(0, Math.floor(num(rec.box)))),
+    lastStudiedAt: num(rec.lastStudiedAt) || null,
+    nextReviewAt: num(rec.nextReviewAt),
+  };
+  if (num(rec.favoriteAt)) out.favoriteAt = num(rec.favoriteAt);
+  return withProgressTotals(out, maxDev(devOf(rec, P_FIELDS), {}));
+}
+
+// 한 문항 기록 합치기: 횟수는 기기별 최댓값, 복습 일정은 더 최근에 푼 쪽, 즐겨찾기는 더 최근에 바꾼 쪽
+function mergeProgress(a, b) {
+  const base = (num(b.lastStudiedAt) > num(a.lastStudiedAt))
+    ? { ...a, box: b.box, lastStudiedAt: b.lastStudiedAt, nextReviewAt: b.nextReviewAt }
+    : { ...a };
+  const fa = num(a.favoriteAt), fb = num(b.favoriteAt);
+  base.favorite = fa || fb ? (fb > fa ? b.favorite === true : a.favorite === true) : (a.favorite === true || b.favorite === true);
+  if (fa || fb) base.favoriteAt = Math.max(fa, fb);
+  return withProgressTotals(base, maxDev(devOf(a, P_FIELDS), devOf(b, P_FIELDS)));
+}
+
+// 다른 기기의 기록을 덮어쓰지 않고 합친다. data: exportSync() 또는 JSON 백업(exportJSON) 형식
+// 반환: { questions: 새로 들어온 문항 수, progress: 합친 문항 기록 수, days: 합친 날짜 수 }
+export function mergeSync(data) {
+  if (!data || typeof data !== 'object' || (!data.progress && !Array.isArray(data.questions))) {
+    throw new Error('동기화 데이터가 아닙니다.');
+  }
+  // 세트 먼저 (문항 정규화에서 setId가 유지되도록) — 같은 id면 이 기기 것을 유지
+  userSets = { ...cleanSets(data.userSets), ...userSets };
+
+  // 다른 기기에서 지운 시드는 여기서도 지운다
+  const deleted = new Set(load(K.deletedSeeds, []));
+  for (const id of Array.isArray(data.deletedSeedIds) ? data.deletedSeedIds : []) {
+    if (SEED_IDS.has(id)) deleted.add(id);
+  }
+  questions = questions.filter((q) => { if (!deleted.has(q.id)) return true; delete progress[q.id]; return false; });
+  save(K.deletedSeeds, [...deleted]);
+
+  // 직접 추가·AI 생성 문항: 이 기기에 없는 것만 추가 (같은 id면 이 기기 것 유지)
+  const have = new Set(questions.map((q) => q.id));
+  let addedQ = 0;
+  for (const raw of Array.isArray(data.questions) ? data.questions : []) {
+    if (!raw || typeof raw.id !== 'string' || !/^[A-Za-z0-9_-]+$/.test(raw.id) || isSeedId(raw.id) || have.has(raw.id)) continue;
+    if (typeof raw.questionEnglish !== 'string' || !raw.questionEnglish.trim()) continue;
+    const q = normalize({ ...raw, status: raw.status === 'pending' ? 'pending' : 'approved' });
+    if (Array.isArray(q.reviewNotes)) q.reviewNotes = q.reviewNotes.filter((x) => typeof x === 'string');
+    questions.push(q);
+    have.add(q.id);
+    addedQ++;
+  }
+
+  // 문항별 학습 기록
+  let mergedP = 0;
+  for (const [id, raw] of Object.entries(data.progress && typeof data.progress === 'object' ? data.progress : {})) {
+    if (!have.has(id)) continue;
+    const rec = cleanProgress(raw);
+    if (!rec) continue;
+    progress[id] = progress[id] ? mergeProgress(progress[id], rec) : rec;
+    mergedP++;
+  }
+
+  // 날짜별 학습량 (연속 학습일·통계)
+  let mergedD = 0;
+  for (const [day, raw] of Object.entries(data.daily && typeof data.daily === 'object' ? data.daily : {})) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || !raw || typeof raw !== 'object') continue;
+    daily[day] = withDailyTotals(maxDev(devOf(daily[day], D_FIELDS), devOf(raw, D_FIELDS)));
+    mergedD++;
+  }
+
+  pruneUserSets();
+  save(K.userSets, userSets);
+  save(K.questions, questions); save(K.progress, progress); save(K.daily, daily);
+  return { questions: addedQ, progress: mergedP, days: mergedD };
 }
 
 function csvEscape(v) {

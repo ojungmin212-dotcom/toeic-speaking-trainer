@@ -1,6 +1,7 @@
-// 설정 — 음성(남/여, 특정 음성), 속도, 초보자 모드, 데이터 백업
+// 설정 — 음성(남/여, 특정 음성), 속도, 초보자 모드, 기기 간 동기화, 데이터 백업
 import * as store from '../store.js';
 import * as tts from '../tts.js';
+import * as sync from '../sync.js';
 import { toast, download, pickFile } from '../ui.js';
 import { backBar } from './study.js';
 
@@ -64,14 +65,35 @@ export async function renderSettings(root) {
         <input type="checkbox" id="beepAfterQuestion" ${s.beepAfterQuestion ? 'checked' : ''}></label>
     </div>
 
+    <h3 class="section-title">기기 간 동기화</h3>
+    <div class="card">
+      <p class="desc small">서버 없이 두 기기(예: 휴대폰 ↔ PC)의 학습 기록을 합칩니다.
+        한 기기에서 <b>보내기</b> → 다른 기기에서 <b>합치기</b>. 정답·오답·듣기 횟수, 날짜별 학습량, 즐겨찾기,
+        직접 추가·AI 문항을 덮어쓰지 않고 합칩니다 (여러 번 합쳐도 두 번 세지 않습니다).
+        양쪽을 똑같이 맞추려면 반대 방향으로도 한 번 합치세요.</p>
+      <div class="btn-row">
+        <button class="sub-btn primary-btn" id="syncCopy">📋 코드 복사</button>
+        <button class="sub-btn" id="syncShare">📤 파일로 보내기</button>
+      </div>
+      <textarea id="syncOut" class="sync-box hidden" rows="3" readonly aria-label="이 기기의 동기화 코드"></textarea>
+      <label class="sync-label">받은 동기화 코드
+        <textarea id="syncIn" class="sync-box" rows="3" placeholder="TST1: 로 시작하는 코드를 붙여넣기"></textarea></label>
+      <div class="btn-row">
+        <button class="sub-btn primary-btn" id="syncMerge">📥 합치기</button>
+        <button class="sub-btn" id="syncFile">파일에서 합치기</button>
+      </div>
+      <p class="desc small" id="syncResult"></p>
+    </div>
+
     <h3 class="section-title">데이터</h3>
     <div class="card">
       <div class="btn-row">
         <button class="sub-btn" id="exportJson">JSON 백업</button>
-        <button class="sub-btn" id="importJson">JSON 복원</button>
+        <button class="sub-btn" id="importJson">JSON 복원 (덮어쓰기)</button>
         <button class="sub-btn danger" id="resetSeed">기본 문제로 초기화</button>
       </div>
-      <p class="desc small">학습 기록은 이 브라우저에만 저장됩니다. 주기적으로 JSON 백업을 권장합니다.</p>
+      <p class="desc small">학습 기록은 이 브라우저에만 저장됩니다. 주기적으로 JSON 백업을 권장합니다.
+        복원은 이 기기의 기록을 백업 내용으로 바꿉니다 — 두 기기의 기록을 합치려면 위의 동기화를 쓰세요.</p>
     </div>`;
 
   const bind = (id, key, isCheck = false, isNum = false) => {
@@ -95,6 +117,46 @@ export async function renderSettings(root) {
   root.querySelector('#testVoice').addEventListener('click', () => {
     tts.cancel();
     tts.speak('What do you usually do on weekends?', 'en-US');
+  });
+
+  // ── 기기 간 동기화 ──
+  const $ = (sel) => root.querySelector(sel);
+  const showResult = (r) => {
+    $('#syncResult').textContent = `합쳤습니다 — 문항 기록 ${r.progress}개 · 날짜 ${r.days}일${r.questions ? ` · 새 문항 ${r.questions}개` : ''}`;
+    toast('학습 기록을 합쳤습니다');
+  };
+  $('#syncCopy').addEventListener('click', async () => {
+    const code = await sync.makeCode();
+    if (await sync.copyText(code)) {
+      toast(`코드를 복사했습니다 (${Math.ceil(code.length / 1024)}KB) — 다른 기기의 '받은 동기화 코드'에 붙여넣으세요`);
+      $('#syncOut').classList.add('hidden');
+    } else {
+      // 클립보드 권한이 없으면 직접 복사하도록 코드를 보여 준다
+      const box = $('#syncOut');
+      box.value = code;
+      box.classList.remove('hidden');
+      box.focus(); box.select();
+      toast('코드를 길게 눌러 전체 복사하세요');
+    }
+  });
+  $('#syncShare').addEventListener('click', async () => {
+    const code = await sync.makeCode();
+    if (!(await sync.shareCodeFile(code))) {
+      download(sync.fileName(), code, 'text/plain');
+      toast('파일을 저장했습니다 — 다른 기기에서 \'파일에서 합치기\'로 여세요');
+    }
+  });
+  $('#syncMerge').addEventListener('click', async () => {
+    try {
+      showResult(await sync.mergeCode($('#syncIn').value));
+      $('#syncIn').value = '';
+    } catch (e) { $('#syncResult').textContent = '⚠️ ' + e.message; }
+  });
+  $('#syncFile').addEventListener('click', async () => {
+    const text = await pickFile('.txt,.json,text/plain,application/json');
+    if (!text) return;
+    try { showResult(await sync.mergeCode(text)); }
+    catch (e) { $('#syncResult').textContent = '⚠️ ' + e.message; }
   });
 
   root.querySelector('#exportJson').addEventListener('click', () => {

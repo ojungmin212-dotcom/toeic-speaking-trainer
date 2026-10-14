@@ -550,3 +550,10 @@ body.has-bottom-nav .site-footer { padding-bottom: 76px; }
   max-width: 90vw; text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 기기 간 동기화 */
+.sync-label { display: block; margin-top: 12px; font-weight: 700; font-size: 14px; }
+.sync-box { display: block; width: 100%; margin-top: 6px; padding: 8px 10px; border: 1px solid var(--line);
+  font-family: ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.4; word-break: break-all; resize: vertical; background: var(--bg); }
+.sync-box:focus { outline: none; border-color: #000; }
+#syncResult:empty { display: none; }
