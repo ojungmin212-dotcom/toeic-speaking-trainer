@@ -1,9 +1,11 @@
 // 듣기 모드 — 화면을 보지 않고 이어폰만으로 자동 반복 학습
 import * as store from '../store.js';
 import { SequencePlayer } from '../player.js';
-import { pickWeighted } from '../srs.js';
+import { pickWeighted, groupBySet } from '../srs.js';
 import { PARTS } from '../seed-data.js';
-import { escapeHtml, typeBadge, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml } from '../ui.js';
+import {
+  escapeHtml, typeBadges, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml, qNoBadge, scheduleHtml,
+} from '../ui.js';
 import { backBar } from './study.js';
 
 let player = null;
@@ -22,7 +24,8 @@ function buildPlaylist(source) {
   else pool = store.getQuestions();
   if (!pool.length) return [];
   // SRS 가중치로 출제 순서 결정 (틀린 문제·취약 유형·복습 예정 우선) — 전체 풀 사용
-  return pickWeighted(pool, store.getProgress, weakTypes, pool.length);
+  // 세트 문항은 실제 시험처럼 상황 안내 → Q5 → Q6 → Q7 순서로 이어서 재생
+  return groupBySet(pickWeighted(pool, store.getProgress, weakTypes, pool.length));
 }
 
 export function renderExerciseSetup(root) {
@@ -33,7 +36,7 @@ export function renderExerciseSetup(root) {
 
   root.innerHTML = `
     ${backBar('듣기 모드')}
-    <p class="desc">재생 목록을 고르면 자동으로 재생됩니다.<br>영어 질문 → 생각 시간 → 한국어 해석 → 모범답변 순서로 계속 반복됩니다.</p>
+    <p class="desc">재생 목록을 고르면 자동으로 재생됩니다.<br>실제 시험처럼 세트마다 상황 안내 → Q5·Q6·Q7(또는 Q8·Q9·Q10) 순서로,<br>영어 질문 → 생각 시간 → 한국어 해석 → 모범답변이 계속 반복됩니다.</p>
 
     <div class="card level-card">
       <div class="card-label">모범답변 레벨</div>
@@ -54,14 +57,16 @@ export function renderExerciseSetup(root) {
 
     <h3 class="section-title" id="exSettings">재생 단계</h3>
     <div class="card">
+      ${toggleRow('playSetIntro', '세트 상황 안내 (실제 시험처럼)', s.playSetIntro)}
       ${toggleRow('playQuestionKo', '한국어 질문 해석', s.playQuestionKo)}
       ${toggleRow('playAnswerEn', '영어 모범답변', s.playAnswerEn)}
       ${toggleRow('playAnswerKo', '한국어 답변 해석', s.playAnswerKo)}
       ${toggleRow('repeatQuestion', '영어 질문 2회 반복', s.repeatQuestion)}
       ${toggleRow('beepAfterQuestion', '질문 후 신호음 (실제 시험처럼)', s.beepAfterQuestion)}
       <div class="setting-row">
-        <span>생각·답변 시간<br><small class="muted">직접 말해 보려면 15초 이상</small></span>
+        <span>생각·답변 시간<br><small class="muted">실전 = 문항별 실제 준비·응답 시간 (Q5 15초 … Q11 60초)</small></span>
         <select id="thinkSeconds">
+          <option value="0" ${!s.thinkSeconds ? 'selected' : ''}>실전 (문항별)</option>
           ${[3, 4, 5, 7, 10, 15, 30, 45, 60].map((v) => `<option value="${v}" ${s.thinkSeconds === v ? 'selected' : ''}>${v}초</option>`).join('')}
         </select>
       </div>
@@ -87,7 +92,7 @@ export function renderExerciseSetup(root) {
 
 // 재생 설정 한 줄 요약 — 재생 목록을 누르기 전에 무엇이 나올지 보이도록
 function summaryText(s) {
-  const parts = [`${s.targetLevel || 'IL'} 답변`, `생각 ${s.thinkSeconds}초`];
+  const parts = [`${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
   parts.push(s.playQuestionKo ? '질문 해석 켬' : '질문 해석 끔');
   if (!s.playAnswerEn) parts.push('모범답변 끔');
   else parts.push(s.playAnswerKo ? '답변 해석 켬' : '답변 해석 끔');
@@ -100,8 +105,11 @@ function toggleRow(key, label, checked) {
 }
 
 const STEP_LABELS = {
+  intro: '상황 안내',
   question: '영어 질문',
   think: '생각해 보세요…',
+  prep: '준비 시간',
+  respond: '답변해 보세요',
   questionKo: '질문 해석',
   answer: '모범답변',
   answerKo: '답변 해석',
@@ -137,14 +145,16 @@ export function renderExercisePlay(root, source) {
 
   const showQuestion = (q, i, total) => {
     revealed = false;
-    $('#pCount').textContent = `QUESTION ${i + 1} / ${total}`;
+    const set = store.getSet(q.setId);
+    $('#pCount').textContent = `${i + 1} / ${total}${q.qNo ? ' · Q' + q.qNo : ''}${set ? ' · ' + set.topic : ''}`;
     $('#pText').innerHTML = '';
   };
 
   player = new SequencePlayer(playlist, {
     onQuestionChange: showQuestion,
     onStepChange: (step) => {
-      $('#pStep').textContent = STEP_LABELS[step] || '';
+      // Part 4의 안내는 질문자(전화 건 사람)의 말
+      $('#pStep').textContent = step === 'intro' && player.current.part === 4 ? '질문자 안내' : (STEP_LABELS[step] || '');
       // 해석 단계부터는 자동으로 텍스트 표시 (원하면 먼저 '질문 확인'으로 미리 보기)
       if (step === 'questionKo' || step === 'answer' || step === 'answerKo') revealText();
     },
@@ -166,9 +176,12 @@ export function renderExercisePlay(root, source) {
     const q = player.current;
     const s = store.getSettings();
     const ans = store.getAnswer(q, s.targetLevel);
+    const set = store.getSet(q.setId);
     $('#pText').innerHTML = `
+      ${set && set.schedule ? scheduleHtml(set.schedule) : ''}
+      ${set ? `<div class="p-intro">${escapeHtml(set.introEnglish)}</div>` : ''}
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
-      <div class="p-meta">${typeBadge(q.questionType)} <span class="lv-tag">${ans.level}</span></div>
+      <div class="p-meta">${qNoBadge(q, { timing: false })}${typeBadges(q)} <span class="lv-tag">${ans.level}</span></div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
       <div class="p-ans">${escapeHtml(ans.en)}<br><span class="p-ans-ko">${escapeHtml(ans.ko)}</span></div>`;
   }

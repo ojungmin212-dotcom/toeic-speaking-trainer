@@ -10,10 +10,10 @@ function buildPrompt(part, type, count) {
 Create ${count} NEW practice questions. Do NOT copy real ETS test questions — write original questions that only follow the general style and difficulty of the exam.
 
 Requirements:
-- TOEIC Speaking Part: ${part} (3 = short daily-life questions, 4 = schedule/information confirmation questions, 5 = opinion/preference questions)
+- TOEIC Speaking Part: ${part} (3 = telephone-interview questions about a daily-life topic; like the real Q5, many ask two things at once, e.g. "How often do you ~, and who do you usually ~ with?"; 4 = questions about a schedule: two facts at once / "I heard ~. Is that right?" / "Could you tell me about all the ~?"; 5 = opinion questions such as "Do you agree or disagree with the following statement? ~ Use specific reasons and examples to support your answer.")
 - Question type: ${type} (${typeKo})
-- Question must be SHORT and EASY (beginner level, under 14 words).
-- Answer must be a short, easy model answer a beginner can say (under 12 words).
+- Question must follow the length and wording style of the real test format, using plain vocabulary.
+- Answer must be a short, easy model answer a beginner can say (Intermediate Low level, answering every part of the question).
 - Korean translations must be natural polite Korean (합니다체).
 - keyExpression = the core question phrase a learner should catch (e.g. "How often", "Where", "Have you ever").
 

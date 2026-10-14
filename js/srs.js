@@ -56,3 +56,23 @@ export function pickWeighted(questions, getProgress, weakTypeSet, count) {
   }
   return picked;
 }
+
+// 같은 세트 문항은 실제 시험처럼 문항 번호 순서(Q5→Q6→Q7)로 붙인다.
+// 세트의 위치는 그 세트에서 가장 먼저 뽑힌 문항 자리 — 가중치로 정한 출제 순서를 세트 단위로 유지한다.
+export function groupBySet(list) {
+  const bySet = new Map();
+  for (const q of list) {
+    if (!q.setId) continue;
+    if (!bySet.has(q.setId)) bySet.set(q.setId, []);
+    bySet.get(q.setId).push(q);
+  }
+  const out = [];
+  const done = new Set();
+  for (const q of list) {
+    if (!q.setId) { out.push(q); continue; }
+    if (done.has(q.setId)) continue;
+    done.add(q.setId);
+    out.push(...bySet.get(q.setId).sort((a, b) => (a.qNo || 0) - (b.qNo || 0)));
+  }
+  return out;
+}

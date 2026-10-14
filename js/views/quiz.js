@@ -3,7 +3,7 @@ import * as store from '../store.js';
 import * as tts from '../tts.js';
 import { pickWeighted } from '../srs.js';
 import { QUESTION_TYPES } from '../seed-data.js';
-import { escapeHtml, typeLabel, highlightKey, toast } from '../ui.js';
+import { escapeHtml, typeLabel, typesLabel, highlightKey, toast } from '../ui.js';
 import { backBar } from './study.js';
 
 let sessionStart = null;
@@ -29,10 +29,16 @@ function shuffle(arr) {
 // (예: "Which do you prefer...?"는 선호로도 선택으로도 읽힘)
 const CONFUSABLE = {
   preference: ['choice', 'opinion'],
-  choice: ['preference', 'opinion'],
-  opinion: ['choice', 'preference'],
-  time: ['schedule'],
-  schedule: ['time', 'place', 'person'],
+  choice: ['preference', 'opinion', 'agree'],
+  opinion: ['choice', 'preference', 'agree', 'recommend'],
+  agree: ['opinion', 'choice'],
+  recommend: ['opinion'],
+  time: ['schedule', 'duration'],
+  duration: ['time', 'schedule'],
+  cost: ['schedule'],
+  schedule: ['time', 'place', 'person', 'cost', 'duration', 'confirm', 'details'],
+  confirm: ['schedule'],
+  details: ['schedule'],
   place: ['schedule'],
   person: ['schedule'],
 };
@@ -73,8 +79,10 @@ export function renderQuiz(root) {
     store.recordListen(q.id);
   }
 
+  // 두 가지를 묶어 묻는 질문(예: How often ~, and who ~?)은 앞의 유형이 정답, 뒤의 유형은 보기에서 뺀다
   function buildOptions(q) {
     const banned = new Set([q.questionType, ...(CONFUSABLE[q.questionType] || [])]);
+    if (q.questionType2) [q.questionType2, ...(CONFUSABLE[q.questionType2] || [])].forEach((t) => banned.add(t));
     const others = shuffle(Object.keys(QUESTION_TYPES).filter((t) => !banned.has(t))).slice(0, 3);
     return shuffle([q.questionType, ...others]);
   }
@@ -112,7 +120,7 @@ export function renderQuiz(root) {
       <div class="quiz-verdict ${correct ? 'ok' : 'no'}">${correct ? '정답입니다' : '오답 — 취약 목록에 저장했습니다'}</div>
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
-      <div class="p-meta"><span class="key-expr">${escapeHtml(q.keyExpression)} = ${escapeHtml(typeLabel(q.questionType))}</span></div>`;
+      <div class="p-meta"><span class="key-expr">${escapeHtml(q.keyExpression)} = ${escapeHtml(typesLabel(q))}</span></div>`;
     $('#qNext').classList.remove('hidden');
   }
 

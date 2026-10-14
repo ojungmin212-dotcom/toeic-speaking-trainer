@@ -1,5 +1,5 @@
 // 공용 UI 헬퍼
-import { QUESTION_TYPES, LEVELS, LEVEL_ORDER } from './seed-data.js';
+import { QUESTION_TYPES, LEVELS, LEVEL_ORDER, TEST_TIMING, REPEATED_QNO } from './seed-data.js';
 
 // 레벨 선택 세그먼트 컨트롤 (IL | IM | IH | AL)
 export function levelPickerHtml(current, { id = 'levelPicker', small = false, levels = LEVEL_ORDER } = {}) {
@@ -71,16 +71,60 @@ export function typeBadge(type) {
   return `<span class="badge badge-${escapeHtml(type)}">${escapeHtml(typeLabel(type))}</span>`;
 }
 
+// 문항의 유형 배지 — 두 가지를 묶어 묻는 질문은 "시간 + 장소"처럼 둘 다
+export function typeBadges(q) {
+  return typeBadge(q.questionType) + (q.questionType2 ? '<span class="badge-plus">+</span>' + typeBadge(q.questionType2) : '');
+}
+export function typesLabel(q) {
+  return typeLabel(q.questionType) + (q.questionType2 ? ' + ' + typeLabel(q.questionType2) : '');
+}
+
+// 실제 시험 문항 번호 배지 (Q5 · 응답 15초)
+export function qNoBadge(q, { timing = true } = {}) {
+  if (!q.qNo) return '';
+  const t = TEST_TIMING[q.qNo];
+  const time = timing && t
+    ? `<span class="q-timing">${t.prep > 3 ? `준비 ${t.prep}초 · ` : ''}응답 ${t.response}초${REPEATED_QNO.has(q.qNo) ? ' · 두 번 들려줌' : ''}</span>`
+    : '';
+  return `<span class="badge badge-qno">Q${q.qNo}</span>${time}`;
+}
+
+// Part 4 일정표 (실제 시험 화면처럼 표로)
+export function scheduleHtml(sch) {
+  if (!sch) return '';
+  return `
+    <div class="schedule">
+      <div class="sch-title">${escapeHtml(sch.title)}</div>
+      ${(sch.info || []).map((x) => `<div class="sch-info">${escapeHtml(x)}</div>`).join('')}
+      <div class="sch-scroll"><table class="sch-table">
+        <thead><tr>${sch.cols.map((c) => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
+        <tbody>${sch.rows.map((r) => `<tr>${r.map((c) => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>
+      ${sch.note ? `<div class="sch-note">${escapeHtml(sch.note)}</div>` : ''}
+    </div>`;
+}
+
 // 초보자 모드: 질문에서 핵심 표현을 강조 표시
 export function highlightKey(questionEnglish, keyExpression, beginnerMode) {
   const safe = escapeHtml(questionEnglish);
   if (!beginnerMode || !keyExpression) return safe;
-  // keyExpression의 첫 핵심 단어군만 매칭 (예: "When", "How often", "Have you ever")
-  const first = keyExpression.split('/')[0].trim().split(',')[0].trim();
-  const core = first.replace(/\s*~.*$/, '').trim();
-  if (!core) return safe;
-  const re = new RegExp('(' + core.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i');
-  return safe.replace(re, '<mark class="key">$1</mark>');
+  // keyExpression을 '/'로 나눈 각 표현의 첫 등장을 강조 (예: "How often / who" → 두 군데)
+  const cores = keyExpression.split('/')
+    .map((x) => x.trim().split(',')[0].trim().replace(/\s*~.*$/, '').trim())
+    .filter(Boolean)
+    .map((c) => escapeHtml(c));
+  if (!cores.length) return safe;
+  // 긴 표현을 먼저 시도해 짧은 표현이 긴 표현의 일부를 가로채지 않게 한다
+  const sorted = [...new Set(cores)].sort((a, b) => b.length - a.length);
+  // 단어 경계로 감싸 "who"가 "whole" 안에서 강조되지 않게 한다
+  const re = new RegExp('\\b(' + sorted.map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'gi');
+  const used = new Set();
+  return safe.replace(re, (m) => {
+    const k = m.toLowerCase();
+    if (used.has(k)) return m;
+    used.add(k);
+    return '<mark class="key">' + m + '</mark>';
+  });
 }
 
 export function toast(msg) {

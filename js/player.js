@@ -1,11 +1,19 @@
 // 듣기 모드 시퀀스 재생기
-// 영어 질문 → (신호음) → 생각 시간 → 한국어 해석 → 영어 모범답변 → 한국어 답변 해석 → 다음 문제
+// (세트 첫 문항이면 상황 안내) → 영어 질문 → (신호음) → 생각 시간 → 한국어 해석 → 영어 모범답변 → 한국어 답변 해석 → 다음 문제
+// - 생각 시간 '실전'(thinkSeconds=0)이면 실제 시험처럼 준비 시간 → 신호음 → 응답 시간 (Q5 3초+15초 … Q11 45초+60초)
+// - Q10은 실제 시험처럼 질문을 두 번 들려준다
 // - 생각 시간/간격은 타이머가 아니라 "무음 오디오 재생"으로 진행 → 화면 잠금에서도 계속 이어진다.
 // - 이어폰/잠금화면 컨트롤(play/pause/next/prev)과 화면 UI는 onPlayState 콜백으로 단일 동기화.
 // - 오디오가 연속 3문항 무음이면 자동 일시정지하고 사용자에게 알린다 (자동재생 차단 대응).
 
 import * as tts from './tts.js';
-import { getSettings, getAnswer, recordListen, addStudySeconds } from './store.js';
+import { getSettings, getAnswer, getSet, recordListen, addStudySeconds } from './store.js';
+import { TEST_TIMING, REPEATED_QNO } from './seed-data.js';
+
+// 실전 시간: 문항 번호가 없는 사용자 추가 문항은 파트 기준
+function timingOf(q) {
+  return TEST_TIMING[q.qNo] || (q.part === 5 ? TEST_TIMING[11] : TEST_TIMING[5]);
+}
 
 export class SequencePlayer {
   constructor(questions, { onQuestionChange, onStepChange, onFinish, onPlayState } = {}) {
@@ -20,6 +28,7 @@ export class SequencePlayer {
     this._runToken = 0;
     this._failStreak = 0;
     this._destroyed = false;
+    this._introFor = null; // 마지막으로 상황 안내를 들려준 세트 — 같은 세트 안에서는 반복하지 않는다
   }
 
   get current() { return this.questions[this.index]; }
@@ -137,6 +146,17 @@ export class SequencePlayer {
     const alive = () => token === this._runToken && !this.paused;
     let anyOk = false;
 
+    // 실제 시험처럼 세트의 첫 질문 전에 상황 안내(Part 3)·질문자 안내(Part 4)
+    const set = getSet(q.setId);
+    if (set && s.playSetIntro && this._introFor !== set.id) {
+      this.onStepChange('intro');
+      anyOk = (await tts.speak(set.introEnglish, 'en-US')) || anyOk;
+      if (!alive()) return null;
+      await tts.playSilence(0.8);
+      if (!alive()) return null;
+    }
+    this._introFor = set ? set.id : null;
+
     this.onStepChange('question');
     anyOk = (await tts.speak(q.questionEnglish, 'en-US')) || anyOk;
     if (!alive()) return null;
@@ -144,14 +164,15 @@ export class SequencePlayer {
     // → 수십 초 무음 대신 몇 초 안에 자동 일시정지 안내가 뜬다
     if (!anyOk) return false;
 
-    if (s.repeatQuestion) {
+    if (s.repeatQuestion || REPEATED_QNO.has(q.qNo)) {
       await tts.playSilence(0.6);
       if (!alive()) return null;
       anyOk = (await tts.speak(q.questionEnglish, 'en-US')) || anyOk;
       if (!alive()) return null;
     }
 
-    this.onStepChange('think');
+    const real = !s.thinkSeconds;
+    this.onStepChange(real ? 'prep' : 'think');
     if (s.beepAfterQuestion) {
       // 실제 시험처럼 질문이 끝나면 신호음 후 생각 시간 시작
       await tts.playSilence(0.4);
@@ -159,7 +180,17 @@ export class SequencePlayer {
       await tts.beep();
       if (!alive()) return null;
     }
-    await tts.playSilence(s.thinkSeconds);
+    if (real) {
+      const t = timingOf(q);
+      await tts.playSilence(t.prep);
+      if (!alive()) return null;
+      this.onStepChange('respond');
+      await tts.beep();
+      if (!alive()) return null;
+      await tts.playSilence(t.response);
+    } else {
+      await tts.playSilence(s.thinkSeconds);
+    }
     if (!alive()) return null;
 
     if (s.playQuestionKo) {

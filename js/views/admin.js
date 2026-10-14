@@ -5,7 +5,7 @@ import { generateQuestions } from '../llm.js';
 import { PARTS, QUESTION_TYPES, LEVEL_ORDER } from '../seed-data.js';
 
 const EXTRA_LEVELS = LEVEL_ORDER.filter((lv) => lv !== 'IL');
-import { escapeHtml, typeBadge, typeLabel, toast, download, pickFile } from '../ui.js';
+import { escapeHtml, typeBadges, typeLabel, toast, download, pickFile } from '../ui.js';
 import { backBar } from './study.js';
 
 export function renderAdmin(root, editId = null) {
@@ -78,7 +78,7 @@ export function renderAdmin(root, editId = null) {
     <h3 class="section-title">검토 대기 (${pending.length})</h3>
     <div class="q-list">${pending.map((q) => `
       <div class="q-item pending" data-id="${escapeHtml(q.id)}">
-        <div class="q-item-top">${typeBadge(q.questionType)} <span class="badge badge-part">Part ${q.part}</span></div>
+        <div class="q-item-top">${typeBadges(q)} <span class="badge badge-part">Part ${q.part}</span></div>
         <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
         <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
         <div class="q-item-ko">답: ${escapeHtml(q.answerEnglish)} — ${escapeHtml(q.answerKorean)}</div>
@@ -102,7 +102,7 @@ export function renderAdmin(root, editId = null) {
     <h3 class="section-title">전체 질문</h3>
     <div class="q-list">${all.map((q) => `
       <div class="q-item" data-id="${escapeHtml(q.id)}">
-        <div class="q-item-top">${typeBadge(q.questionType)} <span class="badge badge-part">Part ${q.part}</span>
+        <div class="q-item-top">${typeBadges(q)} <span class="badge badge-part">Part ${q.part}</span>
           <span class="diff">${'★'.repeat(q.difficulty)}</span></div>
         <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
         <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>

@@ -3,9 +3,9 @@
 // 취약 질문 복습(#/review)도 같은 화면을 오답/복습 예정 풀로 사용한다.
 import * as store from '../store.js';
 import * as tts from '../tts.js';
-import { pickWeighted } from '../srs.js';
+import { pickWeighted, groupBySet } from '../srs.js';
 import { QUESTION_TYPES } from '../seed-data.js';
-import { escapeHtml, typeBadge, highlightKey, toast } from '../ui.js';
+import { escapeHtml, typeBadges, highlightKey, toast, qNoBadge, scheduleHtml } from '../ui.js';
 import { backBar } from './study.js';
 
 let sessionStart = null;
@@ -42,7 +42,8 @@ export function renderListening(root, { mode = 'all' } = {}) {
   }
 
   const weakTypes = new Set(store.getWeakTypes().map((w) => w.type));
-  const playlist = pickWeighted(pool, store.getProgress, weakTypes, Math.min(pool.length, 20));
+  // 같은 세트에서 뽑힌 문항은 실제 시험 순서(Q5→Q6→Q7)로 붙인다
+  const playlist = groupBySet(pickWeighted(pool, store.getProgress, weakTypes, Math.min(pool.length, 20)));
   let index = 0;
   let done = false; // 세션 완료 상태 — 완료 화면에서 🔊/질문확인이 죽지 않도록 가드
   sessionStart = Date.now();
@@ -77,10 +78,17 @@ export function renderListening(root, { mode = 'all' } = {}) {
     store.recordListen(q.id);
   }
 
+  // 세트 질문은 주제를 먼저 알려 준다 (실제 시험에서는 질문 전에 상황 안내가 나온다)
+  function stepText(q) {
+    const set = store.getSet(q.setId);
+    return set ? `[${set.topic}] 질문을 듣고 의미를 판단해 보세요` : '질문을 듣고 의미를 판단해 보세요';
+  }
+
   function show() {
     done = false;
-    $('#lCount').textContent = `QUESTION ${index + 1} / ${playlist.length}`;
-    $('#lStep').textContent = '질문을 듣고 의미를 판단해 보세요';
+    const q = playlist[index];
+    $('#lCount').textContent = `QUESTION ${index + 1} / ${playlist.length}${q.qNo ? ' · Q' + q.qNo : ''}`;
+    $('#lStep').textContent = stepText(q);
     $('#lText').innerHTML = '';
     $('#lJudge').classList.add('hidden');
     $('#lReveal').classList.remove('hidden');
@@ -91,13 +99,17 @@ export function renderListening(root, { mode = 'all' } = {}) {
     if (done) return;
     const q = playlist[index];
     const s = store.getSettings();
-    const typeInfo = QUESTION_TYPES[q.questionType];
-    $('#lStep').textContent = '이 질문이 나에게 무엇을 요구했나요?';
+    const hint = [q.questionType, q.questionType2].filter(Boolean)
+      .map((t) => QUESTION_TYPES[t] && QUESTION_TYPES[t].hint).filter(Boolean).join(' · ');
+    const set = store.getSet(q.setId);
+    $('#lStep').textContent = q.questionType2 ? '이 질문은 무엇 두 가지를 요구했나요?' : '이 질문이 나에게 무엇을 요구했나요?';
     $('#lText').innerHTML = `
+      ${set && set.schedule ? scheduleHtml(set.schedule) : ''}
+      ${set ? `<div class="p-intro">${escapeHtml(set.introEnglish)}</div>` : ''}
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
-      <div class="p-meta">${typeBadge(q.questionType)} <span class="key-expr">${escapeHtml(q.keyExpression)}</span></div>
+      <div class="p-meta">${qNoBadge(q, { timing: false })}${typeBadges(q)} <span class="key-expr">${escapeHtml(q.keyExpression)}</span></div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
-      ${s.beginnerMode && typeInfo ? `<div class="hint">💡 ${escapeHtml(typeInfo.hint)}</div>` : ''}`;
+      ${s.beginnerMode && hint ? `<div class="hint">💡 ${escapeHtml(hint)}</div>` : ''}`;
     $('#lReveal').classList.add('hidden');
     $('#lJudge').classList.remove('hidden');
   }

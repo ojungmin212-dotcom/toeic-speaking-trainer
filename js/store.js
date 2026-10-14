@@ -1,7 +1,7 @@
 // 데이터 계층 — UI는 반드시 이 모듈을 통해서만 데이터에 접근한다.
 // 현재 구현은 localStorage. 추후 DB 교체 시 이 파일만 바꾸면 된다.
 
-import { SEED_QUESTIONS, SEED_VERSION, LEVEL_ORDER } from './seed-data.js';
+import { SEED_QUESTIONS, SEED_SETS, SEED_VERSION, LEVEL_ORDER } from './seed-data.js';
 import { applyAnswer } from './srs.js';
 
 const K = {
@@ -35,7 +35,7 @@ export const DEFAULT_SETTINGS = {
   voiceEnName: '',               // 사용자가 고른 특정 영어 음성 (빈 값이면 자동)
   voiceKoName: '',
   rate: 0.92,                    // 자연스러운 시험 안내 속도
-  thinkSeconds: 4,               // 질문 후 생각 시간
+  thinkSeconds: 4,               // 질문 후 생각 시간 (0 = 실전: 문항별 실제 준비·응답 시간)
   gapSeconds: 1.2,               // 다음 문제 전 간격
   playQuestionKo: true,          // 듣기 모드 단계 ON/OFF
   playAnswerEn: true,
@@ -43,6 +43,7 @@ export const DEFAULT_SETTINGS = {
   repeatQuestion: false,         // 영어 질문 2회 반복
   beginnerMode: true,            // 핵심 의문사 강조
   beepAfterQuestion: true,       // 시험처럼 질문 후 신호음(삐)
+  playSetIntro: true,            // 세트 첫 질문 전에 상황 안내(Part 3)·질문자 안내(Part 4) 재생
   useGeneratedAudio: true,       // 사전 생성 신경망 음성 우선 사용
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
 };
@@ -62,13 +63,29 @@ function cleanLevelAnswers(la) {
 }
 
 // part/difficulty가 문자열로 저장된 데이터(CSV 가져오기 등)를 숫자로 정규화
+// setId/qNo: 실제 시험 세트 소속(시드 문항만) · questionType2: 두 가지를 묶어 묻는 질문의 둘째 유형
 function normalize(q) {
   return {
     ...q,
     part: Number(q.part) || 3,
     difficulty: Number(q.difficulty) || 1,
+    setId: typeof q.setId === 'string' && SEED_SETS[q.setId] ? q.setId : '',
+    qNo: Number(q.qNo) || null,
+    questionType2: typeof q.questionType2 === 'string' && q.questionType2 !== q.questionType ? q.questionType2 : '',
     levelAnswers: cleanLevelAnswers(q.levelAnswers),
   };
+}
+
+// 세트 정보 (Part 3 상황 안내 · Part 4 일정표) — 시드 코드에만 있고 localStorage에는 저장하지 않는다
+export function getSet(setId) {
+  return (setId && SEED_SETS[setId]) || null;
+}
+
+// 시드 문항 id 판별 — 현재 시드 + 실제 시험 형식 이전의 옛 시드(seed-###)
+const SEED_IDS = new Set(SEED_QUESTIONS.map((q) => q.id));
+const SEED_ORDER = new Map(SEED_QUESTIONS.map((q, i) => [q.id, i]));
+function isSeedId(id) {
+  return SEED_IDS.has(id) || /^seed-\d+$/.test(String(id)) || /^p[345]-\d+(-q\d+)?$/.test(String(id));
 }
 
 // 문항의 해당 레벨 모범답변. 그 레벨 답변이 없으면 아래 레벨로 내려가며 찾는다 (최종 IL).
@@ -91,10 +108,25 @@ export function availableLevels(q) {
 // 시드 병합: 새 시드 문항 추가 + 기존 시드 문항의 내용 개선분 동기화
 // (사용자가 직접 추가한 문항은 건드리지 않음, 사용자가 지운 시드는 부활 안 함.
 //  시드 문항을 직접 수정한 경우에는 버전 업 시 최신 시드 내용으로 덮어써진다 — 학습 기록은 유지)
+// 시드에서 빠진 문항(예: v6에서 실제 시험 형식으로 교체되며 은퇴한 seed-###)은 제거하고 그 문항의 기록도 정리한다.
+// 날짜별 학습량·연속 학습일·설정은 문항과 무관하므로 그대로 유지된다.
+const SYNC_FIELDS = ['questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'keyExpression',
+  'questionType', 'questionType2', 'setId', 'qNo', 'part', 'difficulty'];
 function mergeSeeds({ syncContent = true } = {}) {
   const deleted = new Set(load(K.deletedSeeds, []));
-  const have = new Map(questions.map((q, i) => [q.id, i]));
   let changed = 0;
+
+  const before = questions.length;
+  questions = questions.filter((q) => {
+    if (!isSeedId(q.id) || SEED_IDS.has(q.id)) return true;
+    delete progress[q.id];
+    return false;
+  });
+  changed += before - questions.length;
+  const prunedTomb = [...deleted].filter((id) => SEED_IDS.has(id));
+  if (prunedTomb.length !== deleted.size) save(K.deletedSeeds, prunedTomb);
+
+  const have = new Map(questions.map((q, i) => [q.id, i]));
   for (const sq of SEED_QUESTIONS) {
     if (deleted.has(sq.id)) continue;
     if (!have.has(sq.id)) {
@@ -103,21 +135,27 @@ function mergeSeeds({ syncContent = true } = {}) {
     } else if (syncContent) {
       const i = have.get(sq.id);
       const cur = questions[i];
-      if (cur.questionEnglish !== sq.questionEnglish || cur.questionKorean !== sq.questionKorean ||
-          cur.answerEnglish !== sq.answerEnglish || cur.answerKorean !== sq.answerKorean ||
-          cur.keyExpression !== sq.keyExpression ||
-          JSON.stringify(cleanLevelAnswers(cur.levelAnswers)) !== JSON.stringify(cleanLevelAnswers(sq.levelAnswers))) {
-        questions[i] = normalize({ ...sq });
+      const next = normalize({ ...sq });
+      if (SYNC_FIELDS.some((f) => cur[f] !== next[f]) ||
+          JSON.stringify(cur.levelAnswers) !== JSON.stringify(next.levelAnswers)) {
+        questions[i] = next;
         changed++;
       }
     }
   }
-  if (changed) save(K.questions, questions);
+  // 시드 문항은 세트·문항 번호 순서(시드 순서)로, 사용자 추가 문항은 그 뒤에 기존 순서대로
+  const seeds = questions.filter((q) => SEED_ORDER.has(q.id)).sort((a, b) => SEED_ORDER.get(a.id) - SEED_ORDER.get(b.id));
+  questions = [...seeds, ...questions.filter((q) => !SEED_ORDER.has(q.id))];
+  if (changed) { save(K.questions, questions); save(K.progress, progress); }
   save(K.seedVersion, SEED_VERSION);
   return changed;
 }
 
 export function init() {
+  // 학습 기록을 먼저 읽는다 — mergeSeeds가 은퇴한 문항의 기록을 정리한 뒤 저장하기 때문
+  progress = load(K.progress, {});
+  daily = load(K.daily, {});
+  settings = sanitizeSettings(load(K.settings, {}));
   questions = load(K.questions, null);
   if (Array.isArray(questions)) questions = questions.map(normalize);
   if (!questions) {
@@ -127,9 +165,6 @@ export function init() {
   } else if (load(K.seedVersion, 1) < SEED_VERSION) {
     mergeSeeds();
   }
-  progress = load(K.progress, {});
-  daily = load(K.daily, {});
-  settings = sanitizeSettings(load(K.settings, {}));
 }
 
 // ── 질문 CRUD ──────────────────────────────────────────────────
@@ -137,7 +172,7 @@ export function getQuestions({ part, type, status = 'approved', includePending =
   return questions.filter((q) =>
     (includePending || (q.status || 'approved') === status) &&
     (part == null || q.part === part) &&
-    (type == null || q.questionType === type)
+    (type == null || q.questionType === type || q.questionType2 === type)
   );
 }
 export function getAllQuestions() { return questions.slice(); }
@@ -150,6 +185,7 @@ export function addQuestion(data) {
   const item = {
     id, part: Number(data.part) || 3,
     questionType: data.questionType || 'action',
+    questionType2: data.questionType2 || '',
     difficulty: Number(data.difficulty) || 1,
     keyExpression: data.keyExpression || '',
     questionEnglish: data.questionEnglish || '',
@@ -161,9 +197,10 @@ export function addQuestion(data) {
     status: data.status || 'approved',
     levelAnswers: cleanLevelAnswers(data.levelAnswers),
   };
-  questions.push(item);
+  const norm = normalize(item);
+  questions.push(norm);
   save(K.questions, questions);
-  return item;
+  return norm;
 }
 
 export function updateQuestion(id, patch) {
@@ -177,7 +214,7 @@ export function updateQuestion(id, patch) {
 export function deleteQuestion(id) {
   questions = questions.filter((q) => q.id !== id);
   delete progress[id];
-  if (String(id).startsWith('seed-')) {
+  if (SEED_IDS.has(id)) {
     const deleted = load(K.deletedSeeds, []);
     if (!deleted.includes(id)) { deleted.push(id); save(K.deletedSeeds, deleted); }
   }
@@ -186,7 +223,7 @@ export function deleteQuestion(id) {
 }
 
 export function resetToSeed() {
-  questions = SEED_QUESTIONS.map((q) => ({ ...q }));
+  questions = SEED_QUESTIONS.map((q) => normalize({ ...q }));
   save(K.questions, questions);
   save(K.seedVersion, SEED_VERSION);
   save(K.deletedSeeds, []);
@@ -344,8 +381,8 @@ function sanitizeSettings(s) {
 }
 
 // ── Import / Export ────────────────────────────────────────────
-const CSV_FIELDS = ['id', 'part', 'questionType', 'difficulty', 'keyExpression',
-  'questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'status'];
+const CSV_FIELDS = ['id', 'part', 'questionType', 'questionType2', 'difficulty', 'keyExpression',
+  'questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'status', 'setId', 'qNo'];
 // 레벨별 답변 열: answerEnglishIM, answerKoreanIM, answerEnglishIH, ...
 const LEVEL_CSV_FIELDS = LEVEL_ORDER.filter((lv) => lv !== 'IL')
   .flatMap((lv) => ['answerEnglish' + lv, 'answerKorean' + lv]);

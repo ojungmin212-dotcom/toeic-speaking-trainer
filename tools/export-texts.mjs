@@ -1,6 +1,6 @@
 // 시드 질문에서 음성 생성 대상 텍스트 목록을 추출 → tools/texts.json
 // 실행: node tools/export-texts.mjs
-import { SEED_QUESTIONS } from '../js/seed-data.js';
+import { SEED_QUESTIONS, SEED_SETS } from '../js/seed-data.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,6 +31,8 @@ function addQuestion(q) {
 }
 
 for (const q of SEED_QUESTIONS) addQuestion(q);
+// 세트 상황 안내(Part 3)·질문자 안내(Part 4) — 듣기 모드에서 세트 첫 질문 전에 재생 (영어만)
+for (const s of Object.values(SEED_SETS)) add(s.id, 'intro', s.introEnglish, 'en');
 
 // 사용자가 직접 추가한 질문도 음성 생성: 앱 설정 → JSON 백업으로 받은 파일을
 // 프로젝트 루트에 questions.json 으로 저장해 두면 함께 생성된다.

@@ -3,9 +3,34 @@ import * as store from '../store.js';
 import * as tts from '../tts.js';
 import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
-  escapeHtml, typeBadge, typeLabel, highlightKey, toast,
+  escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml,
   levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount, speakSeconds,
 } from '../ui.js';
+
+// 세트 번호 표시용 (p3-07 → 7)
+function setNo(set) {
+  return Number(String(set.id).split('-')[1]) || '';
+}
+
+// 목록의 세트 머리 — 실제 시험처럼 질문 전에 나오는 상황 안내(Part 3)·일정표 제목(Part 4)
+function setHeadHtml(set) {
+  const title = set.schedule ? set.schedule.title : set.introEnglish;
+  return `
+    <div class="set-head">
+      <div class="set-head-top">
+        <span class="set-no">SET ${String(setNo(set)).padStart(2, '0')}</span>
+        <b>${escapeHtml(set.topic)}</b>
+        <button class="item-play set-play" data-set="${escapeHtml(set.id)}" aria-label="상황 안내 듣기">🔊</button>
+      </div>
+      <div class="set-intro">${escapeHtml(title)}</div>
+    </div>`;
+}
+
+// 두 가지를 묶어 묻는 질문은 힌트도 둘 다
+function hintText(q) {
+  return [q.questionType, q.questionType2].filter(Boolean)
+    .map((t) => QUESTION_TYPES[t] && QUESTION_TYPES[t].hint).filter(Boolean).join(' · ');
+}
 
 export function renderStudyIndex(root) {
   const level = store.getSettings().targetLevel || 'IL';
@@ -63,12 +88,16 @@ export function renderStudyList(root, { part, type }) {
       <span><span class="lv-tag">${escapeHtml(level)}</span> <span class="list-level-change">변경 ›</span></span>
     </a>
     <div class="q-list">
-      ${list.map((q) => {
+      ${list.map((q, i) => {
         const p = store.getProgress(q.id);
-        return `
-        <div class="q-item with-play" data-qid="${escapeHtml(q.id)}">
+        const set = store.getSet(q.setId);
+        // 파트 목록에서는 세트가 바뀔 때마다 상황 안내 머리를 넣는다
+        const head = part && set && (i === 0 || list[i - 1].setId !== q.setId) ? setHeadHtml(set) : '';
+        return `${head}
+        <div class="q-item with-play ${set && part ? 'in-set' : ''}" data-qid="${escapeHtml(q.id)}">
           <a class="q-item-body" href="${base}/q/${escapeHtml(q.id)}">
-            <div class="q-item-top">${typeBadge(q.questionType)}
+            <div class="q-item-top">${qNoBadge(q, { timing: false })}${typeBadges(q)}
+              ${set && !part ? `<span class="q-topic">${escapeHtml(set.topic)}</span>` : ''}
               <span class="diff">${'★'.repeat(q.difficulty)}</span>
               ${p.favorite ? '<span class="fav">♥</span>' : ''}
             </div>
@@ -90,9 +119,14 @@ export function renderStudyList(root, { part, type }) {
     lastViewedId = null;
   }
 
-  // 목록에서 바로 듣기 (상세로 이동하지 않음)
+  // 목록에서 바로 듣기 (상세로 이동하지 않음) — 세트 머리의 🔊는 상황 안내
   root.querySelectorAll('.item-play').forEach((btn) => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.set) {
+        const set = store.getSet(btn.dataset.set);
+        if (set) { tts.cancel(); tts.speak(set.introEnglish, 'en-US'); }
+        return;
+      }
       const q = store.getQuestion(btn.dataset.qid);
       if (q) {
         tts.cancel();
@@ -108,7 +142,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
   if (!q) { root.innerHTML = backBar('질문을 찾을 수 없습니다', '#/study'); return; }
   const s = store.getSettings();
   const p = store.getProgress(id);
-  const typeInfo = QUESTION_TYPES[q.questionType];
+  const hint = hintText(q);
+  const set = store.getSet(q.setId);
   const levels = store.availableLevels(q);
   // 상세 화면의 레벨 탭은 비교용 — 목표 레벨로 시작하되 탭 전환은 전역 설정을 바꾸지 않는다.
   // 이전/다음으로 넘어온 경우에는 보던 비교 레벨을 이어서 보여준다.
@@ -136,16 +171,31 @@ export function renderStudyDetail(root, id, ctx = {}) {
     </div>` : ''}
     <div class="detail with-bottom-nav">
       <div class="detail-meta">
-        ${typeBadge(q.questionType)}
         <span class="badge badge-part">Part ${q.part}</span>
-        <span class="diff">${'★'.repeat(q.difficulty)}</span>
+        ${qNoBadge(q)}
         <button class="fav-btn ${p.favorite ? 'on' : ''}" id="favBtn">${p.favorite ? '♥' : '♡'}</button>
       </div>
 
+      ${set && set.schedule ? `
+      <div class="card">
+        <div class="card-label">일정표</div>
+        ${scheduleHtml(set.schedule)}
+        <p class="desc small">실제 시험에서는 질문이 나오기 전에 이 일정표를 45초 동안 읽습니다.</p>
+      </div>` : ''}
+
+      ${set ? `
+      <div class="card set-card">
+        <div class="card-label">${set.part === 4 ? '질문자 안내' : '상황 안내'} · SET ${String(setNo(set)).padStart(2, '0')} ${escapeHtml(set.topic)}</div>
+        <div class="card-en">${escapeHtml(set.introEnglish)}</div>
+        <div class="card-ko set-ko">${escapeHtml(set.introKorean)}</div>
+        <button class="speak-btn" id="introSpeak">🔊 안내 듣기</button>
+      </div>` : ''}
+
       <div class="card q-box">
-        <div class="card-label">Question</div>
+        <div class="card-label">Question${q.qNo ? ' ' + q.qNo : ''}</div>
         <div class="card-en big">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
-        ${s.beginnerMode && typeInfo ? `<div class="hint">💡 ${escapeHtml(typeInfo.hint)}</div>` : ''}
+        <div class="q-types">${typeBadges(q)} <span class="diff">${'★'.repeat(q.difficulty)}</span></div>
+        ${s.beginnerMode && hint ? `<div class="hint">💡 ${escapeHtml(hint)}</div>` : ''}
         <button class="speak-btn" id="qSpeak">🔊 질문 듣기</button>
       </div>
 
@@ -162,7 +212,6 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <div class="level-note" id="ansNote"></div>
         <div class="card-en answer-text" id="ansEn"></div>
         <button class="speak-btn" id="aSpeak">🔊 답변 듣기</button>
-        ${q.part === 4 ? '<p class="desc small">Part 4는 실제 시험에서 화면의 일정표를 보고 답합니다. 이 답변은 가상의 일정표를 기준으로 한 예시입니다.</p>' : ''}
       </div>
 
       <div class="card">
@@ -193,6 +242,12 @@ export function renderStudyDetail(root, id, ctx = {}) {
 
   bindLevelPicker(root, 'ansLevel', (lv) => { tts.cancel(); showAnswer(lv); });
 
+  if (set) {
+    $('#introSpeak').addEventListener('click', () => {
+      tts.cancel();
+      tts.speak(set.introEnglish, 'en-US');
+    });
+  }
   $('#qSpeak').addEventListener('click', () => {
     tts.cancel();
     tts.speak(q.questionEnglish, 'en-US');
