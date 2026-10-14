@@ -265,6 +265,15 @@ a.q-item-body { display: block; flex: 1; min-width: 0; padding: 14px 0 14px 12px
 .set-card .card-en { font-size: 16px; }
 .set-ko { font-size: 14px; margin-top: 6px; }
 
+/* 쉐도잉 — 지금 따라 말할 문장 */
+.p-shadow, .shadow-now {
+  text-align: left; font-size: 19px; line-height: 1.55; color: #000;
+  background: var(--green-soft); border-left: 4px solid var(--green-btn);
+  padding: 12px 14px; margin: 0 0 12px;
+}
+.shadow-now { font-size: 17px; margin: 12px 0 0; }
+.p-shadow-n { display: block; font-size: 12px; font-weight: 700; color: var(--green); letter-spacing: 1px; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+
 /* AL 포인트 — 고급 표현 강조 (분류별 밑줄 색) */
 mark.adv { background: transparent; color: inherit; border-bottom: 2px solid var(--green-btn); padding: 0 1px; cursor: help; }
 mark.adv-link { border-color: #3e71a4; }

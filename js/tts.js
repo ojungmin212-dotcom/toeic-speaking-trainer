@@ -68,6 +68,7 @@ function playUrl(url, rate, myGen) {
   settlePending(false);
   return new Promise((resolve) => {
     pendingResolve = resolve;
+    fileAudio.ontimeupdate = null; // 문장 구간 재생의 정지 감시가 남아 있지 않도록
     fileAudio.onended = () => settlePending(true);
     fileAudio.onerror = () => settlePending(false);
     fileAudio.onpause = () => {
@@ -244,6 +245,99 @@ async function speakGenerated(text, lang, myGen) {
   if (!url) return null;
   // 파일은 이미 시험 안내 속도(-5%)로 생성됨 → 기본 설정(0.92)에서 1.0배로 재생
   return playUrl(url, s.rate / 0.92, myGen);
+}
+
+// ── 문장별 재생 (쉐도잉) ───────────────────────────────────────
+// audio/timings.json: files = mp3 → 문장별 [시작초, 끝초], spans = "en|문장" → 문장별 [글자 시작, 끝]
+// 파일을 문장 수만큼 따로 만들지 않고, 미디어 프래그먼트(#t=시작,끝)로 기존 mp3의 구간만 재생한다.
+let timings = null;
+let timingsPromise = null;
+
+async function loadTimings() {
+  if (timings) return timings;
+  if (!timingsPromise) {
+    timingsPromise = (async () => {
+      try {
+        const r = await fetch('audio/timings.json');
+        timings = r.ok ? await r.json() : { files: {}, spans: {} };
+      } catch { timings = null; } // 오프라인 등 — 다음에 다시 시도
+      timingsPromise = null;
+      return timings || { files: {}, spans: {} };
+    })();
+  }
+  return timingsPromise;
+}
+
+// 문장 나누기 (시각 정보가 없을 때의 폴백) — 마침표·물음표·느낌표 뒤 공백 + 대문자/따옴표
+export function splitSentences(text) {
+  return String(text || '').split(/(?<=[.?!])\s+(?=[A-Z"'])/).map((x) => x.trim()).filter(Boolean);
+}
+
+// 문장 목록: [{ text, url?, start?, end? }] — 신경망 음성 구간이 있으면 url/start/end 포함
+export async function getSentences(text) {
+  const s = getSettings();
+  if (s.useGeneratedAudio !== false) {
+    const [m, t] = await Promise.all([loadManifest(), loadTimings()]);
+    const key = 'en|' + text;
+    const entry = m[key];
+    const url = entry && (entry[s.voiceGender === 'male' ? 'm' : 'f'] || entry.f || entry.m);
+    const segs = url && t.files && t.files[url];
+    const spans = t.spans && t.spans[key];
+    if (segs && spans && segs.length === spans.length) {
+      return spans.map(([a, b], i) => ({ text: text.slice(a, b), url, start: segs[i][0], end: segs[i][1] }));
+    }
+  }
+  return splitSentences(text).map((x) => ({ text: x }));
+}
+
+// 한 문장 재생: 구간 재생 → 실패하면 일반 speak(브라우저 음성 등)로 폴백
+export async function speakSentence(sent, lang = 'en-US') {
+  const myGen = gen;
+  if (sent.url) {
+    const s = getSettings();
+    // 경계에 살짝 여유 — 앞 0.05초, 뒤 0.12초 (다음 문장 첫소리가 섞이지 않을 만큼)
+    const ok = await playUrlSegment(sent.url, Math.max(0, sent.start - 0.05), sent.end + 0.12, s.rate / 0.92, myGen);
+    if (ok) return true;
+    if (myGen !== gen) return false;
+  }
+  return speak(sent.text, lang);
+}
+
+// 문장 재생에 걸리는 대략의 시간(초) — 따라 말할 시간을 정할 때 사용
+export function sentenceSeconds(sent) {
+  if (sent.url) return Math.max(0.5, sent.end - sent.start) / (getSettings().rate / 0.92);
+  return Math.max(1, String(sent.text).split(/\s+/).length * 0.42);
+}
+
+// 지금 취소 세대 — 화면에서 진행 중인 쉐도잉 루프가 '취소됐는지' 확인할 때 사용
+export function generation() { return gen; }
+
+// 구간 재생: 프래그먼트로 끝에서 자동 정지 + timeupdate로 한 번 더 확인 (프래그먼트를 무시하는 브라우저 대비)
+function playUrlSegment(url, start, end, rate, myGen) {
+  if (!fileAudio || myGen !== gen) return Promise.resolve(false);
+  settlePending(false);
+  return new Promise((resolve) => {
+    pendingResolve = resolve;
+    const reachedEnd = () => fileAudio.currentTime >= end - 0.25;
+    fileAudio.onended = () => settlePending(true);
+    fileAudio.onerror = () => settlePending(false);
+    fileAudio.ontimeupdate = () => {
+      if (pendingResolve === resolve && fileAudio.currentTime >= end) { try { fileAudio.pause(); } catch {} }
+    };
+    fileAudio.onpause = () => {
+      if (unlockSrc && fileAudio.src === unlockSrc) return;
+      if (reachedEnd()) return settlePending(true); // 구간 끝에서 멈춘 것 = 정상 종료
+      if (fileAudio.ended || fileAudio.currentTime === 0) return;
+      const external = myGen === gen;
+      settlePending(false);
+      if (external && interruptHandler) interruptHandler();
+    };
+    if (myGen !== gen) return settlePending(false);
+    fileAudio.src = `${url}#t=${start.toFixed(2)},${end.toFixed(2)}`;
+    fileAudio.playbackRate = Math.max(0.6, Math.min(rate, 1.5));
+    fileAudio.play().then(() => { if (myGen !== gen) { try { fileAudio.pause(); } catch {} } },
+      () => settlePending(false));
+  });
 }
 
 // ── OpenAI TTS Provider (server.js 프록시, 로컬 전용) ──────────

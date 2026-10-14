@@ -8,6 +8,7 @@ import {
   expressionMarkupHtml, expressionListHtml,
 } from '../ui.js';
 import { findExpressions } from '../expressions.js';
+import { shadowText } from '../shadow.js';
 
 // 세트 번호 표시용 (p3-07 → 7)
 function setNo(set) {
@@ -201,6 +202,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <div class="card-en big passage">${escapeHtml(q.questionEnglish)}</div>
         <div class="q-types">${typeBadges(q)} <span class="diff">${'★'.repeat(q.difficulty)}</span></div>
         <button class="speak-btn" id="qSpeak">🔊 모범 낭독 듣기</button>
+        <button class="speak-btn ghost" id="shadowBtn">🗣 문장별 따라 읽기</button>
+        <div class="shadow-now hidden" id="shadowNow"></div>
       </div>
       <div class="card">
         <div class="card-label">끊어 읽기 가이드</div>
@@ -241,6 +244,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <div class="card-en answer-text" id="ansEn"></div>
         <div id="ansExpr"></div>
         <button class="speak-btn" id="aSpeak">🔊 답변 듣기</button>
+        <button class="speak-btn ghost" id="shadowBtn">🗣 문장별 따라 말하기</button>
+        <div class="shadow-now hidden" id="shadowNow"></div>
         ${q.levelAnswers && q.levelAnswers.IH && q.levelAnswers.AL ? '<button class="speak-btn ghost" id="cmpBtn">IH ↔ AL 비교</button>' : ''}
       </div>
 
@@ -283,6 +288,32 @@ export function renderStudyDetail(root, id, ctx = {}) {
       $('#ansExpr').innerHTML = '';
     }
     $('#ansKo').textContent = a.ko;
+  }
+
+  // 쉐도잉 — 지금 보이는 모범답변(Part 1은 지문)을 문장마다 끊어 듣고 따라 말하기. 다시 누르면 멈춤.
+  const shadowBtn = $('#shadowBtn');
+  if (shadowBtn) {
+    let running = false;
+    const label = shadowBtn.textContent;
+    shadowBtn.addEventListener('click', async () => {
+      if (running) { tts.cancel(); return; }
+      tts.cancel();
+      const text = q.part === 1 ? q.questionEnglish : store.getAnswer(q, current).en;
+      const myGen = tts.generation();
+      const box = $('#shadowNow');
+      running = true;
+      shadowBtn.textContent = '■ 그만하기';
+      box.classList.remove('hidden');
+      await shadowText(text, {
+        alive: () => tts.generation() === myGen && root.contains(shadowBtn),
+        onSentence: (i, n, sent) => {
+          box.innerHTML = `<span class="p-shadow-n">${i + 1} / ${n}</span>${escapeHtml(sent.text)}`;
+        },
+      });
+      running = false;
+      shadowBtn.textContent = label;
+      box.classList.add('hidden');
+    });
   }
 
   // IH ↔ AL 나란히 비교 — 단어 수·고급 표현 수와 함께

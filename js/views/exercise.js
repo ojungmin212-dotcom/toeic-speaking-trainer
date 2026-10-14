@@ -59,6 +59,7 @@ export function renderExerciseSetup(root) {
     <h3 class="section-title" id="exSettings">재생 단계</h3>
     <div class="card">
       ${toggleRow('playSetIntro', '세트 상황 안내 (실제 시험처럼)', s.playSetIntro)}
+      ${toggleRow('shadowing', '쉐도잉 — 모범답변을 문장마다 끊어 듣고 따라 말하기', s.shadowing)}
       ${toggleRow('playQuestionKo', '한국어 질문 해석', s.playQuestionKo)}
       ${toggleRow('playAnswerEn', '영어 모범답변', s.playAnswerEn)}
       ${toggleRow('playAnswerKo', '한국어 답변 해석', s.playAnswerKo)}
@@ -95,6 +96,7 @@ export function renderExerciseSetup(root) {
 function summaryText(s) {
   const parts = [`${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
   parts.push(s.playQuestionKo ? '질문 해석 켬' : '질문 해석 끔');
+  if (s.shadowing) parts.push('쉐도잉');
   if (!s.playAnswerEn) parts.push('모범답변 끔');
   else parts.push(s.playAnswerKo ? '답변 해석 켬' : '답변 해석 끔');
   return parts.join(' · ') + '  (설정 ↓)';
@@ -134,6 +136,7 @@ export function renderExercisePlay(root, source) {
     <div class="player">
       <div class="player-count" id="pCount">QUESTION 1 / ${playlist.length}</div>
       <div class="player-step" id="pStep">준비…</div>
+      <div class="p-shadow hidden" id="pShadow"></div>
       <div class="player-text" id="pText"></div>
       <button class="big-play" id="pToggle" aria-label="일시정지/재생">⏸</button>
       <div class="player-sub-btns">
@@ -160,9 +163,19 @@ export function renderExercisePlay(root, source) {
 
   player = new SequencePlayer(playlist, {
     onQuestionChange: showQuestion,
-    onStepChange: (step) => {
-      // Part 4의 안내는 질문자(전화 건 사람)의 말
+    onStepChange: (step, info) => {
       const part = player.current.part;
+      // 쉐도잉: 지금 따라 말할 문장을 크게 보여 준다
+      const sh = $('#pShadow');
+      if (step === 'shadow' && info) {
+        sh.classList.remove('hidden');
+        sh.innerHTML = `<span class="p-shadow-n">${info.index + 1} / ${info.total}</span>${escapeHtml(info.text)}`;
+        $('#pStep').textContent = '듣고 따라 말하세요';
+        revealText();
+        return;
+      }
+      sh.classList.add('hidden');
+      // Part 4의 안내는 질문자(전화 건 사람)의 말
       $('#pStep').textContent = step === 'intro' && part === 4 ? '질문자 안내'
         : step === 'question' && part === 2 ? '지시문'
         : step === 'respond' && RESPOND_LABELS[part] ? RESPOND_LABELS[part]

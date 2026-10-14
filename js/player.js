@@ -9,6 +9,7 @@
 import * as tts from './tts.js';
 import { getSettings, getAnswer, getSet, recordListen, addStudySeconds } from './store.js';
 import { TEST_TIMING, REPEATED_QNO } from './seed-data.js';
+import { shadowText } from './shadow.js';
 
 // 실전 시간: 문항 번호가 없는 사용자 추가 문항은 파트 기준
 function timingOf(q) {
@@ -148,13 +149,20 @@ export class SequencePlayer {
 
     // Part 1 지문 읽기: 모범 낭독 → (신호음) 따라 읽을 시간 → 지문 해석
     if (q.part === 1) {
-      this.onStepChange('model');
-      anyOk = await tts.speak(q.questionEnglish, 'en-US');
-      if (!alive()) return null;
-      if (!anyOk) return false;
-      // 따라 읽기 시간: 실전이면 준비 45초 + 읽기 45초, 아니면 지문을 읽을 만큼(단어당 약 0.5초)은 보장
-      const ok = await this._speakingTime(q, s, alive, Math.round(q.questionEnglish.split(/\s+/).length * 0.5), 'readAloud');
-      if (!ok) return null;
+      if (s.shadowing) {
+        // 쉐도잉: 지문을 문장마다 끊어 듣고 바로 따라 읽기
+        anyOk = await this._shadow(q.questionEnglish, alive);
+        if (anyOk === null) return null;
+        if (!anyOk) return false;
+      } else {
+        this.onStepChange('model');
+        anyOk = await tts.speak(q.questionEnglish, 'en-US');
+        if (!alive()) return null;
+        if (!anyOk) return false;
+        // 따라 읽기 시간: 실전이면 준비 45초 + 읽기 45초, 아니면 지문을 읽을 만큼(단어당 약 0.5초)은 보장
+        const ok = await this._speakingTime(q, s, alive, Math.round(q.questionEnglish.split(/\s+/).length * 0.5), 'readAloud');
+        if (!ok) return null;
+      }
       if (s.playQuestionKo) {
         this.onStepChange('questionKo');
         anyOk = (await tts.speak(q.questionKorean, 'ko-KR')) || anyOk;
@@ -243,9 +251,16 @@ export class SequencePlayer {
     const ans = getAnswer(q, s.targetLevel);
 
     if (s.playAnswerEn) {
-      this.onStepChange('answer');
-      anyOk = (await tts.speak(ans.en, 'en-US')) || anyOk;
-      if (!alive()) return null;
+      if (s.shadowing) {
+        // 쉐도잉: 모범답변을 문장마다 끊어 들려주고 따라 말할 시간
+        const r = await this._shadow(ans.en, alive);
+        if (r === null) return null;
+        anyOk = r || anyOk;
+      } else {
+        this.onStepChange('answer');
+        anyOk = (await tts.speak(ans.en, 'en-US')) || anyOk;
+        if (!alive()) return null;
+      }
       await tts.playSilence(0.4);
       if (!alive()) return null;
     }
@@ -257,6 +272,14 @@ export class SequencePlayer {
     }
 
     return anyOk;
+  }
+
+  // 문장별 따라 말하기 — 화면에는 지금 문장을 알린다 (onStepChange 두 번째 인자)
+  _shadow(text, alive) {
+    return shadowText(text, {
+      alive,
+      onSentence: (i, n, sent) => this.onStepChange('shadow', { index: i, total: n, text: sent.text }),
+    });
   }
 
   // 잠금화면/이어폰 컨트롤 — play/pause 모두 지원

@@ -44,6 +44,7 @@ export const DEFAULT_SETTINGS = {
   beginnerMode: true,            // 핵심 의문사 강조
   beepAfterQuestion: true,       // 시험처럼 질문 후 신호음(삐)
   playSetIntro: true,            // 세트 첫 질문 전에 상황 안내(Part 3)·질문자 안내(Part 4) 재생
+  shadowing: false,              // 쉐도잉: 모범답변·지문을 문장마다 끊어 들려주고 따라 말할 시간
   useGeneratedAudio: true,       // 사전 생성 신경망 음성 우선 사용
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
 };
