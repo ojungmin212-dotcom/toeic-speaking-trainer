@@ -1,5 +1,6 @@
 // 공용 UI 헬퍼
 import { QUESTION_TYPES, LEVELS, LEVEL_ORDER, TEST_TIMING, REPEATED_QNO } from './seed-data.js';
+import { findExpressions, EXPRESSION_LABELS } from './expressions.js';
 
 // 레벨 선택 세그먼트 컨트롤 (IL | IM | IH | AL)
 export function levelPickerHtml(current, { id = 'levelPicker', small = false, levels = LEVEL_ORDER } = {}) {
@@ -87,6 +88,28 @@ export function qNoBadge(q, { timing = true } = {}) {
     ? `<span class="q-timing">${t.prep > 3 ? `준비 ${t.prep}초 · ` : ''}응답 ${t.response}초${REPEATED_QNO.has(q.qNo) ? ' · 두 번 들려줌' : ''}</span>`
     : '';
   return `<span class="badge badge-qno">Q${q.qNo}</span>${time}`;
+}
+
+// 고급 표현 강조 (AL 포인트) — 답변 텍스트를 escape하면서 찾은 표현만 <mark>로 감싼다
+export function expressionMarkupHtml(text) {
+  const s = String(text || '');
+  const found = findExpressions(s);
+  let out = '';
+  let pos = 0;
+  for (const m of found) {
+    out += escapeHtml(s.slice(pos, m.start));
+    out += `<mark class="adv adv-${m.c}" title="${escapeHtml(m.ko)}">${escapeHtml(m.text)}</mark>`;
+    pos = m.end;
+  }
+  return out + escapeHtml(s.slice(pos));
+}
+
+// 답변 속 고급 표현 목록 (표현 = 뜻 · 분류)
+export function expressionListHtml(text) {
+  const found = findExpressions(text);
+  if (!found.length) return '';
+  return `<ul class="expr-list">${found.map((m) =>
+    `<li><b class="adv adv-${m.c}">${escapeHtml(m.text)}</b> <span class="expr-ko">${escapeHtml(m.ko)}</span> <span class="expr-cat">${escapeHtml(EXPRESSION_LABELS[m.c] || '')}</span></li>`).join('')}</ul>`;
 }
 
 // Part 1 끊어 읽기 가이드: " / " → 쉬는 표시, **단어** → 강세(굵게)

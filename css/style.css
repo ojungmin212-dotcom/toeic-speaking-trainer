@@ -265,6 +265,31 @@ a.q-item-body { display: block; flex: 1; min-width: 0; padding: 14px 0 14px 12px
 .set-card .card-en { font-size: 16px; }
 .set-ko { font-size: 14px; margin-top: 6px; }
 
+/* AL 포인트 — 고급 표현 강조 (분류별 밑줄 색) */
+mark.adv { background: transparent; color: inherit; border-bottom: 2px solid var(--green-btn); padding: 0 1px; cursor: help; }
+mark.adv-link { border-color: #3e71a4; }
+mark.adv-hedge { border-color: #9a6212; }
+mark.adv-grammar { border-color: #7a4fa0; }
+mark.adv-idiom { border-color: var(--green-btn); }
+mark.adv-stance { border-color: #5d5d71; }
+.expr-head { font-size: 13px; font-weight: 700; color: var(--green); margin: 12px 0 4px; }
+.expr-list { list-style: none; border-top: 1px solid var(--line-soft); }
+.expr-list li { font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--line-soft); display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.expr-list b.adv { font-weight: 700; border-bottom: 2px solid var(--green-btn); }
+.expr-list b.adv-link { border-color: #3e71a4; }
+.expr-list b.adv-hedge { border-color: #9a6212; }
+.expr-list b.adv-grammar { border-color: #7a4fa0; }
+.expr-list b.adv-stance { border-color: #5d5d71; }
+.expr-ko { color: var(--text-2); }
+.expr-cat { font-size: 11px; color: var(--muted); border: 1px solid var(--line); padding: 0 6px; }
+.speak-btn.ghost { background: #fff; color: var(--navy-700); border: 1px solid var(--navy-700); margin-left: 6px; }
+.speak-btn.ghost:hover { background: #eef0f4; }
+.cmp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cmp-col { border-top: 2px solid #000; padding-top: 8px; }
+.cmp-title { font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+.small-speak { padding: 7px 12px; font-size: 13px; margin-top: 8px; }
+@media (max-width: 640px) { .cmp-grid { grid-template-columns: 1fr; } }
+
 /* Part 1 지문 읽기 · Part 2 사진 묘사 */
 .passage { font-size: 19px; line-height: 1.7; }
 .guide { font-size: 17px; line-height: 2; }

@@ -5,7 +5,9 @@ import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
   escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml, guideHtml, photoHtml,
   levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount, speakSeconds,
+  expressionMarkupHtml, expressionListHtml,
 } from '../ui.js';
+import { findExpressions } from '../expressions.js';
 
 // 세트 번호 표시용 (p3-07 → 7)
 function setNo(set) {
@@ -237,7 +239,15 @@ export function renderStudyDetail(root, id, ctx = {}) {
         </div>
         <div class="level-note" id="ansNote"></div>
         <div class="card-en answer-text" id="ansEn"></div>
+        <div id="ansExpr"></div>
         <button class="speak-btn" id="aSpeak">🔊 답변 듣기</button>
+        ${q.levelAnswers && q.levelAnswers.IH && q.levelAnswers.AL ? '<button class="speak-btn ghost" id="cmpBtn">IH ↔ AL 비교</button>' : ''}
+      </div>
+
+      <div class="card compare hidden" id="cmpCard">
+        <div class="card-label">IH ↔ AL 비교</div>
+        <p class="desc small">같은 질문에 IH와 AL이 어떻게 다르게 답하는지 비교합니다. 색으로 표시한 부분이 고급 표현입니다.</p>
+        <div class="cmp-grid" id="cmpGrid"></div>
       </div>
 
       <div class="card">
@@ -262,8 +272,40 @@ export function renderStudyDetail(root, id, ctx = {}) {
     current = a.level;
     const L = LEVELS[a.level];
     $('#ansNote').textContent = `${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
-    $('#ansEn').textContent = a.en;
+    // IH·AL은 고급 표현을 강조하고 뜻을 목록으로 (AL 포인트)
+    const adv = a.level === 'IH' || a.level === 'AL';
+    if (adv) {
+      $('#ansEn').innerHTML = expressionMarkupHtml(a.en);
+      const list = expressionListHtml(a.en);
+      $('#ansExpr').innerHTML = list ? `<div class="expr-head">${a.level} 포인트 표현 ${findExpressions(a.en).length}개</div>${list}` : '';
+    } else {
+      $('#ansEn').textContent = a.en;
+      $('#ansExpr').innerHTML = '';
+    }
     $('#ansKo').textContent = a.ko;
+  }
+
+  // IH ↔ AL 나란히 비교 — 단어 수·고급 표현 수와 함께
+  if ($('#cmpBtn')) {
+    $('#cmpBtn').addEventListener('click', () => {
+      const card = $('#cmpCard');
+      const open = card.classList.toggle('hidden') === false;
+      $('#cmpBtn').textContent = open ? 'IH ↔ AL 비교 닫기' : 'IH ↔ AL 비교';
+      if (!open) return;
+      $('#cmpGrid').innerHTML = ['IH', 'AL'].map((lv) => {
+        const v = q.levelAnswers[lv];
+        return `<div class="cmp-col">
+          <div class="cmp-title"><span class="lv-tag">${lv}</span> ${wordCount(v.en)}단어 · 고급 표현 ${findExpressions(v.en).length}개</div>
+          <div class="card-en answer-text">${expressionMarkupHtml(v.en)}</div>
+          <button class="speak-btn small-speak" data-lv="${lv}">🔊 ${lv} 듣기</button>
+        </div>`;
+      }).join('');
+      $('#cmpGrid').querySelectorAll('[data-lv]').forEach((b) => b.addEventListener('click', () => {
+        tts.cancel();
+        tts.speak(q.levelAnswers[b.dataset.lv].en, 'en-US');
+      }));
+      card.scrollIntoView({ block: 'start' });
+    });
   }
   showAnswer(current);
 

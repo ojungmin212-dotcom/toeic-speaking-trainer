@@ -5,7 +5,7 @@ import { pickWeighted, groupBySet } from '../srs.js';
 import { PARTS } from '../seed-data.js';
 import {
   escapeHtml, typeBadges, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml, qNoBadge, scheduleHtml,
-  guideHtml, photoHtml,
+  guideHtml, photoHtml, expressionMarkupHtml,
 } from '../ui.js';
 import { backBar } from './study.js';
 
@@ -210,7 +210,7 @@ export function renderExercisePlay(root, source) {
       <div class="p-en">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
       <div class="p-meta">${qNoBadge(q, { timing: false })}${typeBadges(q)} <span class="lv-tag">${ans.level}</span></div>
       <div class="p-ko">${escapeHtml(q.questionKorean)}</div>
-      <div class="p-ans">${escapeHtml(ans.en)}<br><span class="p-ans-ko">${escapeHtml(ans.ko)}</span></div>`;
+      <div class="p-ans">${ans.level === 'IH' || ans.level === 'AL' ? expressionMarkupHtml(ans.en) : escapeHtml(ans.en)}<br><span class="p-ans-ko">${escapeHtml(ans.ko)}</span></div>`;
   }
 
   $('#pToggle').addEventListener('click', () => player.toggle());

@@ -4,6 +4,7 @@
 // Part 1 끊어 읽기 표시(guide)가 지문과 같은지, Part 2 사진 파일이 있는지 확인한다.
 import fs from 'node:fs';
 import { SEED_QUESTIONS, SEED_SETS, QUESTION_TYPES } from '../js/seed-data.js';
+import { findExpressions } from '../js/expressions.js';
 
 // [IL, IM, IH, AL] 단어 수 범위
 const RANGES = {
@@ -60,6 +61,8 @@ for (const q of SEED_QUESTIONS) {
     if (!kos[i]) err(q.id, `${LV[i]} 한국어 해석 없음`);
     else if (!/(다|요|오)[.!]?["'”]?$|까\?$/.test(kos[i].trim())) warn(q.id, `${LV[i]} 한국어 끝맺음 확인: "…${kos[i].slice(-12)}"`);
   });
+  // AL 포인트: AL 답변에는 강조할 고급 표현이 2개 이상 있어야 한다 (js/expressions.js에 없으면 사전에 추가)
+  if (answers[3] && findExpressions(answers[3]).length < 2) err(q.id, `AL 고급 표현 ${findExpressions(answers[3]).length}개 (2개 이상 필요)`);
   if (!(counts[1] <= counts[2] && counts[2] <= counts[3])) err(q.id, `IM ≤ IH ≤ AL 위반 (${counts.slice(1).join(' / ')})`);
   if (q.part === 5) {
     const im = answers[1] || '';
