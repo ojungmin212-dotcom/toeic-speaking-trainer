@@ -1,12 +1,92 @@
-// 질문 관리 — CRUD, 미리듣기, CSV/JSON Import/Export, AI 일괄 생성(검토→승인)
+// 질문 관리 — CRUD, 미리듣기, CSV/JSON Import/Export, AI 생성(실제 시험 형식 세트·4레벨 답변 → 자동 검사 → 검토·승인)
 import * as store from '../store.js';
 import * as tts from '../tts.js';
-import { generateQuestions } from '../llm.js';
+import { generate, GEN_PARTS } from '../llm.js';
+import { checkQuestion } from '../content-rules.js';
 import { PARTS, QUESTION_TYPES, LEVEL_ORDER } from '../seed-data.js';
+import { escapeHtml, typeBadges, qNoBadge, scheduleHtml, guideHtml, toast, download, pickFile } from '../ui.js';
+import { backBar } from './study.js';
 
 const EXTRA_LEVELS = LEVEL_ORDER.filter((lv) => lv !== 'IL');
-import { escapeHtml, typeBadges, typeLabel, toast, download, pickFile } from '../ui.js';
-import { backBar } from './study.js';
+
+// 같은 주제를 또 만들지 않도록 AI에 알려 줄 기존 주제 목록
+function existingTopics(part) {
+  const qs = store.getAllQuestions().filter((q) => q.part === part);
+  if (part === 1) return qs.map((q) => (q.topic ? q.topic + ' — ' : '') + q.questionEnglish.split(/\s+/).slice(0, 8).join(' '));
+  if (part === 5) return qs.map((q) => q.questionEnglish.replace(/ Use specific reasons.*$/, ''));
+  const seen = new Set();
+  return qs.map((q) => store.getSet(q.setId))
+    .filter((set) => set && !seen.has(set.id) && seen.add(set.id))
+    .map((set) => set.topic + (set.schedule ? ' — ' + set.schedule.title : ''));
+}
+
+// 검토 대기 문항을 세트 단위로 묶는다 (세트가 없는 문항은 단독)
+function pendingGroups(pending) {
+  const groups = [];
+  const bySet = new Map();
+  for (const q of pending) {
+    if (q.setId) {
+      if (!bySet.has(q.setId)) {
+        bySet.set(q.setId, []);
+        groups.push({ set: store.getSet(q.setId), questions: bySet.get(q.setId) });
+      }
+      bySet.get(q.setId).push(q);
+    } else groups.push({ set: null, questions: [q] });
+  }
+  for (const g of groups) g.questions.sort((a, b) => (a.qNo || 0) - (b.qNo || 0));
+  return groups;
+}
+
+function reviewNotesHtml(q) {
+  const notes = q.reviewNotes || [];
+  if (!notes.length) return '<div class="review-ok">✓ 자동 규격 검사 통과</div>';
+  return `<ul class="review-notes">${notes.map((n) => `<li>${escapeHtml(n)}</li>`).join('')}</ul>`;
+}
+
+function pendingQuestionHtml(q) {
+  const levels = store.availableLevels(q);
+  return `
+    <div class="pend-q">
+      <div class="q-item-top">${qNoBadge(q, { timing: false })}${typeBadges(q)}
+        ${q.topic ? `<span class="q-topic">${escapeHtml(q.topic)}</span>` : ''}</div>
+      ${q.part === 1 && q.guide ? `<div class="passage guide">${guideHtml(q.guide)}</div>`
+        : `<div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>`}
+      <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
+      ${q.part === 1 ? '' : `<details class="pend-answers">
+        <summary>모범답변 ${levels.join(' · ')}</summary>
+        ${levels.map((lv) => {
+          const a = store.getAnswer(q, lv);
+          return `<div class="pend-ans"><span class="lv-tag">${lv}</span> ${escapeHtml(a.en)}<div class="q-item-ko">${escapeHtml(a.ko)}</div></div>`;
+        }).join('')}
+      </details>`}
+      ${reviewNotesHtml(q)}
+      <div class="btn-row">
+        <button class="sub-btn small-btn listen" data-id="${escapeHtml(q.id)}">🔊 듣기</button>
+        <button class="sub-btn small-btn edit" data-id="${escapeHtml(q.id)}">✏️ 고치기</button>
+        ${q.setId ? '' : `<button class="sub-btn small-btn approve" data-id="${escapeHtml(q.id)}">✅ 승인</button>
+        <button class="sub-btn small-btn danger reject" data-id="${escapeHtml(q.id)}">🗑 거부</button>`}
+      </div>
+    </div>`;
+}
+
+function pendingGroupHtml(g) {
+  const head = g.set ? `
+      <div class="q-item-top"><span class="badge badge-part">Part ${g.set.part}</span> <b>${escapeHtml(g.set.topic || '세트')}</b>
+        <span class="desc small">세트 (Q${g.questions.map((q) => q.qNo).join('·')})</span></div>
+      <div class="set-intro"><div class="q-item-en">${escapeHtml(g.set.introEnglish)}</div>
+        <div class="q-item-ko">${escapeHtml(g.set.introKorean)}</div></div>
+      ${scheduleHtml(g.set.schedule)}`
+    : `<div class="q-item-top"><span class="badge badge-part">Part ${g.questions[0].part}</span></div>`;
+  return `
+    <div class="card pend-group">
+      ${head}
+      ${g.questions.map(pendingQuestionHtml).join('')}
+      ${g.set ? `<div class="btn-row">
+        <button class="sub-btn small-btn approve" data-set="${escapeHtml(g.set.id)}">✅ 세트 승인</button>
+        <button class="sub-btn small-btn danger reject" data-set="${escapeHtml(g.set.id)}">🗑 세트 거부</button>
+      </div>` : ''}
+    </div>`;
+}
 
 export function renderAdmin(root, editId = null) {
   const pending = store.getAllQuestions().filter((q) => q.status === 'pending');
@@ -66,28 +146,18 @@ export function renderAdmin(root, editId = null) {
     <h3 class="section-title">AI 질문 일괄 생성</h3>
     <div class="card">
       <div class="form-row2">
-        <label>파트 <select id="genPart">${Object.keys(PARTS).map((n) => `<option value="${n}">Part ${n}</option>`).join('')}</select></label>
-        <label>유형 <select id="genType">${Object.entries(QUESTION_TYPES).map(([k, t]) => `<option value="${k}">${t.ko}</option>`).join('')}</select></label>
-        <label>개수 <select id="genCount">${[5, 10, 20, 30].map((c) => `<option value="${c}" ${c === 10 ? 'selected' : ''}>${c}개</option>`).join('')}</select></label>
+        <label>파트 <select id="genPart">${Object.entries(GEN_PARTS).map(([n, g]) => `<option value="${n}" ${n === '3' ? 'selected' : ''}>${g.label}</option>`).join('')}</select></label>
+        <label>개수 <select id="genCount">${[1, 2, 3, 5].map((c) => `<option value="${c}">${c}</option>`).join('')}</select></label>
       </div>
+      <label>주제 (선택) <input id="genHint" maxlength="60" placeholder="예: 헬스장, 사내 체육대회 — 비우면 AI가 새 주제를 고릅니다"></label>
       <button class="sub-btn primary-btn" id="genBtn">생성하기</button>
-      <p class="desc small" id="genStatus">생성된 질문은 아래 '검토 대기'에서 승인해야 학습에 나옵니다. (.env에 LLM 키 필요)</p>
+      <p class="desc small" id="genStatus">실제 시험 형식으로 만듭니다 — Part 3·4는 상황 안내(·일정표)와 3문항 세트, 모든 문항에 IL·IM·IH·AL 모범답변.
+        만든 뒤 자동 규격 검사 결과를 보고 '검토 대기'에서 승인해야 학습에 나옵니다. Part 2는 사진이 필요해 제외합니다. (PC 실행 + .env에 LLM 키 필요)</p>
     </div>
 
     ${pending.length ? `
     <h3 class="section-title">검토 대기 (${pending.length})</h3>
-    <div class="q-list">${pending.map((q) => `
-      <div class="q-item pending" data-id="${escapeHtml(q.id)}">
-        <div class="q-item-top">${typeBadges(q)} <span class="badge badge-part">Part ${q.part}</span></div>
-        <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
-        <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
-        <div class="q-item-ko">답: ${escapeHtml(q.answerEnglish)} — ${escapeHtml(q.answerKorean)}</div>
-        <div class="btn-row">
-          <button class="sub-btn small-btn approve" data-id="${escapeHtml(q.id)}">✅ 승인</button>
-          <button class="sub-btn small-btn listen" data-id="${escapeHtml(q.id)}">🔊 듣기</button>
-          <button class="sub-btn small-btn danger reject" data-id="${escapeHtml(q.id)}">🗑 거부</button>
-        </div>
-      </div>`).join('')}</div>` : ''}
+    ${pendingGroups(pending).map(pendingGroupHtml).join('')}` : ''}
 
     <h3 class="section-title">데이터 (${all.length}문항)</h3>
     <div class="card">
@@ -129,7 +199,15 @@ export function renderAdmin(root, editId = null) {
     }
     data.levelAnswers = levelAnswers;
     if (editing) {
-      store.updateQuestion(editing.id, { ...data, part: Number(data.part), difficulty: Number(data.difficulty) });
+      const patch = { ...data, part: Number(data.part), difficulty: Number(data.difficulty) };
+      // Part 1 지문을 고치면 예전 끊어 읽기 표시는 맞지 않으므로 지운다
+      if (editing.part === 1 && editing.guide && patch.questionEnglish !== editing.questionEnglish) patch.guide = '';
+      // 검토 대기 문항을 고치면 자동 규격 검사를 다시 한다
+      if (editing.status === 'pending') {
+        const r = checkQuestion({ ...editing, ...patch }, store.getSet(editing.setId));
+        patch.reviewNotes = [...r.errors, ...r.warns.map((w) => '확인: ' + w)];
+      }
+      store.updateQuestion(editing.id, patch);
       toast('수정했습니다');
       location.hash = '#/admin';
     } else {
@@ -148,17 +226,31 @@ export function renderAdmin(root, editId = null) {
   // ── AI 생성 ──
   $('#genBtn').addEventListener('click', async () => {
     const btn = $('#genBtn'), status = $('#genStatus');
+    const part = Number($('#genPart').value);
+    const unit = GEN_PARTS[part].unit;
     btn.disabled = true;
-    status.textContent = '생성 중… (수십 초 걸릴 수 있습니다)';
     try {
-      const items = await generateQuestions({
-        part: Number($('#genPart').value),
-        type: $('#genType').value,
+      const { units, failed } = await generate({
+        part,
         count: Number($('#genCount').value),
+        hint: $('#genHint').value.trim(),
+        avoid: existingTopics(part),
+        onProgress: (done, total) => {
+          status.textContent = done < total
+            ? `생성 중… ${done + 1} / ${total} ${unit} (하나에 30초~2분 걸릴 수 있습니다)` : '저장 중…';
+        },
       });
-      items.forEach((item) => store.addQuestion(item));
-      toast(items.length + '개 생성 — 검토 대기에 추가됨');
+      let saved = 0;
+      for (const u of units) {
+        try {
+          const setId = u.set ? store.addSet(u.set).id : '';
+          u.questions.forEach((q) => store.addQuestion({ ...q, setId }));
+          saved++;
+        } catch (e) { failed.push(e.message); }
+      }
+      toast(`${unit} ${saved}개 생성 — 검토 대기에 추가됨${failed.length ? ` (실패 ${failed.length})` : ''}`);
       renderAdmin(root);
+      if (failed.length) root.querySelector('#genStatus').textContent = '⚠️ 일부 실패: ' + failed[0];
     } catch (e) {
       status.textContent = '⚠️ ' + e.message;
       btn.disabled = false;
@@ -168,11 +260,25 @@ export function renderAdmin(root, editId = null) {
   // ── 목록 버튼 (승인/거부/수정/삭제/듣기) ──
   // onclick 할당으로 중복 등록을 방지 (라우터가 화면 전환 시 null로 초기화)
   root.onclick = (e) => {
-    const btn = e.target.closest('button[data-id]');
+    const btn = e.target.closest('button[data-id], button[data-set]');
     if (!btn) return;
     const id = btn.dataset.id;
+    if (btn.dataset.set) {
+      // 세트 단위 승인·거부 — 상황 안내·일정표와 3문항은 함께 있어야 의미가 있다
+      const qs = store.getAllQuestions().filter((q) => q.setId === btn.dataset.set && q.status === 'pending');
+      if (btn.classList.contains('approve')) {
+        qs.forEach((q) => store.updateQuestion(q.id, { status: 'approved', reviewNotes: undefined }));
+        toast('세트를 승인했습니다');
+      } else if (btn.classList.contains('reject')) {
+        if (!confirm('이 세트(3문항)를 삭제할까요?')) return;
+        qs.forEach((q) => store.deleteQuestion(q.id));
+        toast('세트를 거부(삭제)했습니다');
+      }
+      renderAdmin(root);
+      return;
+    }
     if (btn.classList.contains('approve')) {
-      store.updateQuestion(id, { status: 'approved' });
+      store.updateQuestion(id, { status: 'approved', reviewNotes: undefined });
       toast('승인했습니다'); renderAdmin(root);
     } else if (btn.classList.contains('reject')) {
       store.deleteQuestion(id); toast('거부(삭제)했습니다'); renderAdmin(root);

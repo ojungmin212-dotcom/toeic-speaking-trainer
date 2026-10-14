@@ -10,9 +10,10 @@ import {
 import { findExpressions } from '../expressions.js';
 import { shadowText } from '../shadow.js';
 
-// 세트 번호 표시용 (p3-07 → 7)
-function setNo(set) {
-  return Number(String(set.id).split('-')[1]) || '';
+// 세트 번호 표시용 (p3-07 → SET 07) — AI로 만든 세트(us-…)는 번호 대신 'AI SET'
+function setLabel(set) {
+  const n = /^p[34]-(\d+)$/.exec(String(set.id));
+  return n ? 'SET ' + n[1].padStart(2, '0') : 'AI SET';
 }
 
 // 목록의 세트 머리 — 실제 시험처럼 질문 전에 나오는 상황 안내(Part 3)·일정표 제목(Part 4)
@@ -21,7 +22,7 @@ function setHeadHtml(set) {
   return `
     <div class="set-head">
       <div class="set-head-top">
-        <span class="set-no">SET ${String(setNo(set)).padStart(2, '0')}</span>
+        <span class="set-no">${setLabel(set)}</span>
         <b>${escapeHtml(set.topic)}</b>
         <button class="item-play set-play" data-set="${escapeHtml(set.id)}" aria-label="상황 안내 듣기">🔊</button>
       </div>
@@ -190,7 +191,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
 
       ${set ? `
       <div class="card set-card">
-        <div class="card-label">${set.part === 4 ? '질문자 안내' : '상황 안내'} · SET ${String(setNo(set)).padStart(2, '0')} ${escapeHtml(set.topic)}</div>
+        <div class="card-label">${set.part === 4 ? '질문자 안내' : '상황 안내'} · ${setLabel(set)} ${escapeHtml(set.topic)}</div>
         <div class="card-en">${escapeHtml(set.introEnglish)}</div>
         <div class="card-ko set-ko">${escapeHtml(set.introKorean)}</div>
         <button class="speak-btn" id="introSpeak">🔊 안내 듣기</button>

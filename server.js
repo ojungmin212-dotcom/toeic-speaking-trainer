@@ -75,27 +75,39 @@ async function handleLlm(req, res) {
   if (!provider || !env.LLM_API_KEY) {
     return sendJson(res, 501, { error: 'LLM Provider가 설정되지 않았습니다 (.env의 LLM_PROVIDER/LLM_API_KEY).' });
   }
-  const { prompt } = await readBody(req);
+  // schema(선택): 응답을 이 JSON 스키마에 맞춰 받는다 (Anthropic 구조화 출력)
+  const { prompt, schema } = await readBody(req);
   if (!prompt) return sendJson(res, 400, { error: 'prompt가 필요합니다.' });
 
   try {
     if (provider === 'anthropic') {
+      // npm 패키지 금지(AGENTS.md 원칙 1)라 SDK 대신 내장 fetch로 Messages API를 직접 호출한다.
+      // fallbacks "default": 안전 분류기가 거절하면 서버가 다른 모델로 자동 재시도 (기본 사용)
+      const body = {
+        model: env.LLM_MODEL || 'claude-opus-5-5',
+        max_tokens: 16000,
+        fallbacks: 'default',
+        output_config: { effort: 'medium' },
+        messages: [{ role: 'user', content: prompt }],
+      };
+      if (schema && typeof schema === 'object') body.output_config.format = { type: 'json_schema', schema };
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: {
           'x-api-key': env.LLM_API_KEY,
           'anthropic-version': '2023-06-01',
+          'anthropic-beta': 'server-side-fallback-2026-07-01',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: env.LLM_MODEL || 'claude-sonnet-5',
-          max_tokens: 8000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+        body: JSON.stringify(body),
       });
       const data = await r.json();
       if (!r.ok) return sendJson(res, 502, { error: 'Anthropic API 오류: ' + JSON.stringify(data).slice(0, 300) });
-      return sendJson(res, 200, { text: (data.content || []).map((c) => c.text || '').join('') });
+      // 거절·길이 초과는 내용을 쓰기 전에 먼저 확인한다
+      if (data.stop_reason === 'refusal') return sendJson(res, 502, { error: '모델이 요청을 거절했습니다. 주제를 바꿔 다시 시도해 주세요.' });
+      if (data.stop_reason === 'max_tokens') return sendJson(res, 502, { error: '응답이 너무 길어 잘렸습니다. 생성 개수를 줄여 다시 시도해 주세요.' });
+      // 생각(thinking) 블록은 건너뛰고 텍스트만
+      return sendJson(res, 200, { text: (data.content || []).filter((c) => c.type === 'text').map((c) => c.text).join('') });
     }
     if (provider === 'openai') {
       const r = await fetch('https://api.openai.com/v1/chat/completions', {

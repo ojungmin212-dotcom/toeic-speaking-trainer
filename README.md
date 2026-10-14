@@ -37,14 +37,15 @@ node server.js
 | ❓ 질문 유형 퀴즈 | 듣고 "시간/장소/빈도/이유…" 유형 맞히기, 오답은 취약 목록 자동 저장 |
 | 🔁 취약 질문 복습 | 틀린 문제 + 복습 예정 문제만 (간이 Spaced Repetition) |
 | 📊 학습 통계 | 오늘/누적, 파트별·유형별 정답률, 취약 의문사, 연속 학습일 |
-| ⚙️ 질문 관리 | 추가/수정/삭제, CSV·JSON Import/Export, AI 일괄 생성(검토→승인) |
+| ⚙️ 질문 관리 | 추가/수정/삭제, CSV·JSON Import/Export, AI 생성(실제 시험 형식 세트·4레벨 → 자동 검사 → 승인) |
 
 ## 선택 설정 (고품질 TTS / AI 질문 생성)
 
 `.env.example`을 `.env`로 복사하고 키를 입력하면 활성화됩니다:
 
 - `TTS_PROVIDER=openai` — 시험 안내 스타일의 고품질 음성 (설정 화면에서 선택 가능)
-- `LLM_PROVIDER=anthropic` — 관리 화면의 "AI 질문 일괄 생성" 버튼 활성화
+- `LLM_PROVIDER=anthropic` — 관리 화면의 "AI 문항 생성" 활성화: Part 1 지문 · Part 3/4 세트(상황 안내·일정표 + 3문항) · Part 5,
+  모든 문항에 IL·IM·IH·AL 답변. 콘텐츠 규격 자동 검사 결과를 보고 승인해야 학습에 나옵니다 (기본 모델 `claude-opus-5-5`)
 
 키는 `.env`에만 저장되며 서버(server.js)가 프록시로 호출합니다. 소스코드에 키를 넣지 마세요.
 

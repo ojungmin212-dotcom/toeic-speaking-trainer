@@ -11,6 +11,7 @@ const K = {
   settings: 'tst.settings.v1',
   seedVersion: 'tst.seedVersion',
   deletedSeeds: 'tst.deletedSeedIds', // 사용자가 지운 시드가 업데이트 때 부활하지 않도록
+  userSets: 'tst.userSets.v1',        // AI 생성·사용자 세트 (Part 3 상황 안내 · Part 4 일정표)
 };
 
 function load(key, fallback) {
@@ -28,6 +29,7 @@ let questions = [];
 let progress = {};   // { [questionId]: Progress }
 let daily = {};      // { 'YYYY-MM-DD': {listened, correct, incorrect, studySeconds} }
 let settings = {};
+let userSets = {};   // { [setId]: Set } — 시드 세트(SEED_SETS)와 같은 모양, id는 'us-…'
 
 export const DEFAULT_SETTINGS = {
   ttsProvider: 'webspeech',      // webspeech | openai
@@ -70,16 +72,72 @@ function normalize(q) {
     ...q,
     part: Number(q.part) || 3,
     difficulty: Number(q.difficulty) || 1,
-    setId: typeof q.setId === 'string' && SEED_SETS[q.setId] ? q.setId : '',
+    setId: typeof q.setId === 'string' && (SEED_SETS[q.setId] || userSets[q.setId]) ? q.setId : '',
     qNo: Number(q.qNo) || null,
     questionType2: typeof q.questionType2 === 'string' && q.questionType2 !== q.questionType ? q.questionType2 : '',
     levelAnswers: cleanLevelAnswers(q.levelAnswers),
   };
 }
 
-// 세트 정보 (Part 3 상황 안내 · Part 4 일정표) — 시드 코드에만 있고 localStorage에는 저장하지 않는다
+// 세트 정보 (Part 3 상황 안내 · Part 4 일정표) — 시드 세트는 코드에만 있고 localStorage에는 저장하지 않는다.
+// AI로 생성한 세트는 userSets(tst.userSets.v1)에 저장한다.
 export function getSet(setId) {
-  return (setId && SEED_SETS[setId]) || null;
+  return (setId && (SEED_SETS[setId] || userSets[setId])) || null;
+}
+
+const USER_SET_ID = /^us-[a-z0-9-]+$/;
+const strArr = (a) => (Array.isArray(a) ? a.filter((x) => typeof x === 'string').map((x) => x.trim()) : []);
+// 사용자 세트 검증 — 백업·동기화로 들어온 데이터도 같은 수준으로 정리 (화면에 그대로 그려지므로)
+function cleanSet(raw) {
+  if (!raw || typeof raw !== 'object' || !USER_SET_ID.test(String(raw.id))) return null;
+  const part = Number(raw.part);
+  if (part !== 3 && part !== 4) return null;
+  const set = {
+    id: String(raw.id), part,
+    topic: typeof raw.topic === 'string' ? raw.topic.trim() : '',
+    introEnglish: typeof raw.introEnglish === 'string' ? raw.introEnglish.trim() : '',
+    introKorean: typeof raw.introKorean === 'string' ? raw.introKorean.trim() : '',
+    schedule: null,
+  };
+  const sch = raw.schedule;
+  if (part === 4 && sch && typeof sch === 'object') {
+    const cols = strArr(sch.cols);
+    const rows = Array.isArray(sch.rows)
+      ? sch.rows.filter(Array.isArray).map((r) => cols.map((_, i) => (typeof r[i] === 'string' ? r[i].trim() : '')))
+      : [];
+    if (cols.length && rows.length) {
+      set.schedule = { title: typeof sch.title === 'string' ? sch.title.trim() : '', info: strArr(sch.info), cols, rows };
+    }
+  }
+  return set.introEnglish ? set : null;
+}
+function cleanSets(obj) {
+  const out = {};
+  for (const v of Object.values(obj && typeof obj === 'object' ? obj : {})) {
+    const s = cleanSet(v);
+    if (s) out[s.id] = s;
+  }
+  return out;
+}
+
+// 새 사용자 세트 저장 → 저장된 세트 (id 자동 부여). 문항은 addQuestion({ setId, qNo, ... })로 따로 넣는다.
+export function addSet(data) {
+  const id = 'us-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+  const set = cleanSet({ ...data, id });
+  if (!set) throw new Error('세트 정보가 올바르지 않습니다 (상황 안내·일정표 확인).');
+  userSets[id] = set;
+  save(K.userSets, userSets);
+  return set;
+}
+
+// 문항이 하나도 남지 않은 사용자 세트 정리
+function pruneUserSets() {
+  const used = new Set(questions.map((q) => q.setId).filter(Boolean));
+  let changed = false;
+  for (const id of Object.keys(userSets)) {
+    if (!used.has(id)) { delete userSets[id]; changed = true; }
+  }
+  if (changed) save(K.userSets, userSets);
 }
 
 // 시드 문항 id 판별 — 현재 시드 + 실제 시험 형식 이전의 옛 시드(seed-###)
@@ -157,6 +215,7 @@ export function init() {
   progress = load(K.progress, {});
   daily = load(K.daily, {});
   settings = sanitizeSettings(load(K.settings, {}));
+  userSets = cleanSets(load(K.userSets, {})); // 문항 정규화(setId 확인) 전에 읽는다
   questions = load(K.questions, null);
   if (Array.isArray(questions)) questions = questions.map(normalize);
   if (!questions) {
@@ -201,7 +260,13 @@ export function addQuestion(data) {
     answerAudioUrl: data.answerAudioUrl || null,
     status: data.status || 'approved',
     levelAnswers: cleanLevelAnswers(data.levelAnswers),
+    setId: data.setId || '',
+    qNo: data.qNo || null,
   };
+  // Part 1 끊어 읽기 표시·지문 종류, AI 생성 문항 자동 검토 결과
+  if (typeof data.guide === 'string' && data.guide.trim()) item.guide = data.guide.trim();
+  if (typeof data.topic === 'string' && data.topic.trim()) item.topic = data.topic.trim();
+  if (Array.isArray(data.reviewNotes)) item.reviewNotes = data.reviewNotes.filter((x) => typeof x === 'string');
   const norm = normalize(item);
   questions.push(norm);
   save(K.questions, questions);
@@ -219,6 +284,7 @@ export function updateQuestion(id, patch) {
 export function deleteQuestion(id) {
   questions = questions.filter((q) => q.id !== id);
   delete progress[id];
+  pruneUserSets();
   if (SEED_IDS.has(id)) {
     const deleted = load(K.deletedSeeds, []);
     if (!deleted.includes(id)) { deleted.push(id); save(K.deletedSeeds, deleted); }
@@ -232,6 +298,7 @@ export function resetToSeed() {
   save(K.questions, questions);
   save(K.seedVersion, SEED_VERSION);
   save(K.deletedSeeds, []);
+  pruneUserSets();
 }
 
 export function seedCount() { return SEED_QUESTIONS.length; }
@@ -396,6 +463,7 @@ export function exportJSON() {
   return JSON.stringify({
     questions, progress, daily,
     settings,
+    userSets, // AI 생성 세트의 상황 안내·일정표 (문항의 setId가 가리킴)
     deletedSeedIds: load(K.deletedSeeds, []), // 새 기기 복원 시 삭제한 시드가 부활하지 않도록
     seedVersion: SEED_VERSION,
     exportedAt: new Date().toISOString(),
@@ -406,6 +474,9 @@ export function importJSON(text) {
   const data = JSON.parse(text);
   if (!Array.isArray(data.questions)) throw new Error('questions 배열이 없습니다.');
   const prog = data.progress && typeof data.progress === 'object' ? { ...data.progress } : {};
+  // 세트를 먼저 들여야 문항 정규화에서 setId가 유지된다
+  userSets = cleanSets(data.userSets);
+  save(K.userSets, userSets);
 
   // 백업 문항도 addQuestion과 같은 수준으로 검증 (필수 필드, id 형식 — DOM 주입 방지)
   const cleaned = [];
@@ -432,6 +503,7 @@ export function importJSON(text) {
   // 현재 버전에서 만든 백업이면 사용자가 고친 시드 문항 내용을 덮어쓰지 않고 누락 문항만 추가한다.
   const backupVersion = Number(data.seedVersion) || 0;
   mergeSeeds({ syncContent: backupVersion < SEED_VERSION });
+  pruneUserSets();
   return questions.length;
 }
 

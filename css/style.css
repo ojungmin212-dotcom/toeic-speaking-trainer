@@ -236,6 +236,16 @@ a.stat:hover .stat-val { text-decoration: underline; }
 .q-item { display: block; background: #fff; border-bottom: 1px solid var(--line); padding: 14px 12px; }
 .q-item:hover { background: var(--card-hover); }
 .q-item.pending { border-left: 3px solid var(--green-btn); }
+/* AI 생성 검토 대기 — 세트 단위 카드 */
+.pend-group { border-left: 3px solid var(--green-btn); }
+.pend-group .set-intro { background: var(--box); padding: 8px 10px; margin: 8px 0; }
+.pend-q { border-top: 1px solid var(--line-soft); padding: 10px 0; }
+.pend-q .passage { margin: 6px 0; }
+.pend-answers { margin: 6px 0; }
+.pend-answers summary { cursor: pointer; color: var(--green); font-weight: 700; padding: 4px 0; }
+.pend-ans { padding: 6px 0; border-bottom: 1px dashed var(--line-soft); line-height: 1.5; }
+.review-ok { color: var(--ok); font-size: 13px; margin: 6px 0; }
+.review-notes { color: var(--low); font-size: 13px; margin: 6px 0; padding-left: 18px; line-height: 1.5; }
 .q-item.with-play { display: flex; align-items: center; gap: 10px; padding: 0; }
 a.q-item-body { display: block; flex: 1; min-width: 0; padding: 14px 0 14px 12px; }
 .item-play {
