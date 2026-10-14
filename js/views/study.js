@@ -3,7 +3,7 @@ import * as store from '../store.js';
 import * as tts from '../tts.js';
 import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
-  escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml,
+  escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml, guideHtml, photoHtml,
   levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount, speakSeconds,
 } from '../ui.js';
 
@@ -98,13 +98,15 @@ export function renderStudyList(root, { part, type }) {
           <a class="q-item-body" href="${base}/q/${escapeHtml(q.id)}">
             <div class="q-item-top">${qNoBadge(q, { timing: false })}${typeBadges(q)}
               ${set && !part ? `<span class="q-topic">${escapeHtml(set.topic)}</span>` : ''}
+              ${q.topic ? `<span class="q-topic">${escapeHtml(q.topic)}</span>` : ''}
               <span class="diff">${'★'.repeat(q.difficulty)}</span>
               ${p.favorite ? '<span class="fav">♥</span>' : ''}
             </div>
-            <div class="q-item-en">${escapeHtml(q.questionEnglish)}</div>
-            <div class="q-item-ko">${escapeHtml(q.questionKorean)}</div>
+            ${q.image ? `<img class="q-thumb" src="${escapeHtml(q.image)}" alt="" loading="lazy">`
+              : `<div class="q-item-en ${q.part === 1 ? 'clamp2' : ''}">${escapeHtml(q.questionEnglish)}</div>
+            <div class="q-item-ko ${q.part === 1 ? 'clamp1' : ''}">${escapeHtml(q.questionKorean)}</div>`}
           </a>
-          <button class="item-play" data-qid="${escapeHtml(q.id)}" aria-label="질문 듣기">🔊</button>
+          ${q.image ? '' : `<button class="item-play" data-qid="${escapeHtml(q.id)}" aria-label="${q.part === 1 ? '모범 낭독 듣기' : '질문 듣기'}">🔊</button>`}
         </div>`;
       }).join('')}
     </div>`;
@@ -191,6 +193,29 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <button class="speak-btn" id="introSpeak">🔊 안내 듣기</button>
       </div>` : ''}
 
+      ${q.part === 1 ? `
+      <div class="card q-box">
+        <div class="card-label">Question ${q.qNo || 1} · ${escapeHtml(q.topic || '지문 읽기')}</div>
+        <div class="card-en big passage">${escapeHtml(q.questionEnglish)}</div>
+        <div class="q-types">${typeBadges(q)} <span class="diff">${'★'.repeat(q.difficulty)}</span></div>
+        <button class="speak-btn" id="qSpeak">🔊 모범 낭독 듣기</button>
+      </div>
+      <div class="card">
+        <div class="card-label">끊어 읽기 가이드</div>
+        <div class="card-en guide">${guideHtml(q.guide || q.questionEnglish)}</div>
+        <p class="desc small"><span class="pause">/</span> 에서 잠깐 쉬고, <b class="stress">굵은 단어</b>를 힘주어 읽습니다. 목록(A, B, and C)은 앞 항목을 올려 읽고 마지막 항목에서 내립니다.</p>
+      </div>
+      <div class="card">
+        <div class="card-label">지문 해석</div>
+        <div class="card-ko">${escapeHtml(q.questionKorean)}</div>
+      </div>` : q.part === 2 ? `
+      <div class="card q-box">
+        <div class="card-label">Question ${q.qNo || 3} · 사진 묘사</div>
+        ${photoHtml(q)}
+        <div class="card-en">${escapeHtml(q.questionEnglish)}</div>
+        <div class="card-ko set-ko">${escapeHtml(q.questionKorean)}</div>
+        ${s.beginnerMode && hint ? `<div class="hint">💡 ${escapeHtml(hint)}</div>` : ''}
+      </div>` : `
       <div class="card q-box">
         <div class="card-label">Question${q.qNo ? ' ' + q.qNo : ''}</div>
         <div class="card-en big">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
@@ -202,8 +227,9 @@ export function renderStudyDetail(root, id, ctx = {}) {
       <div class="card">
         <div class="card-label">질문 해석</div>
         <div class="card-ko">${escapeHtml(q.questionKorean)}</div>
-      </div>
+      </div>`}
 
+      ${q.part === 1 ? '' : `
       <div class="card">
         <div class="answer-head">
           <span class="card-label">Answer</span>
@@ -217,9 +243,9 @@ export function renderStudyDetail(root, id, ctx = {}) {
       <div class="card">
         <div class="card-label">답변 해석</div>
         <div class="card-ko answer-text" id="ansKo"></div>
-      </div>
+      </div>`}
 
-      <div class="detail-stats">듣기 ${p.listenCount}회 · 정답 ${p.correctCount} · 오답 ${p.incorrectCount}</div>
+      <div class="detail-stats">듣기 ${p.listenCount}회${q.part <= 2 ? '' : ` · 정답 ${p.correctCount} · 오답 ${p.incorrectCount}`}</div>
     </div>
     ${pos >= 0 ? `
     <nav class="detail-nav" aria-label="질문 이동">
@@ -231,6 +257,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
   const $ = (sel) => root.querySelector(sel);
 
   function showAnswer(level) {
+    if (!$('#ansNote')) return; // Part 1은 모범답변 카드가 없다 (지문 자체가 모범 낭독)
     const a = store.getAnswer(q, level);
     current = a.level;
     const L = LEVELS[a.level];
@@ -248,12 +275,12 @@ export function renderStudyDetail(root, id, ctx = {}) {
       tts.speak(set.introEnglish, 'en-US');
     });
   }
-  $('#qSpeak').addEventListener('click', () => {
+  if ($('#qSpeak')) $('#qSpeak').addEventListener('click', () => {
     tts.cancel();
     tts.speak(q.questionEnglish, 'en-US');
     store.recordListen(q.id);
   });
-  $('#aSpeak').addEventListener('click', () => {
+  if ($('#aSpeak')) $('#aSpeak').addEventListener('click', () => {
     tts.cancel();
     tts.speak(store.getAnswer(q, current).en, 'en-US');
   });

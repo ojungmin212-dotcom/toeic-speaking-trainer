@@ -5,6 +5,7 @@ import { pickWeighted, groupBySet } from '../srs.js';
 import { PARTS } from '../seed-data.js';
 import {
   escapeHtml, typeBadges, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml, qNoBadge, scheduleHtml,
+  guideHtml, photoHtml,
 } from '../ui.js';
 import { backBar } from './study.js';
 
@@ -21,7 +22,7 @@ function buildPlaylist(source) {
   else if (source === 'fav') pool = store.getFavorites();
   else if (source === 'due') pool = store.getDueQuestions();
   else if (source.startsWith('part')) pool = store.getQuestions({ part: Number(source.slice(4)) });
-  else pool = store.getQuestions();
+  else pool = store.getQuestionParts(); // 전체 학습 = 질문 듣기(Part 3~5). Part 1·2는 파트별 재생 목록으로
   if (!pool.length) return [];
   // SRS 가중치로 출제 순서 결정 (틀린 문제·취약 유형·복습 예정 우선) — 전체 풀 사용
   // 세트 문항은 실제 시험처럼 상황 안내 → Q5 → Q6 → Q7 순서로 이어서 재생
@@ -47,7 +48,7 @@ export function renderExerciseSetup(root) {
 
     <h3 class="section-title">재생 목록</h3>
     <nav class="menu">
-      <a class="menu-btn primary" href="#/exercise/play/all">전체 학습<span class="menu-desc">모든 질문 (취약 문제 우선 출제)</span></a>
+      <a class="menu-btn primary" href="#/exercise/play/all">전체 학습<span class="menu-desc">Part 3~5 질문 전체 (취약 문제 우선 출제)</span></a>
       ${Object.entries(PARTS).map(([n, p]) =>
         `<a class="menu-btn" href="#/exercise/play/part${n}">${p.name}만<span class="menu-desc">${escapeHtml(p.desc)}</span></a>`).join('')}
       <a class="menu-btn ${wrong ? '' : 'disabled'}" ${wrong ? '' : 'tabindex="-1" aria-disabled="true"'} href="#/exercise/play/wrong">틀린 문제만<span class="menu-desc">${wrong}문항</span></a>
@@ -113,7 +114,12 @@ const STEP_LABELS = {
   questionKo: '질문 해석',
   answer: '모범답변',
   answerKo: '답변 해석',
+  model: '모범 낭독',
+  readAloud: '소리 내어 따라 읽어 보세요',
+  describe: '사진을 보고 묘사해 보세요',
 };
+// 실전 시간의 '응답' 단계 이름은 파트마다 다르다
+const RESPOND_LABELS = { 1: '소리 내어 읽어 보세요', 2: '사진을 묘사해 보세요' };
 
 export function renderExercisePlay(root, source) {
   stopExercise();
@@ -148,15 +154,22 @@ export function renderExercisePlay(root, source) {
     const set = store.getSet(q.setId);
     $('#pCount').textContent = `${i + 1} / ${total}${q.qNo ? ' · Q' + q.qNo : ''}${set ? ' · ' + set.topic : ''}`;
     $('#pText').innerHTML = '';
+    // Part 2는 사진이 곧 문제 — 처음부터 보여 준다
+    if (q.part === 2) $('#pText').innerHTML = photoHtml(q, { credit: false });
   };
 
   player = new SequencePlayer(playlist, {
     onQuestionChange: showQuestion,
     onStepChange: (step) => {
       // Part 4의 안내는 질문자(전화 건 사람)의 말
-      $('#pStep').textContent = step === 'intro' && player.current.part === 4 ? '질문자 안내' : (STEP_LABELS[step] || '');
+      const part = player.current.part;
+      $('#pStep').textContent = step === 'intro' && part === 4 ? '질문자 안내'
+        : step === 'question' && part === 2 ? '지시문'
+        : step === 'respond' && RESPOND_LABELS[part] ? RESPOND_LABELS[part]
+          : (STEP_LABELS[step] || '');
       // 해석 단계부터는 자동으로 텍스트 표시 (원하면 먼저 '질문 확인'으로 미리 보기)
-      if (step === 'questionKo' || step === 'answer' || step === 'answerKo') revealText();
+      // Part 1은 모범 낭독을 들으며 지문을 보고 따라 읽는다
+      if (step === 'model' || step === 'questionKo' || step === 'answer' || step === 'answerKo') revealText();
     },
     onFinish: () => toast('한 바퀴 끝! 처음부터 다시 재생합니다.'),
     // 이어폰/잠금화면에서 조작해도 화면 버튼이 항상 실제 상태와 일치
@@ -177,6 +190,20 @@ export function renderExercisePlay(root, source) {
     const s = store.getSettings();
     const ans = store.getAnswer(q, s.targetLevel);
     const set = store.getSet(q.setId);
+    if (q.part === 1) {
+      $('#pText').innerHTML = `
+        <div class="p-meta">${qNoBadge(q, { timing: false })}${typeBadges(q)}</div>
+        <div class="p-en guide">${guideHtml(q.guide || q.questionEnglish)}</div>
+        <div class="p-ko">${escapeHtml(q.questionKorean)}</div>`;
+      return;
+    }
+    if (q.part === 2) {
+      $('#pText').innerHTML = `
+        ${photoHtml(q, { credit: false })}
+        <div class="p-meta">${qNoBadge(q, { timing: false })}${typeBadges(q)} <span class="lv-tag">${ans.level}</span></div>
+        <div class="p-ans">${escapeHtml(ans.en)}<br><span class="p-ans-ko">${escapeHtml(ans.ko)}</span></div>`;
+      return;
+    }
     $('#pText').innerHTML = `
       ${set && set.schedule ? scheduleHtml(set.schedule) : ''}
       ${set ? `<div class="p-intro">${escapeHtml(set.introEnglish)}</div>` : ''}

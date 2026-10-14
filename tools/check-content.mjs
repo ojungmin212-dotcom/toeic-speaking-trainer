@@ -1,10 +1,13 @@
 // 시드 콘텐츠 규격 검사 — 문항을 추가·수정한 뒤 실행: node tools/check-content.mjs
 // 단어 수(파트·문항 번호·레벨별), IM ≤ IH ≤ AL, 한 문장 28단어 이하, 핵심 표현이 질문에 있는지,
-// Part 5 IM 고정 틀, Part 4 답변 속 숫자가 일정표에 있는지, 한국어 합니다체 끝맺음을 확인한다.
+// Part 5 IM 고정 틀, Part 4 답변 속 숫자가 일정표에 있는지, 한국어 합니다체 끝맺음,
+// Part 1 끊어 읽기 표시(guide)가 지문과 같은지, Part 2 사진 파일이 있는지 확인한다.
+import fs from 'node:fs';
 import { SEED_QUESTIONS, SEED_SETS, QUESTION_TYPES } from '../js/seed-data.js';
 
 // [IL, IM, IH, AL] 단어 수 범위
 const RANGES = {
+  '2-30': [[30, 45], [45, 60], [55, 70], [65, 80]],  // Part 2 Q3·Q4 사진 묘사 (응답 30초)
   '3-15': [[8, 18], [15, 25], [25, 40], [35, 55]],   // Part 3 Q5·Q6 (응답 15초)
   '3-30': [[20, 32], [35, 48], [48, 62], [60, 75]],  // Part 3 Q7 (응답 30초)
   '4-15': [[8, 16], [12, 22], [20, 32], [28, 45]],   // Part 4 Q8·Q9 (응답 15초)
@@ -31,7 +34,17 @@ for (const q of SEED_QUESTIONS) {
   for (const k of q.keyExpression.split('/').map((x) => x.trim()).filter(Boolean)) {
     if (!q.questionEnglish.toLowerCase().includes(k.toLowerCase())) err(q.id, `핵심 표현 "${k}"이 질문에 없음`);
   }
-  const key = `${q.part}-${q.qNo === 7 || q.qNo === 10 ? 30 : q.part === 5 ? 60 : 15}`;
+  // Part 1: 지문 길이, 끊어 읽기 표시를 지우면 지문과 같아야 함 (레벨 답변 없음)
+  if (q.part === 1) {
+    const n = words(q.questionEnglish);
+    if (n < 40 || n > 75) err(q.id, `지문 ${n}단어 (규격 40~75)`);
+    if (!q.questionKorean) err(q.id, '지문 해석 없음');
+    const plain = String(q.guide || '').split('**').join('').split(' / ').join(' ');
+    if (plain !== q.questionEnglish) err(q.id, `끊어 읽기 표시가 지문과 다름: "${plain.slice(0, 60)}…"`);
+    continue;
+  }
+  if (q.part === 2 && !fs.existsSync(new URL('../' + q.image, import.meta.url))) err(q.id, `사진 파일 없음 ${q.image}`);
+  const key = `${q.part}-${q.qNo === 7 || q.qNo === 10 || q.part === 2 ? 30 : q.part === 5 ? 60 : 15}`;
   const answers = [
     q.answerEnglish, q.levelAnswers.IM && q.levelAnswers.IM.en,
     q.levelAnswers.IH && q.levelAnswers.IH.en, q.levelAnswers.AL && q.levelAnswers.AL.en,
@@ -87,7 +100,7 @@ for (const lv of ['IH', 'AL']) {
 }
 
 const byPart = (p) => SEED_QUESTIONS.filter((q) => q.part === p).length;
-console.log(`문항 ${SEED_QUESTIONS.length}개 (Part 3: ${byPart(3)} · Part 4: ${byPart(4)} · Part 5: ${byPart(5)}), 세트 ${Object.keys(SEED_SETS).length}개`);
+console.log(`문항 ${SEED_QUESTIONS.length}개 (${[1, 2, 3, 4, 5].map((p) => `Part ${p}: ${byPart(p)}`).join(' · ')}), 세트 ${Object.keys(SEED_SETS).length}개`);
 for (const w of warns) console.log('경고 ' + w);
 for (const e of errors) console.log('오류 ' + e);
 console.log(errors.length ? `오류 ${errors.length}건` : '오류 없음');

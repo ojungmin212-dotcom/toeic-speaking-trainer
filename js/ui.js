@@ -89,6 +89,22 @@ export function qNoBadge(q, { timing = true } = {}) {
   return `<span class="badge badge-qno">Q${q.qNo}</span>${time}`;
 }
 
+// Part 1 끊어 읽기 가이드: " / " → 쉬는 표시, **단어** → 강세(굵게)
+export function guideHtml(guide) {
+  return escapeHtml(guide)
+    .split(' / ').join(' <span class="pause">/</span> ')
+    .replace(/\*\*(.+?)\*\*/g, '<b class="stress">$1</b>');
+}
+
+// Part 2 사진 + 작가 표기 (Unsplash 라이선스)
+export function photoHtml(q, { credit = true } = {}) {
+  if (!q.image) return '';
+  const c = q.credit;
+  return `<figure class="photo"><img src="${escapeHtml(q.image)}" alt="${escapeHtml(q.topic || '묘사할 사진')}" loading="lazy">${
+    credit && c ? `<figcaption>Photo: <a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.name)}</a> / Unsplash</figcaption>` : ''
+  }</figure>`;
+}
+
 // Part 4 일정표 (실제 시험 화면처럼 표로)
 export function scheduleHtml(sch) {
   if (!sch) return '';

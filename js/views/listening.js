@@ -33,7 +33,7 @@ export function renderListening(root, { mode = 'all' } = {}) {
       return;
     }
   } else {
-    pool = store.getQuestions();
+    pool = store.getQuestionParts();
     title = '실전 듣기';
     if (!pool.length) {
       root.innerHTML = `${backBar(title)}<p class="desc">질문이 없습니다.<br>질문 관리에서 문항을 추가하거나 설정에서 기본 문제로 초기화해 주세요.</p>`;

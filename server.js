@@ -24,7 +24,7 @@ const MIME = {
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.webmanifest': 'application/manifest+json; charset=utf-8',
-  '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
+  '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
   '.mp3': 'audio/mpeg', '.wav': 'audio/wav',
   '.woff2': 'font/woff2', '.woff': 'font/woff',
 };
@@ -141,7 +141,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, {
         'Content-Type': MIME[ext] || 'application/octet-stream',
         // 개발 편의: 앱 자원은 항상 재검증 (오디오는 불변이라 캐시 허용)
-        'Cache-Control': ext === '.mp3' || ext === '.woff2' ? 'public, max-age=31536000, immutable' : 'no-cache',
+        'Cache-Control': ext === '.mp3' || ext === '.woff2' || ext === '.jpg' ? 'public, max-age=31536000, immutable' : 'no-cache',
       });
       res.end(buf);
     });

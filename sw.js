@@ -2,14 +2,15 @@
 // - 오류 응답(4xx/5xx)은 절대 캐시하지 않는다 (캐시 오염 방지)
 // - 오디오(불변 mp3)는 캐시 우선: 반복 청취 시 재다운로드 없음, 오프라인 재생 가능
 // - 나머지는 네트워크 우선 + 실패 시 캐시 폴백
-const CACHE = 'tst-v11';
+const CACHE = 'tst-v12';
 const AUDIO_CACHE = 'tst-audio-v1'; // 앱 버전과 분리 — 업데이트해도 받아 둔 음성 유지
+const IMAGE_CACHE = 'tst-img-v1';   // Part 2 사진 (불변 파일) — 처음 볼 때 캐시, 앱 업데이트해도 유지
 const ASSETS = [
   './', './index.html', './css/style.css', './manifest.webmanifest',
   './icon-180.png', './icon-512.png',
   './fonts/NanumBarunGothicSubset.woff2', './fonts/NanumBarunGothicBoldSubset.woff2',
   './js/app.js', './js/store.js', './js/seed-data.js', './js/srs.js',
-  './js/sets-part3.js', './js/sets-part4.js', './js/sets-part5.js',
+  './js/sets-part1.js', './js/sets-part2.js', './js/sets-part3.js', './js/sets-part4.js', './js/sets-part5.js',
   './js/tts.js', './js/llm.js', './js/player.js', './js/ui.js',
   './js/views/home.js', './js/views/study.js', './js/views/exercise.js',
   './js/views/listening.js', './js/views/quiz.js', './js/views/stats.js',
@@ -23,7 +24,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => Promise.all(
-      keys.filter((k) => k !== CACHE && k !== AUDIO_CACHE).map((k) => caches.delete(k))
+      keys.filter((k) => k !== CACHE && k !== AUDIO_CACHE && k !== IMAGE_CACHE).map((k) => caches.delete(k))
     )).then(() => self.clients.claim())
   );
 });
@@ -76,6 +77,15 @@ self.addEventListener('fetch', (e) => {
   if (url.pathname.includes('/audio/') && url.pathname.endsWith('.mp3')) {
     // 불변 오디오: 캐시 우선 + Range 206 합성, 실패 시 원 요청으로 폴백
     e.respondWith(audioResponse(e.request).catch(() => fetch(e.request)));
+    return;
+  }
+
+  if (url.pathname.includes('/images/') && url.pathname.endsWith('.jpg')) {
+    // 불변 사진: 캐시 우선, 없으면 받아서 캐시 (오류 응답은 캐시하지 않음)
+    e.respondWith(caches.open(IMAGE_CACHE).then((c) => c.match(e.request).then((hit) => hit || fetch(e.request).then((res) => {
+      if (res.ok && res.status === 200) c.put(e.request, res.clone());
+      return res;
+    }))));
     return;
   }
 

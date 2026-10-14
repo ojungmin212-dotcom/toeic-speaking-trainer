@@ -45,7 +45,7 @@ const CONFUSABLE = {
 
 export function renderQuiz(root) {
   stopQuiz();
-  const pool = store.getQuestions();
+  const pool = store.getQuestionParts();
   if (!pool.length) {
     root.innerHTML = `${backBar('질문 유형 퀴즈')}<p class="desc">질문이 없습니다.<br>질문 관리에서 문항을 추가하거나 설정에서 기본 문제로 초기화해 주세요.</p>`;
     return;

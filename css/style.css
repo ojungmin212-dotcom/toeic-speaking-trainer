@@ -265,6 +265,21 @@ a.q-item-body { display: block; flex: 1; min-width: 0; padding: 14px 0 14px 12px
 .set-card .card-en { font-size: 16px; }
 .set-ko { font-size: 14px; margin-top: 6px; }
 
+/* Part 1 지문 읽기 · Part 2 사진 묘사 */
+.passage { font-size: 19px; line-height: 1.7; }
+.guide { font-size: 17px; line-height: 2; }
+.pause { color: var(--green-btn); font-weight: 700; margin: 0 2px; }
+b.stress { color: #000; font-weight: 700; border-bottom: 2px solid var(--green-soft); background: var(--green-soft); padding: 0 1px; }
+.clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.clamp1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.q-thumb { display: block; width: 100%; max-width: 220px; aspect-ratio: 3 / 2; object-fit: cover; margin-top: 4px; background: var(--box); }
+.q-item:has(.q-thumb) a.q-item-body { padding-right: 12px; }
+.photo { margin: 2px 0 12px; }
+.photo img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; background: #ddd; }
+.photo figcaption { font-size: 11px; color: var(--muted); margin-top: 4px; text-align: right; }
+.photo figcaption a { color: inherit; text-decoration: underline; }
+.player-text .photo { margin: 0 0 10px; }
+
 /* Part 4 일정표 */
 .schedule { border: 1px solid var(--line); background: #fff; }
 .sch-title { font-size: 17px; font-weight: 700; text-align: center; padding: 12px 10px 4px; }

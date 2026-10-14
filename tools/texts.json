@@ -1,5 +1,1015 @@
 [
  {
+  "name": "p1-01-q",
+  "text": "Attention, shoppers. Thank you for visiting Greenwood Market. This weekend only, all fresh fruit, frozen vegetables, and dairy products are twenty percent off. Don't forget to stop by our bakery, where freshly baked bread is available every morning. If you need any help, please ask one of our friendly staff members. Have a wonderful day!",
+  "lang": "en"
+ },
+ {
+  "name": "p1-01-qk",
+  "text": "쇼핑객 여러분께 알려 드립니다. 그린우드 마켓을 찾아 주셔서 감사합니다. 이번 주말에 한해 모든 신선 과일, 냉동 채소, 유제품을 20퍼센트 할인합니다. 매일 아침 갓 구운 빵을 판매하는 베이커리에도 꼭 들러 주십시오. 도움이 필요하시면 친절한 직원에게 문의해 주십시오. 좋은 하루 보내십시오!",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-02-q",
+  "text": "Good morning, and welcome to the Riverside weather report. Today will be cloudy in the morning, with light rain expected in the afternoon. Temperatures will stay between twelve and eighteen degrees. If you're heading out this evening, remember to bring an umbrella and a warm jacket. Tomorrow, sunny skies will return across the region.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-02-qk",
+  "text": "좋은 아침입니다. 리버사이드 날씨 예보입니다. 오늘은 오전에 흐리고 오후에는 약한 비가 예상됩니다. 기온은 12도에서 18도 사이를 유지하겠습니다. 저녁에 외출하신다면 우산과 따뜻한 재킷을 챙기십시오. 내일은 지역 전체에 다시 맑은 하늘이 돌아오겠습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-03-q",
+  "text": "Ladies and gentlemen, may I have your attention, please. Flight 307 to Vancouver will now be boarding at Gate 12. Passengers traveling with small children, as well as those needing extra assistance, may board first. Please have your boarding pass, passport, and photo identification ready. Thank you for flying with Pacific Air.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-03-qk",
+  "text": "승객 여러분, 잠시 안내 말씀드리겠습니다. 밴쿠버행 307편이 지금 12번 게이트에서 탑승을 시작합니다. 어린 자녀와 함께 여행하시는 승객과 추가 도움이 필요하신 승객께서는 먼저 탑승하실 수 있습니다. 탑승권, 여권, 사진이 있는 신분증을 준비해 주십시오. 퍼시픽 항공을 이용해 주셔서 감사합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-04-q",
+  "text": "Welcome to this evening's business lecture. Our speaker tonight is Dr. Sandra Kim, a professor of marketing at Westbrook University. Dr. Kim has written three books about customer behavior, online advertising, and brand design. Tonight, she will share practical tips for growing a small business. Please join me in giving her a warm welcome.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-04-qk",
+  "text": "오늘 저녁 비즈니스 강연에 오신 것을 환영합니다. 오늘 밤 연사는 웨스트브룩 대학교 마케팅 교수인 샌드라 김 박사님입니다. 김 박사님은 고객 행동, 온라인 광고, 브랜드 디자인에 관한 책을 세 권 쓰셨습니다. 오늘 밤에는 작은 사업을 키우기 위한 실용적인 조언을 나눠 주실 것입니다. 따뜻한 박수로 맞아 주십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-05-q",
+  "text": "Thank you for calling Bright Smile Dental Clinic. Our office is open from nine a.m. to six p.m., Monday through Friday. To make or change an appointment, please press one. For questions about insurance or payment, please press two. If this is an emergency, please stay on the line, and our staff will assist you shortly.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-05-qk",
+  "text": "브라이트 스마일 치과에 전화해 주셔서 감사합니다. 저희 병원은 월요일부터 금요일까지 오전 9시부터 오후 6시까지 진료합니다. 예약하거나 예약을 변경하시려면 1번을 눌러 주십시오. 보험이나 결제에 관한 문의는 2번을 눌러 주십시오. 응급 상황이시면 끊지 말고 기다려 주십시오. 곧 직원이 도와드리겠습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-06-q",
+  "text": "Are you looking for a comfortable place to relax after work? Visit Blue Bean Café, located right next to Central Station. We offer fresh coffee, homemade cakes, and light meals at reasonable prices. This month, every customer who brings a reusable cup will receive a free cookie. Blue Bean Café is the perfect place to unwind.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-06-qk",
+  "text": "퇴근 후 편하게 쉴 곳을 찾고 계십니까? 중앙역 바로 옆에 있는 블루 빈 카페를 찾아 주십시오. 신선한 커피, 직접 만든 케이크, 가벼운 식사를 합리적인 가격에 제공합니다. 이번 달에는 다회용 컵을 가져오시는 모든 손님께 쿠키를 무료로 드립니다. 블루 빈 카페는 휴식을 취하기에 완벽한 곳입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-07-q",
+  "text": "Welcome aboard the Harbor City bus tour. Over the next two hours, we'll visit the old fishing village, the art museum, and the famous Ocean Bridge. Please remain seated while the bus is moving, and keep your belongings with you at all times. Feel free to ask me questions along the way. Now, let's begin our tour!",
+  "lang": "en"
+ },
+ {
+  "name": "p1-07-qk",
+  "text": "하버 시티 버스 투어에 오신 것을 환영합니다. 앞으로 두 시간 동안 옛 어촌 마을, 미술관, 그리고 유명한 오션 브리지를 방문하겠습니다. 버스가 움직이는 동안에는 자리에 앉아 계시고, 소지품은 항상 몸에 지니십시오. 가는 동안 궁금한 점은 언제든 물어보십시오. 그럼 투어를 시작하겠습니다!",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-08-q",
+  "text": "This is your Friday afternoon traffic update. Traffic is moving slowly on Highway 9 because of road construction near Maple Avenue. Drivers heading downtown should use Park Road or Lincoln Street instead. The construction is expected to continue until next Tuesday. For the latest updates, stay tuned to Radio 95.5.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-08-qk",
+  "text": "금요일 오후 교통 정보입니다. 메이플 애비뉴 근처 도로 공사 때문에 9번 고속도로의 차량 흐름이 느립니다. 시내로 가시는 운전자께서는 대신 파크 로드나 링컨 스트리트를 이용하십시오. 공사는 다음 주 화요일까지 계속될 예정입니다. 최신 소식은 라디오 95.5에서 계속 들어 주십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-09-q",
+  "text": "Good morning, everyone. This is a reminder that the annual safety inspection will take place on Thursday. During the inspection, the elevators, the parking garage, and the main kitchen will be closed from ten a.m. to two p.m. We apologize for any inconvenience. If you have questions, please contact the facilities team on the third floor.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-09-qk",
+  "text": "안녕하십니까, 여러분. 연례 안전 점검이 목요일에 실시된다는 것을 다시 알려 드립니다. 점검 동안 엘리베이터, 주차장, 중앙 주방은 오전 10시부터 오후 2시까지 폐쇄됩니다. 불편을 드려 죄송합니다. 문의 사항은 3층 시설 관리팀에 연락해 주십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-10-q",
+  "text": "Welcome to the National History Museum. Our new exhibition, Life by the Sea, is now open on the second floor. Visitors can explore ancient boats, fishing tools, and colorful paintings from coastal towns. Guided tours start every hour at the main entrance. Please note that food, drinks, and flash photography are not allowed inside the galleries.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-10-qk",
+  "text": "국립 역사박물관에 오신 것을 환영합니다. 새 전시 '바다와 함께하는 삶'이 지금 2층에서 열리고 있습니다. 관람객은 고대의 배, 고기잡이 도구, 해안 마을의 다채로운 그림을 둘러볼 수 있습니다. 가이드 투어는 정문에서 매시 정각에 시작합니다. 전시실 안에서는 음식, 음료, 플래시 촬영이 금지되어 있으니 유의해 주십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-11-q",
+  "text": "In local news, the city of Fairview has opened a brand-new public library downtown. The modern building includes a children's reading room, a computer lab, and a quiet study area. Library cards are free for all residents. Mayor Linda Park said the library will become an important place for learning and community events.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-11-qk",
+  "text": "지역 소식입니다. 페어뷰시가 시내에 새 공공 도서관을 열었습니다. 현대식 건물에는 어린이 열람실, 컴퓨터실, 조용한 학습 공간이 있습니다. 도서관 카드는 모든 주민에게 무료입니다. 린다 박 시장은 이 도서관이 배움과 지역 행사를 위한 중요한 장소가 될 것이라고 말했습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-12-q",
+  "text": "Welcome to the Lakeside Hotel. We hope you enjoy your stay with us. Breakfast is served in the Garden Restaurant from six-thirty to ten a.m. Our fitness center, swimming pool, and business lounge are located on the fifth floor. If you need extra towels, a taxi, or a wake-up call, simply dial zero from your room phone.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-12-qk",
+  "text": "레이크사이드 호텔에 오신 것을 환영합니다. 즐거운 시간 보내시기 바랍니다. 아침 식사는 가든 레스토랑에서 오전 6시 30분부터 10시까지 제공됩니다. 피트니스 센터, 수영장, 비즈니스 라운지는 5층에 있습니다. 수건 추가, 택시, 모닝콜이 필요하시면 객실 전화로 0번을 누르시기만 하면 됩니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-13-q",
+  "text": "Thank you all for coming to tonight's awards ceremony. This year, our company achieved record sales, opened two new branches, and welcomed over fifty new employees. None of this would have been possible without your hard work and dedication. Now, it's my great pleasure to announce the winner of this year's Employee of the Year award.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-13-qk",
+  "text": "오늘 밤 시상식에 와 주신 모든 분께 감사드립니다. 올해 우리 회사는 사상 최고 매출을 달성했고, 지점 두 곳을 새로 열었으며, 신입 직원 50명 이상을 맞이했습니다. 이 모든 것은 여러분의 노고와 헌신이 없었다면 불가능했을 것입니다. 이제 올해의 직원상 수상자를 발표하게 되어 매우 기쁩니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-14-q",
+  "text": "Get ready for the grand opening of Sunrise Sports! Starting this Saturday, our new store on Oak Street will offer running shoes, camping gear, and fitness equipment at amazing prices. The first one hundred customers will receive a free water bottle. Come early, meet our friendly staff, and find everything you need for an active lifestyle.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-14-qk",
+  "text": "선라이즈 스포츠의 개점을 기대해 주십시오! 이번 토요일부터 오크 스트리트의 새 매장에서 러닝화, 캠핑 장비, 운동 기구를 놀라운 가격에 판매합니다. 선착순 100명의 고객에게는 물병을 무료로 드립니다. 일찍 오셔서 친절한 직원들을 만나고, 활동적인 생활에 필요한 모든 것을 찾아보십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-15-q",
+  "text": "Attention, passengers. The express train to Greenville will depart from Platform 4 in ten minutes. This train will stop at Oakdale, Riverside, and Pinehurst before arriving in Greenville. Please make sure you have your ticket ready for inspection. Also, remember that the quiet car is located at the back of the train.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-15-qk",
+  "text": "승객 여러분께 알려 드립니다. 그린빌행 급행열차가 10분 뒤 4번 승강장에서 출발합니다. 이 열차는 그린빌에 도착하기 전에 오크데일, 리버사이드, 파인허스트에 정차합니다. 검표를 위해 승차권을 준비해 주십시오. 또한 조용한 객차는 열차 맨 뒤에 있다는 점을 기억해 주십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-16-q",
+  "text": "Are you interested in improving your presentation skills? Join our free one-day workshop at the Bayview Community Center on March 15. Professional speakers will teach you how to organize your ideas, use your voice effectively, and handle difficult questions. Space is limited, so please register online by Friday. We look forward to seeing you there.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-16-qk",
+  "text": "발표 실력을 키우는 데 관심이 있으십니까? 3월 15일 베이뷰 주민 센터에서 열리는 무료 하루 워크숍에 참여하십시오. 전문 강연자들이 생각을 정리하는 법, 목소리를 효과적으로 쓰는 법, 어려운 질문에 대처하는 법을 가르쳐 드립니다. 자리가 한정되어 있으니 금요일까지 온라인으로 등록해 주십시오. 그곳에서 뵙기를 기대합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-17-q",
+  "text": "Good evening, library visitors. The library will be closing in fifteen minutes. Please bring any books, magazines, or DVDs you wish to borrow to the front desk. Also, remember to log out of the computers and collect your personal belongings. The library will reopen tomorrow morning at nine o'clock. Thank you, and have a pleasant evening.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-17-qk",
+  "text": "도서관 이용객 여러분, 안녕하십니까. 도서관은 15분 뒤에 문을 닫습니다. 대출하실 책, 잡지, DVD는 안내 데스크로 가져와 주십시오. 또한 컴퓨터에서 로그아웃하시고 개인 소지품을 챙기십시오. 도서관은 내일 아침 9시에 다시 문을 엽니다. 감사합니다. 즐거운 저녁 보내십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-18-q",
+  "text": "Looking for a special place to celebrate? Come to Giovanni's, the best Italian restaurant in town. Our talented chefs prepare fresh pasta, wood-fired pizza, and delicious desserts every day. We also have a private dining room for birthdays, business dinners, and family gatherings. Call today to make a reservation, and enjoy a free glass of juice with every meal.",
+  "lang": "en"
+ },
+ {
+  "name": "p1-18-qk",
+  "text": "축하할 특별한 장소를 찾고 계십니까? 시내 최고의 이탈리안 레스토랑 지오바니스로 오십시오. 재능 있는 셰프들이 매일 신선한 파스타, 화덕 피자, 맛있는 디저트를 만듭니다. 생일, 업무 만찬, 가족 모임을 위한 별실도 있습니다. 오늘 전화로 예약하시고, 모든 식사에 무료 주스 한 잔을 즐기십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-19-q",
+  "text": "Hello, and welcome to Smart Money, the podcast that helps you make better financial decisions. I'm your host, Daniel Brooks. On today's episode, we'll talk about saving for retirement, paying off credit card debt, and choosing the right bank account. Our special guest is financial planner Rebecca Lee. Let's get started!",
+  "lang": "en"
+ },
+ {
+  "name": "p1-19-qk",
+  "text": "안녕하세요, 더 나은 재정 결정을 돕는 팟캐스트 '스마트 머니'에 오신 것을 환영합니다. 저는 진행자 대니얼 브룩스입니다. 오늘 회차에서는 노후 대비 저축, 신용카드 빚 갚기, 알맞은 은행 계좌 고르기에 대해 이야기하겠습니다. 특별 손님은 재무 설계사 레베카 리입니다. 시작해 보겠습니다!",
+  "lang": "ko"
+ },
+ {
+  "name": "p1-20-q",
+  "text": "Welcome to Green Valley Park. Our walking trails, picnic areas, and lake are open every day from sunrise to sunset. Bicycles are allowed only on the main path, and dogs must be kept on a leash at all times. Please help us keep the park clean by using the recycling bins near each entrance. Enjoy your visit!",
+  "lang": "en"
+ },
+ {
+  "name": "p1-20-qk",
+  "text": "그린 밸리 공원에 오신 것을 환영합니다. 산책로, 피크닉 장소, 호수는 매일 해 뜰 때부터 해 질 때까지 개방합니다. 자전거는 주 도로에서만 탈 수 있으며, 개는 항상 목줄을 채워야 합니다. 각 입구 근처의 재활용 수거함을 이용해 공원을 깨끗하게 지키는 데 도움을 주십시오. 즐거운 방문 되십시오!",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-01-q",
+  "text": "Describe the picture on your screen in as much detail as you can.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-01-a",
+  "text": "This picture was taken at a café. In the middle, a man is making coffee. He is wearing a black mask and a brown apron. He is pouring hot water from a white kettle. Behind him, a woman is working.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-01-qk",
+  "text": "화면의 사진을 최대한 자세히 묘사하십시오.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-01-ak",
+  "text": "이 사진은 카페에서 찍었습니다. 가운데에서 한 남자가 커피를 만들고 있습니다. 그는 검은 마스크와 갈색 앞치마를 하고 있습니다. 흰색 주전자로 뜨거운 물을 붓고 있습니다. 그 뒤에서 한 여자가 일하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-01-aIM",
+  "text": "This picture was taken at a coffee shop. The first thing I see is a man in the middle. He is wearing a black mask, a beige T-shirt, and a brown apron. He is pouring hot water into a coffee filter. On the left, a woman is working at the counter. It looks like a busy morning.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-01-akIM",
+  "text": "이 사진은 커피숍에서 찍었습니다. 가장 먼저 가운데에 있는 남자가 보입니다. 그는 검은 마스크, 베이지색 티셔츠, 갈색 앞치마를 하고 있습니다. 커피 필터에 뜨거운 물을 붓고 있습니다. 왼쪽에서는 한 여자가 카운터에서 일하고 있습니다. 바쁜 아침인 것 같습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-01-aIH",
+  "text": "This picture was taken behind the counter of a coffee shop. In the center, a young man is carefully making pour-over coffee. He's wearing a black face mask, a beige T-shirt, and a brown leather apron. He's pouring hot water from a white kettle into a filter. On the left side, a woman with her hair tied up is working near some bottles.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-01-akIH",
+  "text": "이 사진은 커피숍 카운터 안쪽에서 찍었습니다. 가운데에서 한 젊은 남자가 정성껏 핸드드립 커피를 내리고 있습니다. 그는 검은 마스크, 베이지색 티셔츠, 갈색 가죽 앞치마를 하고 있습니다. 흰색 주전자로 필터에 뜨거운 물을 붓고 있습니다. 왼쪽에서는 머리를 묶은 여자가 병들이 놓인 곳 근처에서 일하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-01-aAL",
+  "text": "This photo appears to have been taken behind the counter of a small coffee shop. The person who stands out most is a young barista in the center. Wearing a black mask and a brown leather apron, he's slowly pouring hot water from a white kettle into a coffee dripper. Behind him, a female coworker is busy at the back counter, and a glowing refrigerator stands on the right.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-01-akAL",
+  "text": "이 사진은 작은 커피숍의 카운터 안쪽에서 찍은 것으로 보입니다. 가장 눈에 띄는 사람은 가운데에 있는 젊은 바리스타입니다. 검은 마스크와 갈색 가죽 앞치마를 한 그는 흰색 주전자로 커피 드리퍼에 뜨거운 물을 천천히 붓고 있습니다. 그 뒤에서는 여자 동료가 뒤쪽 카운터에서 바쁘게 일하고 있고, 오른쪽에는 불이 켜진 냉장고가 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-02-a",
+  "text": "This picture was taken at an outdoor market. In the front, there is a long table with a green cloth. Many plants and flowers are on the table. Behind the table, people are looking at the plants.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-02-ak",
+  "text": "이 사진은 야외 시장에서 찍었습니다. 앞쪽에 초록색 천이 덮인 긴 탁자가 있습니다. 탁자 위에 식물과 꽃이 많이 있습니다. 탁자 뒤에서 사람들이 식물을 보고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-02-aIM",
+  "text": "This picture was taken at an outdoor flower market on a sunny day. In the foreground, there is a long table covered with a green cloth. On the table, there are many small plants in pots and baskets of flowers. Behind the table, several people are shopping. An old man with white hair is looking at the plants.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-02-akIM",
+  "text": "이 사진은 화창한 날 야외 꽃 시장에서 찍었습니다. 앞쪽에 초록색 천이 덮인 긴 탁자가 있습니다. 탁자 위에는 화분에 담긴 작은 식물과 꽃바구니가 많이 있습니다. 탁자 뒤에서는 여러 사람이 물건을 고르고 있습니다. 머리가 하얀 할아버지가 식물을 보고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-02-aIH",
+  "text": "This picture shows an outdoor plant market on a sunny day. In the foreground, there's a long table covered with a green tablecloth, and it's full of small potted plants and baskets of colorful flowers. Behind the table, several people are browsing. For example, an older man with white hair is looking down at the plants. A woman in a purple shirt is standing next to him.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-02-akIH",
+  "text": "이 사진은 화창한 날의 야외 식물 시장을 보여 줍니다. 앞쪽에 초록색 식탁보가 덮인 긴 탁자가 있는데, 작은 화분과 알록달록한 꽃바구니로 가득합니다. 탁자 뒤에서는 여러 사람이 구경하고 있습니다. 예를 들어 머리가 하얀 할아버지가 식물을 내려다보고 있습니다. 보라색 셔츠를 입은 여자가 그 옆에 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-02-aAL",
+  "text": "This scene was captured at an outdoor plant market on what looks like a warm summer day. Taking up most of the foreground is a long table draped in a green cloth, crowded with potted succulents and baskets of fresh flowers. A small handwritten sign advertises wedding and event floral design. Behind the display, a few shoppers are browsing, including an older man with white hair and suspenders.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-02-akAL",
+  "text": "이 장면은 따뜻한 여름날로 보이는 날 야외 식물 시장에서 찍었습니다. 앞쪽 대부분을 초록색 천을 씌운 긴 탁자가 차지하고 있는데, 다육 식물 화분과 싱싱한 꽃바구니가 빼곡합니다. 손으로 쓴 작은 안내판에는 결혼식과 행사용 꽃 장식 광고가 적혀 있습니다. 진열대 뒤에서는 머리가 하얗고 멜빵을 한 할아버지를 비롯해 손님 몇 명이 구경하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-03-a",
+  "text": "This picture was taken at a farmers market. There are many baskets of tomatoes on wooden tables. On the right, a man in a yellow hat is choosing tomatoes. On the left, many people are standing in line.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-03-ak",
+  "text": "이 사진은 농산물 시장에서 찍었습니다. 나무 탁자 위에 토마토 바구니가 많이 있습니다. 오른쪽에서는 노란 모자를 쓴 남자가 토마토를 고르고 있습니다. 왼쪽에서는 많은 사람이 줄을 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-03-aIM",
+  "text": "This picture was taken at an outdoor farmers market. In the middle, there are green wooden stands under a white tent. They are full of baskets of tomatoes. On the right, a man in a yellow hat is holding a plastic bag. On the left, many people are waiting in line to buy food.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-03-akIM",
+  "text": "이 사진은 야외 농산물 시장에서 찍었습니다. 가운데에 흰 천막 아래 초록색 나무 진열대가 있습니다. 진열대는 토마토 바구니로 가득합니다. 오른쪽에서는 노란 모자를 쓴 남자가 비닐봉지를 들고 있습니다. 왼쪽에서는 많은 사람이 음식을 사려고 줄을 서서 기다리고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-03-aIH",
+  "text": "This picture was taken at a busy outdoor farmers market on a sunny day. Under a large white tent, there are green wooden stands filled with small baskets of orange tomatoes. A sign says they cost five dollars a basket. On the right, a man in a straw hat and a sleeveless shirt is shopping. Meanwhile, a long line of customers is waiting on the left.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-03-akIH",
+  "text": "이 사진은 화창한 날 붐비는 야외 농산물 시장에서 찍었습니다. 커다란 흰 천막 아래 주황색 토마토가 담긴 작은 바구니로 가득한 초록색 나무 진열대가 있습니다. 안내판에는 한 바구니에 5달러라고 적혀 있습니다. 오른쪽에서는 밀짚모자에 민소매 셔츠를 입은 남자가 장을 보고 있습니다. 한편 왼쪽에서는 손님들이 길게 줄을 서서 기다리고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-03-aAL",
+  "text": "This photo captures a lively farmers market on a bright summer afternoon. Beneath a white canopy, rows of green wooden stalls are piled high with baskets of ripe tomatoes, and a handwritten sign shows a price of five dollars. On the right, a man in a straw hat is picking out produce with a shopping bag in hand. To the left, a crowd of customers is lining up patiently.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-03-akAL",
+  "text": "이 사진은 화창한 여름 오후의 활기찬 농산물 시장을 담고 있습니다. 흰 차양 아래 늘어선 초록색 나무 가판대에 잘 익은 토마토 바구니가 높이 쌓여 있고, 손으로 쓴 안내판에는 5달러라는 가격이 적혀 있습니다. 오른쪽에서는 밀짚모자를 쓴 남자가 장바구니를 손에 들고 농산물을 고르고 있습니다. 왼쪽에서는 손님들이 참을성 있게 줄을 서고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-04-a",
+  "text": "This picture was taken at a train station. On the left, a white train is stopped at the platform. Some people are getting on the train. On the right, a station worker is standing in a uniform.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-04-ak",
+  "text": "이 사진은 기차역에서 찍었습니다. 왼쪽에 흰 기차가 승강장에 서 있습니다. 몇몇 사람이 기차에 타고 있습니다. 오른쪽에는 역무원이 제복을 입고 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-04-aIM",
+  "text": "This picture was taken at a train station. On the left, a white train is stopped at the platform, and its doors are open. Some passengers are getting on, and a man in a checked shirt is walking toward it. On the right, a station worker in a blue uniform and cap is standing still.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-04-akIM",
+  "text": "이 사진은 기차역에서 찍었습니다. 왼쪽에 흰 기차가 승강장에 서 있고 문이 열려 있습니다. 몇몇 승객이 타고 있고, 체크무늬 셔츠를 입은 남자가 기차 쪽으로 걸어가고 있습니다. 오른쪽에는 파란 제복에 모자를 쓴 역무원이 가만히 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-04-aIH",
+  "text": "This picture shows a busy train platform. On the left side, a white train has stopped, and passengers are getting on and off. A woman is standing with a child who is wearing a red backpack. In the middle, a man in a checked shirt is walking toward the train. On the right, a station employee in a blue uniform is standing with his hands behind his back.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-04-akIH",
+  "text": "이 사진은 붐비는 기차 승강장을 보여 줍니다. 왼쪽에 흰 기차가 멈춰 있고 승객들이 타고 내리고 있습니다. 한 여자가 빨간 배낭을 멘 아이와 함께 서 있습니다. 가운데에서는 체크무늬 셔츠를 입은 남자가 기차 쪽으로 걸어가고 있습니다. 오른쪽에서는 파란 제복을 입은 역무원이 뒷짐을 지고 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-04-aAL",
+  "text": "This photo was taken on a train platform under rows of bright fluorescent lights. On the left, a white commuter train has pulled in, and passengers are stepping on board, including a young child with a red backpack. A man in a checked shirt is heading toward the open doors. Meanwhile, on the right, a uniformed station attendant is standing near the edge of the platform, keeping an eye on everyone.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-04-akAL",
+  "text": "이 사진은 밝은 형광등이 줄지어 켜진 기차 승강장에서 찍었습니다. 왼쪽에 흰 통근 열차가 들어와 있고, 빨간 배낭을 멘 어린아이를 비롯한 승객들이 올라타고 있습니다. 체크무늬 셔츠를 입은 남자는 열린 문 쪽으로 향하고 있습니다. 한편 오른쪽에서는 제복을 입은 역무원이 승강장 가장자리 근처에 서서 모든 사람을 지켜보고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-05-a",
+  "text": "This picture was taken in a restaurant. In the middle, a waitress is walking between the tables. She has a ponytail and a green apron. Many people are sitting and eating. On the right, there are big windows.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-05-ak",
+  "text": "이 사진은 식당에서 찍었습니다. 가운데에서 여종업원이 탁자 사이를 걸어가고 있습니다. 그녀는 머리를 하나로 묶었고 초록색 앞치마를 하고 있습니다. 많은 사람이 앉아서 식사하고 있습니다. 오른쪽에는 큰 창문이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-05-aIM",
+  "text": "This picture was taken in a busy restaurant. In the middle, a waitress is walking away from the camera. She has long blond hair in a ponytail, and she is wearing a black T-shirt and a green apron. Many customers are sitting at tables and talking. On the right, there are big windows.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-05-akIM",
+  "text": "이 사진은 붐비는 식당에서 찍었습니다. 가운데에서 여종업원이 카메라 반대쪽으로 걸어가고 있습니다. 그녀는 긴 금발을 하나로 묶었고, 검은 티셔츠와 초록색 앞치마를 하고 있습니다. 많은 손님이 탁자에 앉아 이야기하고 있습니다. 오른쪽에는 큰 창문이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-05-aIH",
+  "text": "This picture was taken inside a large, modern restaurant. In the center, a waitress with a blond ponytail is walking between the tables. She's wearing a black T-shirt and a green apron. On both sides, many customers are sitting at tables, chatting and enjoying their meals. On the left, an older man in a blue T-shirt is sitting on a wooden chair. The right side has huge windows.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-05-akIH",
+  "text": "이 사진은 넓고 현대적인 식당 안에서 찍었습니다. 가운데에서 금발을 하나로 묶은 여종업원이 탁자 사이를 걸어가고 있습니다. 그녀는 검은 티셔츠와 초록색 앞치마를 하고 있습니다. 양쪽에서 많은 손님이 탁자에 앉아 이야기하며 식사를 즐기고 있습니다. 왼쪽에는 파란 티셔츠를 입은 나이 든 남자가 나무 의자에 앉아 있습니다. 오른쪽에는 아주 큰 창문들이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-05-aAL",
+  "text": "This photo was taken in a spacious, modern restaurant with an exposed black ceiling. Right in the center, a waitress with a blond ponytail is making her way between the tables, dressed in a black T-shirt and a green apron. The dining room is quite full, as customers are chatting over their meals on both sides. Large windows along the right wall let in plenty of natural light.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-05-akAL",
+  "text": "이 사진은 검은 천장이 그대로 드러난 넓고 현대적인 식당에서 찍었습니다. 한가운데에서 검은 티셔츠와 초록색 앞치마 차림에 금발을 하나로 묶은 여종업원이 탁자 사이를 지나가고 있습니다. 양쪽에서 손님들이 식사하며 이야기를 나누고 있어 식당이 꽤 가득 차 있습니다. 오른쪽 벽을 따라 난 큰 창문으로 자연광이 많이 들어옵니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-06-a",
+  "text": "This picture was taken at a restaurant. A young man is standing behind a counter. He is wearing glasses and a black apron. He is holding a plate of food and smiling.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-06-ak",
+  "text": "이 사진은 식당에서 찍었습니다. 한 젊은 남자가 카운터 뒤에 서 있습니다. 그는 안경을 쓰고 검은 앞치마를 하고 있습니다. 음식 접시를 들고 웃고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-06-aIM",
+  "text": "This picture was taken at a small restaurant. In the middle, a young man is standing behind a wooden counter. He is wearing glasses, a white shirt, and a dark green apron. He is holding a plate with two sandwiches, and he is smiling. Behind him, some workers are busy in the kitchen.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-06-akIM",
+  "text": "이 사진은 작은 식당에서 찍었습니다. 가운데에 한 젊은 남자가 나무 카운터 뒤에 서 있습니다. 그는 안경을 쓰고 흰 셔츠와 진녹색 앞치마를 입고 있습니다. 샌드위치 두 개가 담긴 접시를 들고 웃고 있습니다. 그 뒤에서는 직원 몇 명이 주방에서 바쁘게 일하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-06-aIH",
+  "text": "This picture was taken at a casual restaurant or café. The main person is a young man standing behind a wooden counter. He has short brown hair and glasses, and he's wearing a white shirt with a dark green apron. He's smiling at the camera while holding a plate with two wrapped sandwiches. In the background, two other workers are busy, and there are menu boards above them.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-06-akIH",
+  "text": "이 사진은 편한 분위기의 식당이나 카페에서 찍었습니다. 중심인물은 나무 카운터 뒤에 서 있는 젊은 남자입니다. 그는 갈색 짧은 머리에 안경을 썼고, 흰 셔츠에 진녹색 앞치마를 하고 있습니다. 포장된 샌드위치 두 개가 담긴 접시를 들고 카메라를 보며 웃고 있습니다. 뒤쪽에서는 다른 직원 두 명이 바쁘게 일하고 있고, 그 위에 메뉴판이 걸려 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-06-aAL",
+  "text": "This photo appears to have been taken at the counter of a casual restaurant. Front and center is a friendly-looking young man with dark-framed glasses and a neatly trimmed beard. He's dressed in a white shirt and a dark green apron, and he's proudly holding out a plate with two freshly wrapped sandwiches. Behind him, a couple of coworkers are busy preparing food under the menu boards hanging above.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-06-akAL",
+  "text": "이 사진은 편한 분위기의 식당 카운터에서 찍은 것으로 보입니다. 정면 한가운데에 검은 테 안경을 쓰고 수염을 단정하게 다듬은 인상 좋은 젊은 남자가 있습니다. 그는 흰 셔츠에 진녹색 앞치마를 입고, 갓 포장한 샌드위치 두 개가 담긴 접시를 자랑스럽게 내밀고 있습니다. 그 뒤에서는 동료 두어 명이 위에 걸린 메뉴판 아래에서 바쁘게 음식을 준비하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-07-a",
+  "text": "This picture was taken in a library. A woman and a boy are reading a book together. The woman is pointing at the book. Behind them, there are many books on the shelves.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-07-ak",
+  "text": "이 사진은 도서관에서 찍었습니다. 한 여자와 남자아이가 함께 책을 읽고 있습니다. 여자가 책을 가리키고 있습니다. 그 뒤에는 책장에 책이 많이 꽂혀 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-07-aIM",
+  "text": "This picture was taken in a library. In the front, a woman and a young boy are reading a book together. The woman has short dark hair, and she is pointing at the page. The boy is wearing a checked shirt and looking at the book. Behind them, there are shelves full of books.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-07-akIM",
+  "text": "이 사진은 도서관에서 찍었습니다. 앞쪽에서 한 여자와 어린 남자아이가 함께 책을 읽고 있습니다. 여자는 짧은 검은 머리이고, 책장을 가리키고 있습니다. 남자아이는 체크무늬 셔츠를 입고 책을 보고 있습니다. 그 뒤에는 책으로 가득한 책장이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-07-aIH",
+  "text": "This picture was taken in a library. In the foreground, a woman and a little boy are reading a book together. The woman has short dark hair, and she's wearing a brown sweater. She's pointing at something on the page, and the boy is looking at it carefully. He's wearing a black and white checked shirt. Behind them, the shelves are packed with colorful books.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-07-akIH",
+  "text": "이 사진은 도서관에서 찍었습니다. 앞쪽에서 한 여자와 어린 남자아이가 함께 책을 읽고 있습니다. 여자는 짧은 검은 머리에 갈색 스웨터를 입고 있습니다. 그녀가 책장의 무언가를 가리키고 있고, 아이는 그것을 유심히 보고 있습니다. 아이는 검은색과 흰색 체크무늬 셔츠를 입고 있습니다. 그 뒤로 책장에 알록달록한 책이 빼곡히 꽂혀 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-07-aAL",
+  "text": "This photo was taken in what looks like a public library. In the foreground, a woman with short dark hair is sharing a book with a young boy, and she's pointing out something on the page. The boy, who's wearing a black and white checked shirt, is following along with great interest. It seems like she might be teaching him to read. In the background, shelves are packed with colorful books.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-07-akAL",
+  "text": "이 사진은 공공 도서관으로 보이는 곳에서 찍었습니다. 앞쪽에서 짧은 검은 머리의 여자가 어린 남자아이와 책을 함께 보며 책장의 무언가를 짚어 주고 있습니다. 검은색과 흰색 체크무늬 셔츠를 입은 아이는 큰 관심을 보이며 따라 읽고 있습니다. 그녀가 아이에게 글 읽기를 가르치고 있는 것 같습니다. 뒤쪽 책장에는 알록달록한 책이 빼곡합니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-08-a",
+  "text": "This picture was taken at a work site. A man is working on long pieces of wood. He is wearing a white helmet and an orange vest. There are many tools on the wood.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-08-ak",
+  "text": "이 사진은 작업 현장에서 찍었습니다. 한 남자가 긴 나무 위에서 작업하고 있습니다. 그는 흰 안전모를 쓰고 주황색 조끼를 입고 있습니다. 나무 위에 공구가 많이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-08-aIM",
+  "text": "This picture was taken at a large work site. In the front, a worker is working on long pieces of wood. He is wearing a white helmet, a face shield, an orange vest, and gloves. Some tools, like a saw and a drill, are on the wood. In the background, other workers are wearing orange vests.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-08-akIM",
+  "text": "이 사진은 큰 작업 현장에서 찍었습니다. 앞쪽에서 한 작업자가 긴 나무를 다루고 있습니다. 그는 흰 안전모, 얼굴 보호대, 주황색 조끼, 장갑을 착용하고 있습니다. 나무 위에 톱과 드릴 같은 공구가 놓여 있습니다. 뒤쪽에서는 다른 작업자들이 주황색 조끼를 입고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-08-aIH",
+  "text": "This picture was taken inside a big building that seems to be under construction. In the foreground, a worker is busy with some long wooden boards. For safety, he's wearing a white helmet with a clear face shield, an orange vest, and gray gloves. Several tools, such as a power saw, a drill, and a tape measure, are lying on the boards. A few other workers are in the background.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-08-akIH",
+  "text": "이 사진은 공사 중인 것으로 보이는 큰 건물 안에서 찍었습니다. 앞쪽에서 한 작업자가 긴 나무판을 다루느라 바쁩니다. 안전을 위해 투명한 얼굴 보호대가 달린 흰 안전모, 주황색 조끼, 회색 장갑을 착용하고 있습니다. 전동 톱, 드릴, 줄자 같은 공구 여러 개가 나무판 위에 놓여 있습니다. 뒤쪽에 다른 작업자 몇 명이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-08-aAL",
+  "text": "This photo was taken at what appears to be a large construction site inside a warehouse with a steel roof. In the foreground, a worker is concentrating on a row of long wooden beams. He's fully protected, with a white hard hat, a clear face shield, an orange safety vest, and work gloves. Power tools, including a circular saw and a drill, are scattered across the wood in front of him.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-08-akAL",
+  "text": "이 사진은 철골 지붕이 있는 창고 안의 큰 공사 현장으로 보이는 곳에서 찍었습니다. 앞쪽에서 한 작업자가 길게 늘어놓은 나무 기둥에 집중하고 있습니다. 그는 흰 안전모, 투명한 얼굴 보호대, 주황색 안전 조끼, 작업 장갑으로 완전히 보호 장비를 갖췄습니다. 그 앞의 나무 위에는 원형 톱과 드릴을 비롯한 전동 공구가 흩어져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-09-a",
+  "text": "This picture was taken at a construction site. Two workers are standing on the left and right. They are wearing white helmets and orange vests. The man is pointing at the building site.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-09-ak",
+  "text": "이 사진은 공사 현장에서 찍었습니다. 작업자 두 명이 왼쪽과 오른쪽에 서 있습니다. 그들은 흰 안전모를 쓰고 주황색 조끼를 입고 있습니다. 남자가 공사 현장을 가리키고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-09-aIM",
+  "text": "This picture was taken at a construction site on a sunny day. In the front, there are two workers. They are wearing white helmets and orange safety vests. The man on the left is pointing at something, and the woman on the right is looking at it. In the background, there are many metal bars.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-09-akIM",
+  "text": "이 사진은 화창한 날 공사 현장에서 찍었습니다. 앞쪽에 작업자 두 명이 있습니다. 그들은 흰 안전모를 쓰고 주황색 안전 조끼를 입고 있습니다. 왼쪽 남자가 무언가를 가리키고 있고, 오른쪽 여자가 그것을 보고 있습니다. 뒤쪽에는 철근이 많이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-09-aIH",
+  "text": "This picture was taken at a construction site on a clear, sunny day. In the foreground, two workers are standing with their backs to the camera. Both of them are wearing white hard hats and bright orange safety vests. The man on the left is pointing toward the site, and the woman on the right seems to be listening. Beyond them, steel bars are laid out across the ground.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-09-akIH",
+  "text": "이 사진은 맑고 화창한 날 공사 현장에서 찍었습니다. 앞쪽에서 작업자 두 명이 카메라를 등지고 서 있습니다. 두 사람 모두 흰 안전모를 쓰고 밝은 주황색 안전 조끼를 입고 있습니다. 왼쪽 남자는 현장 쪽을 가리키고 있고, 오른쪽 여자는 이야기를 듣고 있는 것 같습니다. 그 너머 바닥에는 철근이 깔려 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-09-aAL",
+  "text": "This photo was taken at a large construction site under a clear blue sky. In the foreground, two workers are facing away from the camera, both wearing white hard hats and bright orange safety vests. The man on the left is gesturing toward the site as if explaining a plan, while the woman beside him follows his direction. Ahead of them, steel bars cover the ground, and tall metal frames rise into the air.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-09-akAL",
+  "text": "이 사진은 맑고 파란 하늘 아래 큰 공사 현장에서 찍었습니다. 앞쪽에서 작업자 두 명이 카메라를 등진 채 서 있는데, 둘 다 흰 안전모와 밝은 주황색 안전 조끼를 착용하고 있습니다. 왼쪽 남자는 계획을 설명하듯 현장 쪽으로 손짓하고 있고, 옆에 있는 여자는 그가 가리키는 방향을 보고 있습니다. 그들 앞쪽 바닥은 철근으로 덮여 있고, 높은 철골 구조물이 하늘로 솟아 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-10-a",
+  "text": "This picture was taken in a grocery store. A woman is shopping. She has curly hair and a black jacket. She is holding a green basket and taking a box from a shelf.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-10-ak",
+  "text": "이 사진은 식료품점에서 찍었습니다. 한 여자가 장을 보고 있습니다. 그녀는 곱슬머리에 검은 재킷을 입고 있습니다. 초록색 바구니를 들고 선반에서 상자를 꺼내고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-10-aIM",
+  "text": "This picture was taken in a grocery store. In the middle, a woman with curly hair is shopping. She is wearing a black leather jacket and a blue shirt. She is holding a green shopping basket with some vegetables in it. With her other hand, she is taking a box from the shelf. She looks happy.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-10-akIM",
+  "text": "이 사진은 식료품점에서 찍었습니다. 가운데에서 곱슬머리의 여자가 장을 보고 있습니다. 그녀는 검은 가죽 재킷과 파란 셔츠를 입고 있습니다. 채소가 담긴 초록색 장바구니를 들고 있습니다. 다른 손으로는 선반에서 상자를 꺼내고 있습니다. 그녀는 행복해 보입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-10-aIH",
+  "text": "This picture was taken inside a grocery store. The main person is a woman with long, curly hair. She's wearing a black leather jacket over a light blue denim shirt. In one hand, she's carrying a green shopping basket with some leafy vegetables inside. With her other hand, she's reaching for a white box on the shelf. She's smiling, so she seems to be enjoying her shopping.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-10-akIH",
+  "text": "이 사진은 식료품점 안에서 찍었습니다. 중심인물은 긴 곱슬머리의 여자입니다. 그녀는 연한 파란색 데님 셔츠 위에 검은 가죽 재킷을 입고 있습니다. 한 손에는 잎채소가 든 초록색 장바구니를 들고 있습니다. 다른 손으로는 선반 위의 흰 상자를 집으려 하고 있습니다. 웃고 있어서 장보기를 즐기는 것 같습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-10-aAL",
+  "text": "This photo was taken in a bright, modern grocery store. In the center, a woman with long, curly hair is doing her shopping. She's dressed in a black leather jacket over a light blue denim shirt. She has a green basket hanging from one arm, filled with leafy greens and a small box. With her free hand, she's pulling a white carton off the shelf, and she's smiling as she checks it.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-10-akAL",
+  "text": "이 사진은 밝고 현대적인 식료품점에서 찍었습니다. 가운데에서 긴 곱슬머리의 여자가 장을 보고 있습니다. 그녀는 연한 파란색 데님 셔츠 위에 검은 가죽 재킷을 입고 있습니다. 한쪽 팔에는 잎채소와 작은 상자가 든 초록색 바구니를 걸고 있습니다. 비어 있는 손으로 선반에서 흰 상자를 꺼내며 웃는 얼굴로 살펴보고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-11-a",
+  "text": "This picture was taken on a street. Some people are crossing the road at a crosswalk. A woman with a white bag is walking in the front. In the back, a man is riding a bike.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-11-ak",
+  "text": "이 사진은 길거리에서 찍었습니다. 몇몇 사람이 횡단보도에서 길을 건너고 있습니다. 앞쪽에서는 흰 가방을 멘 여자가 걸어가고 있습니다. 뒤쪽에서는 한 남자가 자전거를 타고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-11-aIM",
+  "text": "This picture was taken at a crosswalk on a sunny day. In the front, a woman with short hair is crossing the street. She is wearing a beige cardigan and carrying a white bag. In front of her, a man in gray clothes is walking. Farther away, a person is riding a bicycle. There are many trees in the background.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-11-akIM",
+  "text": "이 사진은 화창한 날 횡단보도에서 찍었습니다. 앞쪽에서 짧은 머리의 여자가 길을 건너고 있습니다. 그녀는 베이지색 카디건을 입고 흰 가방을 들고 있습니다. 그녀 앞에서는 회색 옷을 입은 남자가 걸어가고 있습니다. 더 멀리에서는 한 사람이 자전거를 타고 있습니다. 뒤쪽에는 나무가 많이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-11-aIH",
+  "text": "This picture was taken at a wide crosswalk on a bright, sunny day. In the foreground, a woman with short brown hair is crossing the street. She's wearing a beige cardigan and black pants, and she has a white bag on her shoulder. A little ahead of her, a man in gray is carrying a jacket. At the far end, someone is riding a bicycle. Tall trees line the sidewalk.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-11-akIH",
+  "text": "이 사진은 밝고 화창한 날 넓은 횡단보도에서 찍었습니다. 앞쪽에서 짧은 갈색 머리의 여자가 길을 건너고 있습니다. 그녀는 베이지색 카디건과 검은 바지를 입고, 어깨에 흰 가방을 메고 있습니다. 그녀보다 조금 앞에서는 회색 옷을 입은 남자가 재킷을 들고 가고 있습니다. 맨 끝에서는 누군가 자전거를 타고 있습니다. 인도를 따라 키 큰 나무들이 늘어서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-11-aAL",
+  "text": "This photo was taken at a wide crosswalk on what looks like a clear, sunny day. Closest to the camera, a woman with short brown hair is walking across, carrying a white tote bag over her shoulder. She's wearing a beige cardigan and black pants. Further ahead, a man in gray is heading the same way with a jacket in his hand. Meanwhile, a cyclist is approaching from the other side.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-11-akAL",
+  "text": "이 사진은 맑고 화창해 보이는 날 넓은 횡단보도에서 찍었습니다. 카메라와 가장 가까운 곳에서 짧은 갈색 머리의 여자가 흰 에코백을 어깨에 메고 길을 건너고 있습니다. 그녀는 베이지색 카디건과 검은 바지를 입고 있습니다. 더 앞쪽에서는 회색 옷을 입은 남자가 재킷을 손에 들고 같은 방향으로 가고 있습니다. 한편 반대편에서는 자전거를 탄 사람이 다가오고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-12-a",
+  "text": "This picture was taken in a park near a river. Many people are sitting on the grass. They are having a picnic. In the background, there is a river and some tall buildings.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-12-ak",
+  "text": "이 사진은 강 근처 공원에서 찍었습니다. 많은 사람이 잔디밭에 앉아 있습니다. 그들은 소풍을 즐기고 있습니다. 뒤쪽에는 강과 높은 건물들이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-12-aIM",
+  "text": "This picture was taken in a park next to a river. In the front, groups of young people are sitting on the grass under the trees. They are having a picnic and talking. One woman is looking at her phone. In the background, there is a wide river and many tall buildings. It looks like a warm day.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-12-akIM",
+  "text": "이 사진은 강 옆 공원에서 찍었습니다. 앞쪽에서 젊은이 여러 무리가 나무 아래 잔디밭에 앉아 있습니다. 그들은 소풍을 즐기며 이야기하고 있습니다. 한 여자는 휴대폰을 보고 있습니다. 뒤쪽에는 넓은 강과 높은 건물이 많이 있습니다. 따뜻한 날인 것 같습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-12-aIH",
+  "text": "This picture was taken in a riverside park on a warm, sunny day. In the foreground, several groups of young people are sitting on blankets under the trees. They seem to be having a picnic, and some of them are chatting while others are looking at their phones. Behind them, a man is standing by the railing. Across the river, I can see a city skyline.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-12-akIH",
+  "text": "이 사진은 따뜻하고 화창한 날 강변 공원에서 찍었습니다. 앞쪽에서 젊은이 여러 무리가 나무 아래 돗자리에 앉아 있습니다. 소풍을 즐기는 것 같은데, 몇몇은 이야기를 나누고 다른 사람들은 휴대폰을 보고 있습니다. 그 뒤에서는 한 남자가 난간 옆에 서 있습니다. 강 건너편으로 도시의 스카이라인이 보입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-12-aAL",
+  "text": "This photo was taken in a riverside park late on what seems to be a warm summer afternoon. Under the shade of large trees, groups of young people are relaxing on picnic blankets in the grass. Some are deep in conversation, while others are checking their phones. Further back, a man is standing by the railing, and beyond the water, a skyline of tall buildings fills the horizon.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-12-akAL",
+  "text": "이 사진은 따뜻한 여름날 늦은 오후로 보이는 때 강변 공원에서 찍었습니다. 큰 나무 그늘 아래에서 젊은이 여러 무리가 잔디 위 돗자리에 앉아 쉬고 있습니다. 어떤 사람들은 대화에 푹 빠져 있고, 다른 사람들은 휴대폰을 확인하고 있습니다. 더 뒤쪽에서는 한 남자가 난간 옆에 서 있고, 강 너머로는 높은 건물들의 스카이라인이 지평선을 채우고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-13-a",
+  "text": "This picture was taken on a city street. A woman is riding a bicycle. She is wearing a black jacket and a backpack. In front of her, a car is driving.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-13-ak",
+  "text": "이 사진은 도시의 길에서 찍었습니다. 한 여자가 자전거를 타고 있습니다. 그녀는 검은 재킷을 입고 배낭을 메고 있습니다. 그녀 앞에서 차 한 대가 달리고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-13-aIM",
+  "text": "This picture was taken on a quiet city street. In the middle, a woman with curly blond hair is riding a white bicycle. She is wearing a dark jacket and a beige backpack. In front of her, a black car is driving down the road. On the left, some bicycles are parked next to a building.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-13-akIM",
+  "text": "이 사진은 한적한 도시의 길에서 찍었습니다. 가운데에서 곱슬곱슬한 금발의 여자가 흰 자전거를 타고 있습니다. 그녀는 어두운 재킷을 입고 베이지색 배낭을 메고 있습니다. 그녀 앞에서는 검은 차가 길을 따라 달리고 있습니다. 왼쪽에는 자전거 몇 대가 건물 옆에 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-13-aIH",
+  "text": "This picture was taken on a street in a European-style city. In the center, a woman with curly blond hair is riding a white bicycle away from the camera. She's wearing a dark jacket, a scarf, and a beige backpack. Ahead of her, a dark car is driving in the same direction. On the left side of the street, several bicycles are parked in front of an old building.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-13-akIH",
+  "text": "이 사진은 유럽풍 도시의 길에서 찍었습니다. 가운데에서 곱슬곱슬한 금발의 여자가 카메라 반대쪽으로 흰 자전거를 타고 가고 있습니다. 그녀는 어두운 재킷과 스카프를 하고 베이지색 배낭을 메고 있습니다. 그녀 앞에서는 어두운색 차가 같은 방향으로 달리고 있습니다. 길 왼쪽에는 오래된 건물 앞에 자전거 여러 대가 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-13-aAL",
+  "text": "This photo appears to have been taken on a street in a European city. In the center of the frame, a woman with curly blond hair is cycling away from the camera on a white bicycle. She's dressed in a dark jacket and scarf, with a beige canvas backpack on her back. A dark car is driving ahead of her, and a row of bicycles is parked along the building on the left.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-13-akAL",
+  "text": "이 사진은 유럽의 한 도시 거리에서 찍은 것으로 보입니다. 화면 한가운데에서 곱슬곱슬한 금발의 여자가 흰 자전거를 타고 카메라에서 멀어지고 있습니다. 그녀는 어두운 재킷과 스카프 차림에 베이지색 캔버스 배낭을 메고 있습니다. 그녀 앞으로 어두운색 차가 달리고 있고, 왼쪽 건물을 따라 자전거가 한 줄로 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-14-a",
+  "text": "This picture was taken at an airport. A man and a woman are walking together. The man is carrying a black backpack. Outside the big window, I can see some airplanes.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-14-ak",
+  "text": "이 사진은 공항에서 찍었습니다. 한 남자와 여자가 함께 걷고 있습니다. 남자는 검은 배낭을 메고 있습니다. 큰 창문 밖으로 비행기 몇 대가 보입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-14-aIM",
+  "text": "This picture was taken inside an airport. In the middle, a man and a woman are walking toward a big window. The man is wearing a cap and shorts, and he has a black backpack. The woman is wearing a black jacket and jeans, and she has a white bag. Outside, some airplanes are parked.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-14-akIM",
+  "text": "이 사진은 공항 안에서 찍었습니다. 가운데에서 한 남자와 여자가 큰 창문 쪽으로 걸어가고 있습니다. 남자는 모자를 쓰고 반바지를 입었으며 검은 배낭을 메고 있습니다. 여자는 검은 재킷과 청바지를 입고 흰 가방을 들고 있습니다. 밖에는 비행기 몇 대가 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-14-aIH",
+  "text": "This picture was taken inside an airport terminal. In the middle, a man and a woman are walking side by side toward a huge glass window. The man is wearing a cap, a gray T-shirt, and shorts, and he's carrying a black backpack. The woman next to him has a black jacket, jeans, and a beige bag. Through the window, I can see several airplanes waiting at the gates.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-14-akIH",
+  "text": "이 사진은 공항 터미널 안에서 찍었습니다. 가운데에서 한 남자와 여자가 나란히 커다란 유리창 쪽으로 걸어가고 있습니다. 남자는 모자를 쓰고 회색 티셔츠와 반바지를 입었으며, 검은 배낭을 메고 있습니다. 그 옆의 여자는 검은 재킷과 청바지 차림에 베이지색 가방을 들고 있습니다. 창문 너머로 탑승구에서 대기 중인 비행기 여러 대가 보입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-14-aAL",
+  "text": "This photo was taken inside a bright, spacious airport terminal. A couple is walking side by side across the shiny floor, heading toward a wall of tall windows. The man is in a cap, a gray T-shirt, and khaki shorts, with a black backpack over one shoulder. The woman beside him is wearing a black jacket and jeans. Beyond the glass, several planes with blue tails are parked at the gates.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-14-akAL",
+  "text": "이 사진은 밝고 넓은 공항 터미널 안에서 찍었습니다. 한 커플이 반짝이는 바닥을 가로질러 높은 유리창이 늘어선 쪽으로 나란히 걸어가고 있습니다. 남자는 모자에 회색 티셔츠와 카키색 반바지 차림이고, 검은 배낭을 한쪽 어깨에 메고 있습니다. 그 옆의 여자는 검은 재킷과 청바지를 입고 있습니다. 유리창 너머로 꼬리가 파란 비행기 여러 대가 탑승구에 서 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-15-a",
+  "text": "This picture was taken in a meeting room. Four people are sitting around a table. They are looking at a TV screen on the wall. There are laptops and notebooks on the table.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-15-ak",
+  "text": "이 사진은 회의실에서 찍었습니다. 네 사람이 탁자에 둘러앉아 있습니다. 그들은 벽에 걸린 TV 화면을 보고 있습니다. 탁자 위에 노트북과 공책이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-15-aIM",
+  "text": "This picture was taken in a meeting room. Four people are sitting around a wooden table. Three of them are men, and one is a woman. They are all looking at a big TV screen on the wall. The man in the back is using a laptop. There is a tablet and a notebook on the table.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-15-akIM",
+  "text": "이 사진은 회의실에서 찍었습니다. 네 사람이 나무 탁자에 둘러앉아 있습니다. 세 명은 남자이고 한 명은 여자입니다. 모두 벽에 걸린 큰 TV 화면을 보고 있습니다. 뒤쪽 남자는 노트북을 쓰고 있습니다. 탁자 위에 태블릿과 공책이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-15-aIH",
+  "text": "This picture was taken in a meeting room. Four coworkers are sitting around an oval wooden table, and they're all looking at a large TV screen on the wall. The screen seems to show a spreadsheet. The man at the far end is typing on his laptop, and the man on the left is holding a pen over his notebook. The woman on the right has a tablet.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-15-akIH",
+  "text": "이 사진은 회의실에서 찍었습니다. 동료 네 명이 타원형 나무 탁자에 둘러앉아 모두 벽에 걸린 큰 TV 화면을 보고 있습니다. 화면에는 스프레드시트가 띄워져 있는 것 같습니다. 맨 끝의 남자는 노트북으로 타자를 치고 있고, 왼쪽 남자는 공책 위에서 펜을 들고 있습니다. 오른쪽 여자 앞에는 태블릿이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-15-aAL",
+  "text": "This photo was taken during what looks like a business meeting in a modern conference room. Four colleagues are seated around an oval wooden table, and all of their attention is on a wall-mounted screen displaying a spreadsheet. The man at the head of the table is typing on a laptop, while another man on the left holds a pen over his notebook. A woman on the right is listening closely.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-15-akAL",
+  "text": "이 사진은 현대식 회의실에서 열린 업무 회의 중에 찍은 것으로 보입니다. 동료 네 명이 타원형 나무 탁자에 둘러앉아 있고, 모두의 시선이 스프레드시트를 띄운 벽걸이 화면에 쏠려 있습니다. 탁자 맨 끝의 남자는 노트북으로 타자를 치고 있고, 왼쪽의 다른 남자는 공책 위에 펜을 들고 있습니다. 오른쪽 여자는 집중해서 듣고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-16-a",
+  "text": "This picture was taken in an office. A woman is pointing at a whiteboard. There are many sticky notes on it. A man is standing and watching her. On the table, there are some laptops.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-16-ak",
+  "text": "이 사진은 사무실에서 찍었습니다. 한 여자가 화이트보드를 가리키고 있습니다. 화이트보드에는 메모지가 많이 붙어 있습니다. 한 남자가 서서 그녀를 보고 있습니다. 탁자 위에는 노트북이 몇 대 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-16-aIM",
+  "text": "This picture was taken in a meeting room with an orange wall. On the right, a woman is pointing at a whiteboard with a pen. There are many orange and blue sticky notes on the whiteboard. A man in a checked shirt is standing and listening to her. On the table, there are some laptops.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-16-akIM",
+  "text": "이 사진은 주황색 벽이 있는 회의실에서 찍었습니다. 오른쪽에서 한 여자가 펜으로 화이트보드를 가리키고 있습니다. 화이트보드에는 주황색과 파란색 메모지가 많이 붙어 있습니다. 체크무늬 셔츠를 입은 남자가 서서 그녀의 말을 듣고 있습니다. 탁자 위에는 노트북이 몇 대 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-16-aIH",
+  "text": "This picture was taken in a meeting room with a bright orange wall. On the right, a woman in a green sweater is pointing at a whiteboard with a pen. The board is covered with orange and blue sticky notes, and she's holding another note in her other hand. A man in a checked shirt is standing nearby and listening. In the foreground, several laptops are on a white table.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-16-akIH",
+  "text": "이 사진은 밝은 주황색 벽이 있는 회의실에서 찍었습니다. 오른쪽에서 초록색 스웨터를 입은 여자가 펜으로 화이트보드를 가리키고 있습니다. 화이트보드는 주황색과 파란색 메모지로 덮여 있고, 그녀는 다른 손에 메모지를 하나 더 들고 있습니다. 체크무늬 셔츠를 입은 남자가 근처에 서서 듣고 있습니다. 앞쪽에는 흰 탁자 위에 노트북 여러 대가 놓여 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-16-aAL",
+  "text": "This photo was taken in a modern meeting room with a striking orange wall. On the right, a woman in an olive green sweater is presenting something on a whiteboard. She's pointing at a column of colorful sticky notes with a pen, while holding a blue note in her other hand. A man in a checked shirt is standing to the side, listening carefully. In the foreground, laptops are spread across a white table.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-16-akAL",
+  "text": "이 사진은 눈에 띄는 주황색 벽이 있는 현대식 회의실에서 찍었습니다. 오른쪽에서 올리브색 스웨터를 입은 여자가 화이트보드로 무언가를 발표하고 있습니다. 그녀는 다른 손에 파란 메모지를 든 채 펜으로 알록달록한 메모지 줄을 가리키고 있습니다. 체크무늬 셔츠를 입은 남자는 옆에 서서 주의 깊게 듣고 있습니다. 앞쪽 흰 탁자 위에는 노트북들이 펼쳐져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-17-a",
+  "text": "This picture was taken at a bus stop on a rainy day. Many people are waiting under the bus shelter. On the left, a girl is walking and looking at her phone.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-17-ak",
+  "text": "이 사진은 비 오는 날 버스 정류장에서 찍었습니다. 많은 사람이 버스 정류장 지붕 아래에서 기다리고 있습니다. 왼쪽에서는 한 소녀가 휴대폰을 보며 걸어가고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-17-aIM",
+  "text": "This picture was taken at a bus stop on a rainy day. About ten people are waiting inside a glass bus shelter. Some of them are standing, and a little boy is sitting on the bench. On the left, a girl with long blond hair is walking and looking at her phone. The street is wet.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-17-akIM",
+  "text": "이 사진은 비 오는 날 버스 정류장에서 찍었습니다. 열 명쯤 되는 사람이 유리로 된 버스 정류장 안에서 기다리고 있습니다. 몇몇은 서 있고, 어린 남자아이 한 명은 벤치에 앉아 있습니다. 왼쪽에서는 긴 금발의 소녀가 휴대폰을 보며 걸어가고 있습니다. 길이 젖어 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-17-aIH",
+  "text": "This picture was taken at a bus stop on a rainy day. Inside a glass shelter, about ten people are waiting with their backs to the camera, probably for a bus. Most of them are standing, but a little boy is sitting on the bench. On the left, a girl in a checked dress is walking by while looking at her phone. The ground is wet and shiny.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-17-akIH",
+  "text": "이 사진은 비 오는 날 버스 정류장에서 찍었습니다. 유리로 된 정류장 안에서 열 명쯤 되는 사람이 카메라를 등지고, 아마 버스를 기다리고 있습니다. 대부분 서 있지만 어린 남자아이 한 명은 벤치에 앉아 있습니다. 왼쪽에서는 체크무늬 원피스를 입은 소녀가 휴대폰을 보며 지나가고 있습니다. 바닥이 젖어서 반짝입니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-17-aAL",
+  "text": "This photo was taken at a city bus stop on a wet, rainy day. A group of about ten people is gathered inside the glass shelter, facing the road as they wait. Most of them are standing, though a little boy is perched on the bench. On the left, a girl in a checked dress is walking past, her eyes fixed on her phone. The pavement is still wet and reflecting the light.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-17-akAL",
+  "text": "이 사진은 비가 와서 축축한 날 도시의 버스 정류장에서 찍었습니다. 열 명쯤 되는 무리가 유리로 된 정류장 안에 모여 도로 쪽을 바라보며 기다리고 있습니다. 대부분 서 있지만 어린 남자아이 한 명은 벤치에 걸터앉아 있습니다. 왼쪽에서는 체크무늬 원피스를 입은 소녀가 휴대폰에 시선을 고정한 채 지나가고 있습니다. 보도는 아직 젖어 있어 빛을 반사하고 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-18-a",
+  "text": "This picture was taken on a street. A woman is standing at a food cart. She is wearing a dress with flowers. There is some bread at the bottom of the cart.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-18-ak",
+  "text": "이 사진은 길거리에서 찍었습니다. 한 여자가 음식 수레 앞에 서 있습니다. 그녀는 꽃무늬 원피스를 입고 있습니다. 수레 아래쪽에 빵이 조금 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-18-aIM",
+  "text": "This picture was taken at a street food stand. In the middle, a woman is standing next to a small food cart. She is wearing a black dress with red flowers. She is preparing some food. The cart is full of bread, meat, and vegetables. In the background, some motorbikes are parked on the street.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-18-akIM",
+  "text": "이 사진은 길거리 음식 가판대에서 찍었습니다. 가운데에서 한 여자가 작은 음식 수레 옆에 서 있습니다. 그녀는 빨간 꽃무늬가 있는 검은 원피스를 입고 있습니다. 음식을 준비하고 있습니다. 수레에는 빵, 고기, 채소가 가득합니다. 뒤쪽 길에는 오토바이 몇 대가 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-18-aIH",
+  "text": "This picture was taken at a street food stall, perhaps in Southeast Asia. On the left, a woman with short dark hair is standing next to a metal food cart. She's wearing a black dress with a red flower pattern, and she seems to be preparing a sandwich. The cart is full of ingredients, like bread, meat, and shredded carrots. Behind her, several motorbikes are parked on the street.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-18-akIH",
+  "text": "이 사진은 아마 동남아시아의 길거리 음식 노점에서 찍었습니다. 왼쪽에서 짧은 검은 머리의 여자가 금속 음식 수레 옆에 서 있습니다. 그녀는 빨간 꽃무늬가 있는 검은 원피스를 입고 있고, 샌드위치를 만들고 있는 것 같습니다. 수레에는 빵, 고기, 채 썬 당근 같은 재료가 가득합니다. 그녀 뒤쪽 길에는 오토바이 여러 대가 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-18-aAL",
+  "text": "This photo was taken at a small street food stall, possibly somewhere in Southeast Asia. A woman in a black dress with a bold red floral print is standing beside a metal cart, apparently putting together an order. The cart's glass shelves are stocked with all kinds of ingredients, including baguettes, sliced meat, and shredded carrots. Out on the street behind her, a few motorbikes are parked along the sidewalk.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-18-akAL",
+  "text": "이 사진은 아마 동남아시아 어딘가의 작은 길거리 음식 노점에서 찍었습니다. 빨간 꽃무늬가 큼직한 검은 원피스를 입은 여자가 금속 수레 옆에 서서 주문받은 음식을 만들고 있는 것 같습니다. 수레의 유리 선반에는 바게트, 얇게 썬 고기, 채 썬 당근 등 온갖 재료가 채워져 있습니다. 그녀 뒤쪽 길가에는 오토바이 몇 대가 인도를 따라 세워져 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-19-a",
+  "text": "This picture was taken in the mountains. Five people are hiking on a narrow path. The man in the front has a very big backpack. In the background, there is a tall green mountain.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-19-ak",
+  "text": "이 사진은 산에서 찍었습니다. 다섯 사람이 좁은 길을 따라 등산하고 있습니다. 맨 앞의 남자는 아주 큰 배낭을 메고 있습니다. 뒤쪽에는 높은 초록색 산이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-19-aIM",
+  "text": "This picture was taken in the mountains. Five people are hiking on a narrow dirt path. The man in the front is carrying a very big backpack, and he is wearing a blue T-shirt and shorts. On both sides of the path, there are orange and green bushes. In the background, there is a tall mountain.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-19-akIM",
+  "text": "이 사진은 산에서 찍었습니다. 다섯 사람이 좁은 흙길을 따라 등산하고 있습니다. 맨 앞의 남자는 아주 큰 배낭을 메고 파란 티셔츠와 반바지를 입고 있습니다. 길 양쪽에는 주황색과 초록색 덤불이 있습니다. 뒤쪽에는 높은 산이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-19-aIH",
+  "text": "This picture was taken while a group of people was hiking in the mountains. Five hikers are walking in a line along a narrow dirt trail. The man closest to the camera is carrying a huge backpack, and he's wearing a blue T-shirt and gray shorts. On both sides of the trail, there are low bushes with orange and red leaves. A tall green mountain rises in the background.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-19-akIH",
+  "text": "이 사진은 한 무리의 사람들이 산에서 등산하는 동안 찍었습니다. 다섯 명의 등산객이 좁은 흙길을 따라 한 줄로 걷고 있습니다. 카메라와 가장 가까운 남자는 커다란 배낭을 메고 파란 티셔츠와 회색 반바지를 입고 있습니다. 길 양쪽에는 주황색과 빨간색 잎의 낮은 덤불이 있습니다. 뒤쪽에는 높은 초록색 산이 솟아 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-19-aAL",
+  "text": "This photo captures a group of five hikers making their way along a narrow mountain trail. Closest to the camera is a man carrying an enormous backpack, dressed in a blue T-shirt and gray shorts. Ahead of him, the others are walking in single file, and one of them is using a hiking pole. Bushes with orange and red leaves line the path, and a tall green peak rises in the distance.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-19-akAL",
+  "text": "이 사진은 등산객 다섯 명이 좁은 산길을 따라 나아가는 모습을 담고 있습니다. 카메라와 가장 가까운 곳에 파란 티셔츠와 회색 반바지 차림으로 엄청나게 큰 배낭을 멘 남자가 있습니다. 그 앞에서는 나머지 사람들이 한 줄로 걷고 있고, 그중 한 명은 등산 스틱을 짚고 있습니다. 길을 따라 주황색과 빨간색 잎의 덤불이 늘어서 있고, 멀리 높은 초록 봉우리가 솟아 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-20-a",
+  "text": "This picture was taken in an office. A man and a woman are sitting at a table. They are looking at a laptop and smiling. Both of them are wearing glasses. On the left, there is a blue cup.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-20-ak",
+  "text": "이 사진은 사무실에서 찍었습니다. 한 남자와 여자가 탁자에 앉아 있습니다. 그들은 노트북을 보며 웃고 있습니다. 두 사람 모두 안경을 쓰고 있습니다. 왼쪽에는 파란 컵이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-20-aIM",
+  "text": "This picture was taken in an office with a brick wall. A man and a woman are sitting at a wooden table. Both of them are wearing glasses, and they are smiling. The woman is pointing at a laptop screen, and the man is holding a pen. On the left, there is a blue cup.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-20-akIM",
+  "text": "이 사진은 벽돌 벽이 있는 사무실에서 찍었습니다. 한 남자와 여자가 나무 탁자에 앉아 있습니다. 두 사람 모두 안경을 쓰고 웃고 있습니다. 여자는 노트북 화면을 가리키고 있고, 남자는 펜을 들고 있습니다. 왼쪽에는 파란 컵이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-20-aIH",
+  "text": "This picture was taken in a modern office with a gray brick wall. A man and a woman are sitting next to each other at a wooden table. Both of them are wearing glasses and smiling as they look at a laptop. The woman is pointing at the screen, and the man is holding a pen. On the table, there's a blue mug, a phone, and a notebook.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-20-akIH",
+  "text": "이 사진은 회색 벽돌 벽이 있는 현대식 사무실에서 찍었습니다. 한 남자와 여자가 나무 탁자에 나란히 앉아 있습니다. 두 사람 모두 안경을 쓰고 노트북을 보며 웃고 있습니다. 여자는 화면을 가리키고 있고, 남자는 펜을 들고 있습니다. 탁자 위에는 파란 머그컵, 휴대폰, 공책이 있습니다.",
+  "lang": "ko"
+ },
+ {
+  "name": "p2-20-aAL",
+  "text": "This photo was taken in a cozy, modern office with an exposed brick wall. Two colleagues are sitting side by side at a wooden desk, and both of them are smiling at a laptop screen. The woman, in a denim shirt over a striped top, is pointing at the screen as if explaining something. The bearded man next to her is holding a pen, ready to take notes.",
+  "lang": "en"
+ },
+ {
+  "name": "p2-20-akAL",
+  "text": "이 사진은 벽돌이 그대로 드러난 아늑하고 현대적인 사무실에서 찍었습니다. 동료 두 명이 나무 책상에 나란히 앉아 둘 다 노트북 화면을 보며 웃고 있습니다. 줄무늬 상의 위에 데님 셔츠를 입은 여자는 무언가를 설명하듯 화면을 가리키고 있습니다. 그 옆의 수염 난 남자는 메모할 준비를 하듯 펜을 들고 있습니다.",
+  "lang": "ko"
+ },
+ {
   "name": "p3-01-q5-q",
   "text": "How often do you go to a park, and who do you usually go with?",
   "lang": "en"

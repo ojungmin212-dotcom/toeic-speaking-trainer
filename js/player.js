@@ -146,6 +146,33 @@ export class SequencePlayer {
     const alive = () => token === this._runToken && !this.paused;
     let anyOk = false;
 
+    // Part 1 지문 읽기: 모범 낭독 → (신호음) 따라 읽을 시간 → 지문 해석
+    if (q.part === 1) {
+      this.onStepChange('model');
+      anyOk = await tts.speak(q.questionEnglish, 'en-US');
+      if (!alive()) return null;
+      if (!anyOk) return false;
+      // 따라 읽기 시간: 실전이면 준비 45초 + 읽기 45초, 아니면 지문을 읽을 만큼(단어당 약 0.5초)은 보장
+      const ok = await this._speakingTime(q, s, alive, Math.round(q.questionEnglish.split(/\s+/).length * 0.5), 'readAloud');
+      if (!ok) return null;
+      if (s.playQuestionKo) {
+        this.onStepChange('questionKo');
+        anyOk = (await tts.speak(q.questionKorean, 'ko-KR')) || anyOk;
+        if (!alive()) return null;
+      }
+      return anyOk;
+    }
+    // Part 2 사진 묘사: 지시문 → (신호음) 묘사할 시간 → 모범 묘사 → 해석
+    if (q.part === 2) {
+      this.onStepChange('question');
+      anyOk = await tts.speak(q.questionEnglish, 'en-US');
+      if (!alive()) return null;
+      if (!anyOk) return false;
+      const ok = await this._speakingTime(q, s, alive, 15, 'describe');
+      if (!ok) return null;
+      return this._playAnswer(q, s, alive, anyOk);
+    }
+
     // 실제 시험처럼 세트의 첫 질문 전에 상황 안내(Part 3)·질문자 안내(Part 4)
     const set = getSet(q.setId);
     if (set && s.playSetIntro && this._introFor !== set.id) {
@@ -171,27 +198,7 @@ export class SequencePlayer {
       if (!alive()) return null;
     }
 
-    const real = !s.thinkSeconds;
-    this.onStepChange(real ? 'prep' : 'think');
-    if (s.beepAfterQuestion) {
-      // 실제 시험처럼 질문이 끝나면 신호음 후 생각 시간 시작
-      await tts.playSilence(0.4);
-      if (!alive()) return null;
-      await tts.beep();
-      if (!alive()) return null;
-    }
-    if (real) {
-      const t = timingOf(q);
-      await tts.playSilence(t.prep);
-      if (!alive()) return null;
-      this.onStepChange('respond');
-      await tts.beep();
-      if (!alive()) return null;
-      await tts.playSilence(t.response);
-    } else {
-      await tts.playSilence(s.thinkSeconds);
-    }
-    if (!alive()) return null;
+    if (!(await this._speakingTime(q, s, alive, 0, 'think'))) return null;
 
     if (s.playQuestionKo) {
       this.onStepChange('questionKo');
@@ -201,7 +208,38 @@ export class SequencePlayer {
       if (!alive()) return null;
     }
 
-    // 목표 레벨의 모범답변 (없으면 아래 레벨로 폴백)
+    return this._playAnswer(q, s, alive, anyOk);
+  }
+
+  // 말해 볼 시간 — (신호음) 후 생각/답변 시간. 실전(thinkSeconds=0)이면 준비 → 신호음 → 응답 시간.
+  // minSeconds: 실전이 아닐 때 최소 시간 (지문 읽기·사진 묘사는 짧은 생각 시간으로는 부족하다)
+  // 반환: 중간에 정지·이동되면 false
+  async _speakingTime(q, s, alive, minSeconds, step) {
+    const real = !s.thinkSeconds;
+    this.onStepChange(real ? 'prep' : step);
+    if (s.beepAfterQuestion) {
+      // 실제 시험처럼 질문이 끝나면 신호음 후 생각 시간 시작
+      await tts.playSilence(0.4);
+      if (!alive()) return false;
+      await tts.beep();
+      if (!alive()) return false;
+    }
+    if (real) {
+      const t = timingOf(q);
+      await tts.playSilence(t.prep);
+      if (!alive()) return false;
+      this.onStepChange('respond');
+      await tts.beep();
+      if (!alive()) return false;
+      await tts.playSilence(t.response);
+    } else {
+      await tts.playSilence(Math.max(s.thinkSeconds, minSeconds));
+    }
+    return alive();
+  }
+
+  // 목표 레벨의 모범답변 (없으면 아래 레벨로 폴백) → 답변 해석
+  async _playAnswer(q, s, alive, anyOk) {
     const ans = getAnswer(q, s.targetLevel);
 
     if (s.playAnswerEn) {

@@ -1,7 +1,7 @@
 // 데이터 계층 — UI는 반드시 이 모듈을 통해서만 데이터에 접근한다.
 // 현재 구현은 localStorage. 추후 DB 교체 시 이 파일만 바꾸면 된다.
 
-import { SEED_QUESTIONS, SEED_SETS, SEED_VERSION, LEVEL_ORDER } from './seed-data.js';
+import { SEED_QUESTIONS, SEED_SETS, SEED_VERSION, LEVEL_ORDER, TASK_PARTS } from './seed-data.js';
 import { applyAnswer } from './srs.js';
 
 const K = {
@@ -85,7 +85,7 @@ export function getSet(setId) {
 const SEED_IDS = new Set(SEED_QUESTIONS.map((q) => q.id));
 const SEED_ORDER = new Map(SEED_QUESTIONS.map((q, i) => [q.id, i]));
 function isSeedId(id) {
-  return SEED_IDS.has(id) || /^seed-\d+$/.test(String(id)) || /^p[345]-\d+(-q\d+)?$/.test(String(id));
+  return SEED_IDS.has(id) || /^seed-\d+$/.test(String(id)) || /^p[1-5]-\d+(-q\d+)?$/.test(String(id));
 }
 
 // 문항의 해당 레벨 모범답변. 그 레벨 답변이 없으면 아래 레벨로 내려가며 찾는다 (최종 IL).
@@ -111,7 +111,7 @@ export function availableLevels(q) {
 // 시드에서 빠진 문항(예: v6에서 실제 시험 형식으로 교체되며 은퇴한 seed-###)은 제거하고 그 문항의 기록도 정리한다.
 // 날짜별 학습량·연속 학습일·설정은 문항과 무관하므로 그대로 유지된다.
 const SYNC_FIELDS = ['questionEnglish', 'questionKorean', 'answerEnglish', 'answerKorean', 'keyExpression',
-  'questionType', 'questionType2', 'setId', 'qNo', 'part', 'difficulty'];
+  'questionType', 'questionType2', 'setId', 'qNo', 'part', 'difficulty', 'guide', 'image', 'topic'];
 function mergeSeeds({ syncContent = true } = {}) {
   const deleted = new Set(load(K.deletedSeeds, []));
   let changed = 0;
@@ -174,6 +174,10 @@ export function getQuestions({ part, type, status = 'approved', includePending =
     (part == null || q.part === part) &&
     (type == null || q.questionType === type || q.questionType2 === type)
   );
+}
+// 질문 의도 파악 훈련(퀴즈·실전 듣기·전체 학습)용 — 질문이 없는 말하기 과제(Part 1 지문 읽기·Part 2 사진 묘사)는 제외
+export function getQuestionParts() {
+  return getQuestions().filter((q) => !TASK_PARTS.has(q.part));
 }
 export function getAllQuestions() { return questions.slice(); }
 export function getQuestion(id) { return questions.find((q) => q.id === id) || null; }
