@@ -599,9 +599,13 @@ function cleanProgress(rec) {
 
 // 한 문항 기록 합치기: 횟수는 기기별 최댓값, 복습 일정은 더 최근에 푼 쪽, 즐겨찾기는 더 최근에 바꾼 쪽
 function mergeProgress(a, b) {
-  const base = (num(b.lastStudiedAt) > num(a.lastStudiedAt))
-    ? { ...a, box: b.box, lastStudiedAt: b.lastStudiedAt, nextReviewAt: b.nextReviewAt }
-    : { ...a };
+  const la = num(a.lastStudiedAt), lb = num(b.lastStudiedAt);
+  const base = lb > la ? { ...a, box: b.box, lastStudiedAt: b.lastStudiedAt, nextReviewAt: b.nextReviewAt } : { ...a };
+  // 같은 시각이면 양쪽이 같은 결과가 되도록 더 이른 복습 쪽으로
+  if (la === lb) {
+    base.box = Math.min(num(a.box), num(b.box));
+    base.nextReviewAt = Math.min(num(a.nextReviewAt), num(b.nextReviewAt));
+  }
   const fa = num(a.favoriteAt), fb = num(b.favoriteAt);
   base.favorite = fa || fb ? (fb > fa ? b.favorite === true : a.favorite === true) : (a.favorite === true || b.favorite === true);
   if (fa || fb) base.favoriteAt = Math.max(fa, fb);
