@@ -19,6 +19,14 @@ export const MAX_SENTENCE_WORDS = 28;
 export const PART5_IM_FRAME = ['I have two reasons.', 'First,', 'For example,', 'Second,', 'For these reasons,'];
 const LV = ['IL', 'IM', 'IH', 'AL'];
 
+// Part 3 Q7: 보기 세 개를 주는 형식 ("Which of the following … ? A, B, or C? Why?") — 질문 속 보기 세 개를 뽑는다
+export function optionsOf(text) {
+  const m = /([^,.?!:;]{2,70}),\s*([^,.?!:;]{2,70}),?\s+or\s+([^,.?!:;]{2,70})\?/i.exec(String(text || ''));
+  return m ? [m[1], m[2], m[3]].map((x) => x.trim()) : null;
+}
+const STOP = new Set(['the', 'and', 'for', 'with', 'your', 'some', 'lots', 'good', 'more', 'most', 'very', 'than']);
+const stemsOf = (opt) => (opt.toLowerCase().match(/[a-z']{4,}/g) || []).filter((w) => !STOP.has(w)).map((w) => w.slice(0, 5));
+
 export const words = (s) => String(s || '').trim().split(/\s+/).filter(Boolean).length;
 export const sentences = (s) => String(s || '').split(/(?<=[.?!])\s+(?=[A-Z"'])/);
 
@@ -66,6 +74,20 @@ export function checkQuestion(q, set = null) {
     if (!kos[i]) errors.push(`${LV[i]} 한국어 해석 없음`);
     else if (!/(다|요|오)[.!]?["'”]?$|까\?$/.test(kos[i].trim())) warns.push(`${LV[i]} 한국어 끝맺음 확인: "…${kos[i].slice(-12)}"`);
   });
+  // Part 3 Q7(30초): 실제 시험처럼 보기 세 개를 주고 이유를 묻는다. 답변은 그중 하나를 골라 이유를 말한다.
+  if (q.part === 3 && q.qNo === 7) {
+    const opts = optionsOf(q.questionEnglish);
+    if (!opts) errors.push('Q7은 보기 세 개를 주는 형식이어야 함 ("… A, B, or C? Why?")');
+    if (!/\bwhy\b/i.test(q.questionEnglish)) errors.push('Q7 질문에 Why(이유 요청)가 없음');
+    if (opts) {
+      const stems = opts.map(stemsOf);
+      answers.forEach((a, i) => {
+        if (!a) return;
+        const low = a.toLowerCase();
+        if (!stems.some((st) => st.some((w) => low.includes(w)))) warns.push(`${LV[i]} 답변에 고른 보기가 드러나지 않음 (보기: ${opts.join(' / ')})`);
+      });
+    }
+  }
   // AL 포인트: AL 답변에는 강조할 고급 표현이 2개 이상 있어야 한다 (js/expressions.js에 없으면 사전에 추가)
   if (answers[3] && findExpressions(answers[3]).length < 2) {
     const msg = `AL 고급 표현 ${findExpressions(answers[3]).length}개 (2개 이상 권장)`;

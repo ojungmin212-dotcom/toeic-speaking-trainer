@@ -131,10 +131,11 @@ Task: write ONE new TOEIC Speaking Part 3 set (Questions 5, 6, 7) about one ever
 - "questions" must contain exactly three items in order: Q5, Q6, Q7.
   - Q5 (15-second answer): usually asks TWO things at once in one sentence, e.g. "How often do you ~, and who do you usually ~ with?" Set questionType and questionType2 for the two parts.
   - Q6 (15-second answer): one short question, or a short question plus "Why?".
-  - Q7 (30-second answer): asks for an opinion, a choice, or a recommendation with reasons (may offer options such as "A, B, or C").
+  - Q7 (30-second answer): ALWAYS offers exactly three concrete options in one list and asks the learner to choose one and explain why, e.g. "Which of the following is the most important to you when choosing a park? A convenient location, clean facilities, or lots of green space? Why?" or "If you could …, which of the following would you choose: X, Y, or Z? Why?". Options are short parallel noun phrases ("X, Y, or Z" with an Oxford comma, last item followed by "?"), clearly different, all plausible. In a friend-phone set the friend asks in the first person ("I'm thinking about … Which of these would you recommend: X, Y, or Z? Why?"). The question must contain the word "Why". Vary the wording of the stem from set to set.
 - questionType / questionType2 (second part of a two-part question, else ""): ${typeList(P3_TYPES)}.
 - keyExpression: the question words a learner must catch, copied exactly from the question; for two-part questions join both with " / " (e.g. "How often / who").
 ${ANSWER_RULES('3-15', `- Word counts above are for Q5 and Q6. Q7 uses: ${levelLine('3-30')} words.
+- Q7 answers choose exactly one of the three options and name it (use the option's own words) in the first sentence; all four levels choose the same option and tell the same story.
 - Answer as an ordinary adult in Korea talking about real daily life. If you say "two reasons", give exactly two.`)}
 ${hintText}${avoidText}
 ${example}`;

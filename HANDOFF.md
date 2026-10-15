@@ -92,6 +92,11 @@ tools/              export-texts.mjs(음성 대상 추출) → generate_audio.py
   옵션(설정에 저장): Part 3·4 질문 글자 표시(끄면 듣기만), 안내문 한글 해석. 끝나면 결과 화면에서 목표 레벨·답변 화자별 모범답변과 비교, 청취 기록은 통계에 반영.
   검증용: `import('/js/views/mock.js')._test.scale = 0.03`으로 시험 시간을 빠르게 돌릴 수 있다. 같은 해시로 다시 이동하면 재렌더가 안 되니 `#/mock`을 거쳐 이동.
 
+- Part 3 Q7 실제 시험 형식 (SEED_VERSION 8, 2026-10-16): 34세트 전부 **보기 세 개를 주고 하나를 골라 이유를 말하게 하는 형식**
+  ("Which of the following … X, Y, or Z? Why?" / "If you could …, which would you choose: …" / 친구 통화는 "Which of these would you recommend: …").
+  26문항을 새로 쓰고(질문·4레벨 답변·한글) 기존 8문항은 이미 이 형식이라 유지. `content-rules.js`가 보기 3개·Why·답변이 고른 보기를 밝히는지 검사하고,
+  AI 생성 프롬프트(`llm.js`)도 같은 규칙. 직장 맥락이 있는 새 Q7 12개는 대학생 답변을 다시 씀(옛 Q7 대학생 답변 13개 제거). 옛 Q7 음성 543개 정리, 새 음성 538개.
+
 ### 진행 중
 - 없음
 

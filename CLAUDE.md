@@ -27,7 +27,7 @@
 - Part 1 = 지문 읽기 Q1·Q2 (준비 45초·읽기 45초): 안내 방송·광고·라디오 등 40~75단어, 목록(A, B, and C)·숫자·고유명사 포함. `guide`에 끊어 읽기(` / `)·강세(`**단어**`) 표시 — 표시를 지우면 지문과 같아야 한다. 레벨 답변 없음.
 - Part 2 = 사진 묘사 Q3·Q4 (준비 45초·응답 30초): `images/p2-XX.jpg` (1200×800, Unsplash 무료 라이선스, 작가는 `credit`과 `images/CREDITS.txt`). 사진에 보이는 것만 묘사하고 추측은 seems/looks like로.
 - Part 1·2는 질문이 아니라 말하기 과제라 질문 유형 퀴즈·실전 듣기·전체 학습(Part 3~5)에서 제외된다 (`TASK_PARTS`).
-- Part 3 = 세트: 상황 안내("Imagine that … telephone interview about …" 또는 친구와 통화) + Q5(15초, 대부분 두 가지를 묶어 묻기: "How often …, and who …?") + Q6(15초) + Q7(30초, 보기 중 선택·장단점·추천 + 이유).
+- Part 3 = 세트: 상황 안내("Imagine that … telephone interview about …" 또는 친구와 통화) + Q5(15초, 대부분 두 가지를 묶어 묻기: "How often …, and who …?") + Q6(15초) + Q7(30초). **Q7은 실제 시험처럼 항상 보기 세 개를 주고 하나를 골라 이유를 말하게 한다**: "Which of the following … ? X, Y, or Z? Why?" / "If you could …, which would you choose: X, Y, or Z? Why?" / 친구 통화 세트는 "Which of these would you recommend: X, Y, or Z? Why?". 보기는 짧은 명사구 3개(Oxford comma, 마지막 뒤 `?`), 서로 뚜렷이 다르고 모두 그럴듯해야 하며 질문에 Why가 있어야 한다. 답변은 보기 중 하나를 첫 문장에서 그 보기의 단어로 밝힌다 (`content-rules.js`가 검사). 질문 시작 표현은 세트마다 다양하게.
 - Part 4 = 세트: 일정표(45초 읽기) + 질문자 안내 + Q8(15초, 사실 두 가지) + Q9(15초, "I heard … Is that right?" 잘못된 정보 정정) + Q10(30초, 두 번 들려줌, 해당 항목 모두 안내).
 - Part 5 = Q11 단독(준비 45초·응답 60초): 찬반("Do you agree or disagree …") · 둘 중 선택 · 장단점 · 보기 중 선택, 끝에 "Use specific reasons and examples to support your answer."
 - 두 가지를 묻는 질문은 `t: [주 유형, 둘째 유형]`, `key`는 질문 속 문구를 '/'로 구분해 그대로 (강조 표시·퀴즈에 쓰임).
