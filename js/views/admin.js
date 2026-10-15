@@ -55,7 +55,7 @@ function pendingQuestionHtml(q) {
       ${q.part === 1 ? '' : `<details class="pend-answers">
         <summary>모범답변 ${levels.join(' · ')}</summary>
         ${levels.map((lv) => {
-          const a = store.getAnswer(q, lv);
+          const a = store.getAnswer(q, lv, 'worker');
           return `<div class="pend-ans"><span class="lv-tag">${lv}</span> ${escapeHtml(a.en)}<div class="q-item-ko">${escapeHtml(a.ko)}</div></div>`;
         }).join('')}
       </details>`}

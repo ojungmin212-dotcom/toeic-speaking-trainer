@@ -55,6 +55,11 @@ export async function renderSettings(root) {
 
     <h3 class="section-title">학습</h3>
     <div class="card">
+      <div class="setting-row"><span>답변 화자 (대학생: 수업·캠퍼스·아르바이트 이야기)</span>
+        <select id="persona">
+          <option value="worker" ${s.persona !== 'student' ? 'selected' : ''}>직장인</option>
+          <option value="student" ${s.persona === 'student' ? 'selected' : ''}>대학생</option>
+        </select></div>
       <div class="setting-row"><span>목표 레벨 (모범답변 수준)</span>
         <select id="targetLevel">
           ${['IL', 'IM', 'IH', 'AL'].map((lv) => `<option value="${lv}" ${(s.targetLevel || 'IL') === lv ? 'selected' : ''}>${lv}</option>`).join('')}
@@ -111,6 +116,7 @@ export async function renderSettings(root) {
   bind('rate', 'rate', false, true);
   bind('beginnerMode', 'beginnerMode', true);
   bind('targetLevel', 'targetLevel');
+  bind('persona', 'persona');
   bind('beepAfterQuestion', 'beepAfterQuestion', true);
   bind('useGeneratedAudio', 'useGeneratedAudio', true);
 

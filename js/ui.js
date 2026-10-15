@@ -24,6 +24,14 @@ export function bindLevelPicker(root, id, onPick) {
   });
 }
 
+// 답변 화자(페르소나) 선택 — 직장인 / 대학생
+export const PERSONAS = { worker: '직장인', student: '대학생' };
+export function personaPickerHtml(current, { id = 'personaPicker' } = {}) {
+  return `<div class="seg seg-sm" id="${id}" role="tablist" aria-label="답변 화자 선택">${
+    Object.entries(PERSONAS).map(([k, label]) => `<button class="seg-btn ${k === current ? 'on' : ''}" data-level="${k}" role="tab" aria-selected="${k === current}">${label}</button>`).join('')
+  }</div>`;
+}
+
 export function levelInfoHtml(level) {
   const lv = LEVELS[level] ? level : 'IL';
   const L = LEVELS[lv];

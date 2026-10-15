@@ -4,7 +4,7 @@ import * as tts from '../tts.js';
 import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
   escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml, guideHtml, photoHtml,
-  levelPickerHtml, bindLevelPicker, levelInfoHtml, wordCount, speakSeconds,
+  levelPickerHtml, bindLevelPicker, levelInfoHtml, personaPickerHtml, PERSONAS, wordCount, speakSeconds,
   expressionMarkupHtml, expressionListHtml,
 } from '../ui.js';
 import { findExpressions } from '../expressions.js';
@@ -57,6 +57,10 @@ export function renderStudyIndex(root) {
       ${levelPickerHtml(level)}
       <div id="levelInfo">${levelInfoHtml(level)}</div>
       <p class="desc small">선택한 레벨의 모범답변이 질문 상세와 듣기 모드에 적용됩니다.</p>
+      <div class="card-label persona-label">답변 화자</div>
+      ${personaPickerHtml(store.getSettings().persona)}
+      <p class="desc small">대학생을 고르면 회사·동료·출퇴근 이야기 대신 수업·캠퍼스·아르바이트 이야기로 답한 모범답변을 들려줍니다
+        (Part 3·5 중 직장 맥락이 있는 문항, 4레벨 모두).</p>
     </section>
     <h3 class="section-title">파트</h3>
     <nav class="menu">${parts}</nav>
@@ -67,6 +71,10 @@ export function renderStudyIndex(root) {
     store.saveSettings({ targetLevel: lv });
     root.querySelector('#levelInfo').innerHTML = levelInfoHtml(lv);
     toast(`목표 레벨을 ${lv}로 설정했습니다`);
+  });
+  bindLevelPicker(root, 'personaPicker', (p) => {
+    store.saveSettings({ persona: p });
+    toast(`${PERSONAS[p]} 답변으로 바꿨습니다`);
   });
 }
 
@@ -155,6 +163,9 @@ export function renderStudyDetail(root, id, ctx = {}) {
   // 이전/다음으로 넘어온 경우에는 보던 비교 레벨을 이어서 보여준다.
   let current = store.getAnswer(q, carryLevel || s.targetLevel).level;
   carryLevel = null;
+  // 답변 화자도 상세에서는 비교용 — 설정값으로 시작하고, 탭 전환은 이 화면에만 적용
+  let persona = s.persona;
+  const hasStudent = store.hasStudentAnswer(q);
   lastViewedId = q.id;
 
   // 이동 기준 목록: 목록에서 들어왔으면 그 목록, 아니면(통계 화면 등) 같은 파트
@@ -241,6 +252,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
           <span class="card-label">Answer</span>
           ${levels.length > 1 ? levelPickerHtml(current, { id: 'ansLevel', small: true, levels }) : ''}
         </div>
+        ${hasStudent ? `<div class="answer-persona"><span class="desc small">답변 화자</span>${personaPickerHtml(persona, { id: 'ansPersona' })}</div>` : ''}
         <div class="level-note" id="ansNote"></div>
         <div class="card-en answer-text" id="ansEn"></div>
         <div id="ansExpr"></div>
@@ -274,10 +286,10 @@ export function renderStudyDetail(root, id, ctx = {}) {
 
   function showAnswer(level) {
     if (!$('#ansNote')) return; // Part 1은 모범답변 카드가 없다 (지문 자체가 모범 낭독)
-    const a = store.getAnswer(q, level);
+    const a = store.getAnswer(q, level, persona);
     current = a.level;
     const L = LEVELS[a.level];
-    $('#ansNote').textContent = `${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
+    $('#ansNote').textContent = `${a.persona === 'student' ? '대학생 · ' : ''}${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
     // IH·AL은 고급 표현을 강조하고 뜻을 목록으로 (AL 포인트)
     const adv = a.level === 'IH' || a.level === 'AL';
     if (adv) {
@@ -299,7 +311,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
     shadowBtn.addEventListener('click', async () => {
       if (running) { tts.cancel(); return; }
       tts.cancel();
-      const text = q.part === 1 ? q.questionEnglish : store.getAnswer(q, current).en;
+      const text = q.part === 1 ? q.questionEnglish : store.getAnswer(q, current, persona).en;
       const myGen = tts.generation();
       const box = $('#shadowNow');
       running = true;
@@ -318,30 +330,39 @@ export function renderStudyDetail(root, id, ctx = {}) {
   }
 
   // IH ↔ AL 나란히 비교 — 단어 수·고급 표현 수와 함께
+  const renderCompare = () => {
+    $('#cmpGrid').innerHTML = ['IH', 'AL'].map((lv) => {
+      const v = store.getAnswer(q, lv, persona);
+      return `<div class="cmp-col">
+        <div class="cmp-title"><span class="lv-tag">${lv}</span> ${wordCount(v.en)}단어 · 고급 표현 ${findExpressions(v.en).length}개</div>
+        <div class="card-en answer-text">${expressionMarkupHtml(v.en)}</div>
+        <button class="speak-btn small-speak" data-lv="${lv}">🔊 ${lv} 듣기</button>
+      </div>`;
+    }).join('');
+    $('#cmpGrid').querySelectorAll('[data-lv]').forEach((b) => b.addEventListener('click', () => {
+      tts.cancel();
+      tts.speak(store.getAnswer(q, b.dataset.lv, persona).en, 'en-US');
+    }));
+  };
   if ($('#cmpBtn')) {
     $('#cmpBtn').addEventListener('click', () => {
       const card = $('#cmpCard');
       const open = card.classList.toggle('hidden') === false;
       $('#cmpBtn').textContent = open ? 'IH ↔ AL 비교 닫기' : 'IH ↔ AL 비교';
       if (!open) return;
-      $('#cmpGrid').innerHTML = ['IH', 'AL'].map((lv) => {
-        const v = q.levelAnswers[lv];
-        return `<div class="cmp-col">
-          <div class="cmp-title"><span class="lv-tag">${lv}</span> ${wordCount(v.en)}단어 · 고급 표현 ${findExpressions(v.en).length}개</div>
-          <div class="card-en answer-text">${expressionMarkupHtml(v.en)}</div>
-          <button class="speak-btn small-speak" data-lv="${lv}">🔊 ${lv} 듣기</button>
-        </div>`;
-      }).join('');
-      $('#cmpGrid').querySelectorAll('[data-lv]').forEach((b) => b.addEventListener('click', () => {
-        tts.cancel();
-        tts.speak(q.levelAnswers[b.dataset.lv].en, 'en-US');
-      }));
+      renderCompare();
       card.scrollIntoView({ block: 'start' });
     });
   }
   showAnswer(current);
 
   bindLevelPicker(root, 'ansLevel', (lv) => { tts.cancel(); showAnswer(lv); });
+  bindLevelPicker(root, 'ansPersona', (pv) => {
+    tts.cancel();
+    persona = pv;
+    showAnswer(current);
+    if (!$('#cmpCard').classList.contains('hidden')) renderCompare();
+  });
 
   if (set) {
     $('#introSpeak').addEventListener('click', () => {
@@ -356,7 +377,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
   });
   if ($('#aSpeak')) $('#aSpeak').addEventListener('click', () => {
     tts.cancel();
-    tts.speak(store.getAnswer(q, current).en, 'en-US');
+    tts.speak(store.getAnswer(q, current, persona).en, 'en-US');
   });
 
   // 이전/다음 질문 — 방문 기록을 쌓지 않고 교체(replace)해서, ← 한 번이면 목록으로 돌아간다

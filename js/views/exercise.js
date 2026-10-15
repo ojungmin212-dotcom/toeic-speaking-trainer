@@ -4,7 +4,7 @@ import { SequencePlayer } from '../player.js';
 import { pickWeighted, groupBySet } from '../srs.js';
 import { PARTS } from '../seed-data.js';
 import {
-  escapeHtml, typeBadges, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml, qNoBadge, scheduleHtml,
+  escapeHtml, typeBadges, highlightKey, toast, levelPickerHtml, bindLevelPicker, levelInfoHtml, personaPickerHtml, qNoBadge, scheduleHtml,
   guideHtml, photoHtml, expressionMarkupHtml,
 } from '../ui.js';
 import { backBar } from './study.js';
@@ -43,6 +43,8 @@ export function renderExerciseSetup(root) {
       <div class="card-label">모범답변 레벨</div>
       ${levelPickerHtml(s.targetLevel || 'IL', { id: 'exLevel' })}
       <div id="exLevelInfo">${levelInfoHtml(s.targetLevel || 'IL')}</div>
+      <div class="card-label persona-label">답변 화자</div>
+      ${personaPickerHtml(s.persona, { id: 'exPersona' })}
       <button type="button" class="play-summary" id="exSummary">${escapeHtml(summaryText(s))}</button>
     </div>
 
@@ -90,11 +92,15 @@ export function renderExerciseSetup(root) {
     root.querySelector('#exLevelInfo').innerHTML = levelInfoHtml(lv);
     refreshSummary();
   });
+  bindLevelPicker(root, 'exPersona', (pv) => {
+    store.saveSettings({ persona: pv });
+    refreshSummary();
+  });
 }
 
 // 재생 설정 한 줄 요약 — 재생 목록을 누르기 전에 무엇이 나올지 보이도록
 function summaryText(s) {
-  const parts = [`${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
+  const parts = [`${s.persona === 'student' ? '대학생 ' : ''}${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
   parts.push(s.playQuestionKo ? '질문 해석 켬' : '질문 해석 끔');
   if (s.shadowing) parts.push('쉐도잉');
   if (!s.playAnswerEn) parts.push('모범답변 끔');

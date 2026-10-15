@@ -547,7 +547,7 @@ body.has-bottom-nav .site-footer { padding-bottom: 76px; }
   position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(16px);
   background: var(--navy-900); color: #fff; padding: 11px 20px; font-size: 14px;
   opacity: 0; pointer-events: none; transition: all 0.22s; z-index: 99;
-  max-width: 90vw; text-align: center;
+  width: max-content; max-width: calc(100vw - 32px); text-align: center; word-break: keep-all;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -557,3 +557,7 @@ body.has-bottom-nav .site-footer { padding-bottom: 76px; }
   font-family: ui-monospace, Consolas, monospace; font-size: 12px; line-height: 1.4; word-break: break-all; resize: vertical; background: var(--bg); }
 .sync-box:focus { outline: none; border-color: #000; }
 #syncResult:empty { display: none; }
+
+/* 답변 화자 (직장인 / 대학생) */
+.persona-label { margin-top: 14px; }
+.answer-persona { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 6px 0 2px; }

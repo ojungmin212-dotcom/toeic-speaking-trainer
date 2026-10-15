@@ -3,6 +3,7 @@
 
 import { SEED_QUESTIONS, SEED_SETS, SEED_VERSION, LEVEL_ORDER, TASK_PARTS } from './seed-data.js';
 import { applyAnswer } from './srs.js';
+import { STUDENT_ANSWERS } from './student-answers.js';
 
 const K = {
   questions: 'tst.questions.v1',
@@ -117,6 +118,7 @@ export const DEFAULT_SETTINGS = {
   shadowing: false,              // 쉐도잉: 모범답변·지문을 문장마다 끊어 들려주고 따라 말할 시간
   useGeneratedAudio: true,       // 사전 생성 신경망 음성 우선 사용
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
+  persona: 'worker',             // 답변 화자 — worker 직장인 | student 대학생 (대학생 답변이 있는 문항만 바뀜)
 };
 
 // 레벨별 답변 정리: { IM: {en, ko}, ... } 형태만 남긴다 (IL은 answerEnglish/answerKorean)
@@ -215,10 +217,18 @@ function isSeedId(id) {
   return SEED_IDS.has(id) || /^seed-\d+$/.test(String(id)) || /^p[1-5]-\d+(-q\d+)?$/.test(String(id));
 }
 
+// 대학생 페르소나 답변이 있는 문항인지 (시드 Part 3·5 중 직장 맥락이 있던 문항 — js/student-answers.js)
+export function hasStudentAnswer(q) {
+  return !!(q && STUDENT_ANSWERS[q.id]);
+}
+
 // 문항의 해당 레벨 모범답변. 그 레벨 답변이 없으면 아래 레벨로 내려가며 찾는다 (최종 IL).
-// 반환: { en, ko, level } — level은 실제로 보여주는 레벨
-export function getAnswer(q, level) {
+// 답변 화자가 대학생이고 대학생 답변이 있는 문항이면 그 답변을 쓴다 (4레벨 모두 있음).
+// 반환: { en, ko, level, persona } — level은 실제로 보여주는 레벨
+export function getAnswer(q, level, persona = settings.persona) {
   const want = LEVEL_ORDER.includes(level) ? level : 'IL';
+  const st = persona === 'student' && STUDENT_ANSWERS[q.id];
+  if (st && st[want]) return { en: st[want][0], ko: st[want][1], level: want, persona: 'student' };
   for (let i = LEVEL_ORDER.indexOf(want); i > 0; i--) {
     const lv = LEVEL_ORDER[i];
     const v = q.levelAnswers && q.levelAnswers[lv];
@@ -514,6 +524,7 @@ function sanitizeSettings(s) {
   if (!LEVEL_ORDER.includes(out.targetLevel)) out.targetLevel = 'IL';
   if (!['female', 'male'].includes(out.voiceGender)) out.voiceGender = 'female';
   if (!['webspeech', 'openai'].includes(out.ttsProvider)) out.ttsProvider = 'webspeech';
+  if (!['worker', 'student'].includes(out.persona)) out.persona = 'worker';
   return out;
 }
 

@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import { SEED_QUESTIONS, SEED_SETS } from '../js/seed-data.js';
 import { checkQuestion, checkSet } from '../js/content-rules.js';
+import { STUDENT_ANSWERS } from '../js/student-answers.js';
 
 const errors = [];
 const warns = [];
@@ -20,6 +21,28 @@ for (const q of SEED_QUESTIONS) {
   r.errors.forEach((m) => err(q.id, m));
   r.warns.forEach((m) => warn(q.id, m));
   if (q.part === 2 && !fs.existsSync(new URL('../' + q.image, import.meta.url))) err(q.id, `사진 파일 없음 ${q.image}`);
+}
+
+// 대학생 페르소나 답변: 같은 문항 규격(단어 수·문장 길이·IM 틀·AL 표현·일정표 숫자)을 그대로 적용
+const WORK = /\b(office|overtime|coworkers?|co-workers?|colleagues?|my boss|my company|our company|salary|business trip|workplace|after work|before work|at work)\b/i;
+for (const [id, a] of Object.entries(STUDENT_ANSWERS)) {
+  const q = SEED_QUESTIONS.find((x) => x.id === id);
+  if (!q) { err(id, '대학생 답변: 그런 문항 없음'); continue; }
+  const lvs = ['IL', 'IM', 'IH', 'AL'];
+  const missing = lvs.filter((lv) => !Array.isArray(a[lv]) || !a[lv][0] || !a[lv][1]);
+  if (missing.length) { err(id, `대학생 답변 레벨 누락 ${missing.join(',')}`); continue; }
+  const q2 = {
+    ...q, answerEnglish: a.IL[0], answerKorean: a.IL[1],
+    levelAnswers: Object.fromEntries(['IM', 'IH', 'AL'].map((lv) => [lv, { en: a[lv][0], ko: a[lv][1] }])),
+  };
+  const r = checkQuestion(q2, SEED_SETS[q.setId]);
+  r.errors.forEach((m) => err(id, '대학생 ' + m));
+  r.warns.forEach((m) => warn(id, '대학생 ' + m));
+  for (const lv of lvs) {
+    const m = WORK.exec(a[lv][0]);
+    // 질문 자체에 있는 말(예: overtime, coworker)은 답할 때 쓸 수밖에 없으니 제외
+    if (m && !q.questionEnglish.toLowerCase().includes(m[0].toLowerCase())) warn(id, `대학생 ${lv}에 직장인 표현 "${m[0]}"`);
+  }
 }
 
 for (const [id, s] of Object.entries(SEED_SETS)) {
@@ -38,6 +61,7 @@ for (const lv of ['IH', 'AL']) {
 }
 
 const byPart = (p) => SEED_QUESTIONS.filter((q) => q.part === p).length;
+console.log(`대학생 답변 ${Object.keys(STUDENT_ANSWERS).length}문항`);
 console.log(`문항 ${SEED_QUESTIONS.length}개 (${[1, 2, 3, 4, 5].map((p) => `Part ${p}: ${byPart(p)}`).join(' · ')}), 세트 ${Object.keys(SEED_SETS).length}개`);
 for (const w of warns) console.log('경고 ' + w);
 for (const e of errors) console.log('오류 ' + e);
