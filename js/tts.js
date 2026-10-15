@@ -12,6 +12,15 @@ import { getSettings } from './store.js';
 let voicesCache = [];
 let gen = 0; // 취소 세대 — cancel()마다 +1
 
+// 출력 음량 (0~1) — 모의고사 화면의 VOLUME 버튼. 파일 음성·브라우저 음성·신호음에 모두 적용된다.
+// iOS Safari는 audio.volume을 무시하므로 그 기기에서는 기기 음량 버튼을 쓴다.
+let outVolume = 1;
+export function setVolume(v) {
+  outVolume = Math.min(1, Math.max(0, Number(v)));
+  if (fileAudio) { try { fileAudio.volume = outVolume; } catch {} }
+}
+export function getVolume() { return outVolume; }
+
 export function cancel() {
   gen += 1;
   try { speechSynthesis.cancel(); } catch {}
@@ -149,7 +158,7 @@ export function beep(freq = 880, duration = 0.3) {
       // iOS는 잠금/세션 중단 시 비표준 'interrupted' 상태를 쓰므로 running이 아니면 모두 resume
       if (audioCtx.state !== 'running') { try { audioCtx.resume(); } catch {} }
       gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, 0.25 * outVolume), t + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
       osc.connect(gain).connect(audioCtx.destination);
       osc.start(t);
@@ -373,6 +382,7 @@ function speakWebSpeech(text, lang, myGen) {
       utter.lang = lang;
       utter.rate = lang.startsWith('ko') ? Math.min(s.rate + 0.08, 1.1) : s.rate;
       utter.pitch = 1.0; // 중립적 억양
+      utter.volume = outVolume;
       const voice = pickVoice(
         voicesCache, lang.startsWith('ko') ? 'ko' : 'en',
         s.voiceGender,

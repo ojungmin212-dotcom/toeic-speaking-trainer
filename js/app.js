@@ -8,6 +8,7 @@ import { renderQuiz, stopQuiz } from './views/quiz.js';
 import { renderStats } from './views/stats.js';
 import { renderAdmin } from './views/admin.js';
 import { renderSettings } from './views/settings.js';
+import { renderMockSetup, renderMockRun, renderMockResult, stopMock } from './views/mock.js';
 
 store.init();
 
@@ -33,6 +34,7 @@ function route() {
   stopExercise();
   stopListening();
   stopQuiz();
+  stopMock(); // 모의고사 진행 중이면 정리하고 시험 화면 모드(exam-mode)를 푼다
   root.onclick = null;
   setDrawer(false);
   window.scrollTo(0, 0);
@@ -57,6 +59,10 @@ function route() {
     case 'exercise':
       if (parts[1] === 'play') return renderExercisePlay(root, parts[2] || 'all');
       return renderExerciseSetup(root);
+    case 'mock':
+      if (parts[1] === 'run') return renderMockRun(root, parts[2] || 'full');
+      if (parts[1] === 'result') return renderMockResult(root);
+      return renderMockSetup(root);
     case 'listening': return renderListening(root, { mode: 'all' });
     case 'review': return renderListening(root, { mode: 'review' });
     case 'quiz': return renderQuiz(root);

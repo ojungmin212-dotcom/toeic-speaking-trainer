@@ -9825,6 +9825,46 @@
   "lang": "en"
  },
  {
+  "name": "mock-dir1",
+  "text": "In this part of the test, you will read aloud the text on the screen. You will have 45 seconds to prepare. Then you will have 45 seconds to read the text aloud.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-dir2",
+  "text": "In this part of the test, you will describe the picture on your screen in as much detail as you can. You will have 45 seconds to prepare your response. Then you will have 30 seconds to speak about the picture.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-dir3",
+  "text": "In this part of the test, you will answer three questions. For each question, begin responding right after you hear the beep. You will have 15 seconds to respond to Questions 5 and 6, and 30 seconds to respond to Question 7.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-dir4",
+  "text": "In this part of the test, you will answer three questions based on the information provided. You will have 45 seconds to read the information before the questions begin. For each question, begin responding right after you hear the beep. You will have 15 seconds to respond to Questions 8 and 9, and 30 seconds to respond to Question 10.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-dir5",
+  "text": "In this part of the test, you will give your opinion about a specific topic. Be sure to say as much as you can in the time allowed. You will have 45 seconds to prepare. Then you will have 60 seconds to speak.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-cue-prepare",
+  "text": "Begin preparing now.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-cue-readAloud",
+  "text": "Begin reading aloud now.",
+  "lang": "en"
+ },
+ {
+  "name": "mock-cue-speak",
+  "text": "Begin speaking now.",
+  "lang": "en"
+ },
+ {
   "name": "p3-01-q6-sIM",
   "text": "I usually take a long walk around the lake. Walking helps me relax and clear my head after a busy week of classes.",
   "lang": "en"

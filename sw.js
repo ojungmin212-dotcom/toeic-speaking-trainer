@@ -2,7 +2,7 @@
 // - 오류 응답(4xx/5xx)은 절대 캐시하지 않는다 (캐시 오염 방지)
 // - 오디오(불변 mp3)는 캐시 우선: 반복 청취 시 재다운로드 없음, 오프라인 재생 가능
 // - 나머지는 네트워크 우선 + 실패 시 캐시 폴백
-const CACHE = 'tst-v18';
+const CACHE = 'tst-v19';
 const AUDIO_CACHE = 'tst-audio-v1'; // 앱 버전과 분리 — 업데이트해도 받아 둔 음성 유지
 const IMAGE_CACHE = 'tst-img-v1';   // Part 2 사진 (불변 파일) — 처음 볼 때 캐시, 앱 업데이트해도 유지
 const ASSETS = [
@@ -11,7 +11,7 @@ const ASSETS = [
   './fonts/NanumBarunGothicSubset.woff2', './fonts/NanumBarunGothicBoldSubset.woff2',
   './js/app.js', './js/store.js', './js/seed-data.js', './js/srs.js',
   './js/sets-part1.js', './js/sets-part2.js', './js/sets-part3.js', './js/sets-part4.js', './js/sets-part5.js',
-  './js/tts.js', './js/llm.js', './js/player.js', './js/ui.js', './js/expressions.js', './js/shadow.js', './js/content-rules.js', './js/sync.js', './js/student-answers.js',
+  './js/tts.js', './js/llm.js', './js/player.js', './js/ui.js', './js/expressions.js', './js/shadow.js', './js/content-rules.js', './js/sync.js', './js/student-answers.js', './js/mock-data.js', './js/views/mock.js',
   './js/views/home.js', './js/views/study.js', './js/views/exercise.js',
   './js/views/listening.js', './js/views/quiz.js', './js/views/stats.js',
   './js/views/admin.js', './js/views/settings.js',

@@ -118,6 +118,8 @@ export const DEFAULT_SETTINGS = {
   shadowing: false,              // 쉐도잉: 모범답변·지문을 문장마다 끊어 들려주고 따라 말할 시간
   useGeneratedAudio: true,       // 사전 생성 신경망 음성 우선 사용
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
+  mockShowText: true,            // 모의고사: Part 3·4 질문 글자 표시 (끄면 듣기만으로)
+  mockShowKo: true,              // 모의고사: 안내문 한글 해석 표시
   persona: 'worker',             // 답변 화자 — worker 직장인 | student 대학생 (대학생 답변이 있는 문항만 바뀜)
 };
 

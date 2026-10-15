@@ -2,6 +2,7 @@
 // 실행: node tools/export-texts.mjs
 import { SEED_QUESTIONS, SEED_SETS } from '../js/seed-data.js';
 import { STUDENT_ANSWERS } from '../js/student-answers.js';
+import { MOCK_AUDIO_TEXTS } from '../js/mock-data.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,6 +35,8 @@ function addQuestion(q) {
 for (const q of SEED_QUESTIONS) addQuestion(q);
 // 세트 상황 안내(Part 3)·질문자 안내(Part 4) — 듣기 모드에서 세트 첫 질문 전에 재생 (영어만)
 for (const s of Object.values(SEED_SETS)) add(s.id, 'intro', s.introEnglish, 'en');
+// 모의고사 시험 안내문·"Begin preparing now." 같은 큐 (영어만)
+for (const m of MOCK_AUDIO_TEXTS) add('mock', m.name, m.text, 'en');
 // 대학생 페르소나 답변 (설정의 '답변 화자'가 대학생일 때)
 for (const [id, a] of Object.entries(STUDENT_ANSWERS)) {
   for (const lv of ['IL', 'IM', 'IH', 'AL']) {

@@ -46,6 +46,9 @@ export function renderHome(root) {
       <a class="menu-row primary" href="#/exercise">
         ${icon('headphones')}<span class="menu-body"><b>듣기 모드</b><small>이어폰만으로 자동 반복 학습</small></span>${icon('chevron', 16)}
       </a>
+      <a class="menu-row" href="#/mock">
+        ${icon('target')}<span class="menu-body"><b>모의고사 (실제 시험 화면)</b><small>안내문 · 준비 시간 · 응답 시간까지 시험 그대로</small></span>${icon('chevron', 16)}
+      </a>
       <a class="menu-row" href="#/listening">
         ${icon('target')}<span class="menu-body"><b>실전 듣기</b><small>듣고 의미 판단 후 정답 확인</small></span>${icon('chevron', 16)}
       </a>
