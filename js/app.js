@@ -9,8 +9,10 @@ import { renderStats } from './views/stats.js';
 import { renderAdmin } from './views/admin.js';
 import { renderSettings } from './views/settings.js';
 import { renderMockSetup, renderMockRun, renderMockResult, stopMock } from './views/mock.js';
+import { initTheme } from './theme.js';
 
 store.init();
+initTheme();
 
 const root = document.getElementById('app');
 const drawer = document.getElementById('drawer');

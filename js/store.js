@@ -121,6 +121,7 @@ export const DEFAULT_SETTINGS = {
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
   mockShowText: true,            // 모의고사: Part 3·4 질문 글자 표시 (끄면 듣기만으로)
   mockShowKo: true,              // 모의고사: 안내문 한글 해석 표시
+  theme: 'dark',                 // 화면 테마 — dark 다크(기본) | light 라이트 | auto 기기 설정 따름
   persona: 'worker',             // 답변 화자 — worker 직장인 | student 대학생 | easy 초보 추천(둘 중 발음하기 쉬운 쪽). 대학생 답변이 있는 문항만 바뀜
 };
 
@@ -533,6 +534,7 @@ function sanitizeSettings(s) {
   if (!['female', 'male'].includes(out.voiceGender)) out.voiceGender = 'female';
   if (!['webspeech', 'openai'].includes(out.ttsProvider)) out.ttsProvider = 'webspeech';
   if (!['worker', 'student', 'easy'].includes(out.persona)) out.persona = 'worker';
+  if (!['dark', 'light', 'auto'].includes(out.theme)) out.theme = 'dark';
   return out;
 }
 

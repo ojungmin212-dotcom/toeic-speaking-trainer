@@ -2,6 +2,7 @@
 import * as store from '../store.js';
 import * as tts from '../tts.js';
 import * as sync from '../sync.js';
+import { applyTheme } from '../theme.js';
 import { toast, download, pickFile } from '../ui.js';
 import { backBar } from './study.js';
 
@@ -17,6 +18,16 @@ export async function renderSettings(root) {
 
   root.innerHTML = `
     ${backBar('설정')}
+    <h3 class="section-title">화면</h3>
+    <div class="card">
+      <div class="setting-row"><span>화면 테마 (다크: 눈이 편한 어두운 화면)</span>
+        <select id="theme">
+          <option value="dark" ${s.theme === 'dark' ? 'selected' : ''}>다크</option>
+          <option value="light" ${s.theme === 'light' ? 'selected' : ''}>라이트</option>
+          <option value="auto" ${s.theme === 'auto' ? 'selected' : ''}>기기 설정 따름</option>
+        </select></div>
+    </div>
+
     <h3 class="section-title">음성</h3>
     <div class="card">
       <label class="setting-row"><span>고품질 사전 생성 음성 ${genCount ? `<span class="ok-text">(${genCount}개 사용 중 ✓)</span>` : '<span class="warn-text">(음성생성.bat 실행 필요)</span>'}</span>
@@ -118,6 +129,8 @@ export async function renderSettings(root) {
   bind('beginnerMode', 'beginnerMode', true);
   bind('targetLevel', 'targetLevel');
   bind('persona', 'persona');
+  bind('theme', 'theme');
+  root.querySelector('#theme').addEventListener('change', (e) => applyTheme(e.target.value));
   bind('beepAfterQuestion', 'beepAfterQuestion', true);
   bind('useGeneratedAudio', 'useGeneratedAudio', true);
 
