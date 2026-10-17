@@ -4,6 +4,7 @@
 import { SEED_QUESTIONS, SEED_SETS, SEED_VERSION, LEVEL_ORDER, TASK_PARTS } from './seed-data.js';
 import { applyAnswer } from './srs.js';
 import { STUDENT_ANSWERS } from './student-answers.js';
+import { EASY_PICKS } from './easy-picks.js';
 
 const K = {
   questions: 'tst.questions.v1',
@@ -120,7 +121,7 @@ export const DEFAULT_SETTINGS = {
   targetLevel: 'IL',             // 목표 레벨 — 모범답변을 이 레벨로 보여주고 재생 (IL/IM/IH/AL)
   mockShowText: true,            // 모의고사: Part 3·4 질문 글자 표시 (끄면 듣기만으로)
   mockShowKo: true,              // 모의고사: 안내문 한글 해석 표시
-  persona: 'worker',             // 답변 화자 — worker 직장인 | student 대학생 (대학생 답변이 있는 문항만 바뀜)
+  persona: 'worker',             // 답변 화자 — worker 직장인 | student 대학생 | easy 초보 추천(둘 중 발음하기 쉬운 쪽). 대학생 답변이 있는 문항만 바뀜
 };
 
 // 레벨별 답변 정리: { IM: {en, ko}, ... } 형태만 남긴다 (IL은 answerEnglish/answerKorean)
@@ -226,17 +227,22 @@ export function hasStudentAnswer(q) {
 
 // 문항의 해당 레벨 모범답변. 그 레벨 답변이 없으면 아래 레벨로 내려가며 찾는다 (최종 IL).
 // 답변 화자가 대학생이고 대학생 답변이 있는 문항이면 그 답변을 쓴다 (4레벨 모두 있음).
-// 반환: { en, ko, level, persona } — level은 실제로 보여주는 레벨
+// '초보 추천'(easy)이면 문항마다 직장인·대학생 중 발음하기 쉬운 쪽(js/easy-picks.js)을 쓴다.
+// 반환: { en, ko, level, persona, easy } — level은 실제로 보여주는 레벨, persona는 실제로 쓴 화자(worker|student),
+//       easy는 '초보 추천'이 두 답변 중에서 고른 경우(대학생 답변이 있는 문항)만 true
 export function getAnswer(q, level, persona = settings.persona) {
   const want = LEVEL_ORDER.includes(level) ? level : 'IL';
-  const st = persona === 'student' && STUDENT_ANSWERS[q.id];
-  if (st && st[want]) return { en: st[want][0], ko: st[want][1], level: want, persona: 'student' };
+  const st0 = STUDENT_ANSWERS[q.id];
+  const easy = persona === 'easy' && !!st0;
+  const who = persona === 'easy' ? (EASY_PICKS[q.id] || 'worker') : persona;
+  const st = who === 'student' && st0;
+  if (st && st[want]) return { en: st[want][0], ko: st[want][1], level: want, persona: 'student', easy };
   for (let i = LEVEL_ORDER.indexOf(want); i > 0; i--) {
     const lv = LEVEL_ORDER[i];
     const v = q.levelAnswers && q.levelAnswers[lv];
-    if (v && v.en) return { en: v.en, ko: v.ko || '', level: lv };
+    if (v && v.en) return { en: v.en, ko: v.ko || '', level: lv, persona: 'worker', easy };
   }
-  return { en: q.answerEnglish || '', ko: q.answerKorean || '', level: 'IL' };
+  return { en: q.answerEnglish || '', ko: q.answerKorean || '', level: 'IL', persona: 'worker', easy };
 }
 
 // 이 문항이 보유한 답변 레벨 목록 (IL 포함)
@@ -526,7 +532,7 @@ function sanitizeSettings(s) {
   if (!LEVEL_ORDER.includes(out.targetLevel)) out.targetLevel = 'IL';
   if (!['female', 'male'].includes(out.voiceGender)) out.voiceGender = 'female';
   if (!['webspeech', 'openai'].includes(out.ttsProvider)) out.ttsProvider = 'webspeech';
-  if (!['worker', 'student'].includes(out.persona)) out.persona = 'worker';
+  if (!['worker', 'student', 'easy'].includes(out.persona)) out.persona = 'worker';
   return out;
 }
 

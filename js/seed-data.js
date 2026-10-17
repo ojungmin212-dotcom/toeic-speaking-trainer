@@ -126,4 +126,4 @@ for (const x of PART5_QUESTIONS) SEED_QUESTIONS.push(toQuestion({ ...x, no: 11 }
 // v5: 레벨별 답변 검수 반영 (오류 75건 수정, 반복 템플릿 제거·Part 5 구조 다양화 194건)
 // v6: 실제 시험 형식으로 전면 교체 — Part 3·4 세트(상황 안내·일정표·Q5~10), Part 5 실제 문형. 옛 seed-### 문항은 제거
 // v7: Part 1(지문 읽기 20) · Part 2(사진 묘사 20) 추가
-export const SEED_VERSION = 8;
+export const SEED_VERSION = 9;

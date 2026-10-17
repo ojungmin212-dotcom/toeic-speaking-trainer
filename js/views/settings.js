@@ -55,10 +55,11 @@ export async function renderSettings(root) {
 
     <h3 class="section-title">학습</h3>
     <div class="card">
-      <div class="setting-row"><span>답변 화자 (대학생: 수업·캠퍼스·아르바이트 이야기)</span>
+      <div class="setting-row"><span>답변 화자 (대학생: 수업·캠퍼스 이야기 / 초보 추천: 둘 중 발음하기 쉬운 쪽)</span>
         <select id="persona">
-          <option value="worker" ${s.persona !== 'student' ? 'selected' : ''}>직장인</option>
+          <option value="worker" ${s.persona !== 'student' && s.persona !== 'easy' ? 'selected' : ''}>직장인</option>
           <option value="student" ${s.persona === 'student' ? 'selected' : ''}>대학생</option>
+          <option value="easy" ${s.persona === 'easy' ? 'selected' : ''}>초보 추천 (발음하기 쉬운 쪽)</option>
         </select></div>
       <div class="setting-row"><span>목표 레벨 (모범답변 수준)</span>
         <select id="targetLevel">

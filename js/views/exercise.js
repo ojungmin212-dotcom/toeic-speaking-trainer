@@ -100,7 +100,7 @@ export function renderExerciseSetup(root) {
 
 // 재생 설정 한 줄 요약 — 재생 목록을 누르기 전에 무엇이 나올지 보이도록
 function summaryText(s) {
-  const parts = [`${s.persona === 'student' ? '대학생 ' : ''}${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
+  const parts = [`${s.persona === 'student' ? '대학생 ' : s.persona === 'easy' ? '초보 추천 ' : ''}${s.targetLevel || 'IL'} 답변`, s.thinkSeconds ? `생각 ${s.thinkSeconds}초` : '실전 시간'];
   parts.push(s.playQuestionKo ? '질문 해석 켬' : '질문 해석 끔');
   if (s.shadowing) parts.push('쉐도잉');
   if (!s.playAnswerEn) parts.push('모범답변 끔');

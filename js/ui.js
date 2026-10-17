@@ -24,8 +24,13 @@ export function bindLevelPicker(root, id, onPick) {
   });
 }
 
-// 답변 화자(페르소나) 선택 — 직장인 / 대학생
-export const PERSONAS = { worker: '직장인', student: '대학생' };
+// 답변 화자(페르소나) 선택 — 직장인 / 대학생 / 초보 추천(둘 중 발음하기 쉬운 쪽)
+export const PERSONAS = { worker: '직장인', student: '대학생', easy: '초보 추천' };
+// 실제로 보여 주는 답변의 화자 표시 (store.getAnswer의 반환값) — 직장인 기본 답변은 표시하지 않는다
+export function personaLabel(a) {
+  if (a.easy) return `초보 추천(${a.persona === 'student' ? '대학생' : '직장인'})`;
+  return a.persona === 'student' ? '대학생' : '';
+}
 export function personaPickerHtml(current, { id = 'personaPicker' } = {}) {
   return `<div class="seg seg-sm" id="${id}" role="tablist" aria-label="답변 화자 선택">${
     Object.entries(PERSONAS).map(([k, label]) => `<button class="seg-btn ${k === current ? 'on' : ''}" data-level="${k}" role="tab" aria-selected="${k === current}">${label}</button>`).join('')

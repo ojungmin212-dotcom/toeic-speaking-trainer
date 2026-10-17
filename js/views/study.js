@@ -4,11 +4,12 @@ import * as tts from '../tts.js';
 import { PARTS, QUESTION_TYPES, LEVELS } from '../seed-data.js';
 import {
   escapeHtml, typeBadges, typeLabel, highlightKey, toast, qNoBadge, scheduleHtml, guideHtml, photoHtml,
-  levelPickerHtml, bindLevelPicker, levelInfoHtml, personaPickerHtml, PERSONAS, wordCount, speakSeconds,
+  levelPickerHtml, bindLevelPicker, levelInfoHtml, personaPickerHtml, personaLabel, PERSONAS, wordCount, speakSeconds,
   expressionMarkupHtml, expressionListHtml,
 } from '../ui.js';
 import { findExpressions } from '../expressions.js';
 import { shadowText } from '../shadow.js';
+import { timerHtml, responseSeconds, bindResponseTimer } from '../timer.js';
 
 // 세트 번호 표시용 (p3-07 → SET 07) — AI로 만든 세트(us-…)는 번호 대신 'AI SET'
 function setLabel(set) {
@@ -59,7 +60,8 @@ export function renderStudyIndex(root) {
       <p class="desc small">선택한 레벨의 모범답변이 질문 상세와 듣기 모드에 적용됩니다.</p>
       <div class="card-label persona-label">답변 화자</div>
       ${personaPickerHtml(store.getSettings().persona)}
-      <p class="desc small">대학생을 고르면 회사·동료·출퇴근 이야기 대신 수업·캠퍼스·아르바이트 이야기로 답한 모범답변을 들려줍니다
+      <p class="desc small"><b>대학생</b>은 회사·동료·출퇴근 이야기 대신 수업·캠퍼스·아르바이트 이야기로 답한 모범답변입니다.
+        <b>초보 추천</b>은 문항마다 직장인·대학생 답변 중 <b>발음하기 쉬운 쪽</b>(짧은 문장, 어려운 단어와 소리가 적은 쪽)을 골라 들려줍니다
         (Part 3·5 중 직장 맥락이 있는 문항, 4레벨 모두).</p>
     </section>
     <h3 class="section-title">파트</h3>
@@ -177,6 +179,16 @@ export function renderStudyDetail(root, id, ctx = {}) {
   const nextQ = pos >= 0 && pos < seq.length - 1 ? seq[pos + 1] : null;
   const navTitle = nav.part ? PARTS[nav.part].name : typeLabel(nav.type);
 
+  // 응답 시간 연습 — 실제로 말하는 시간 타이머만 (준비 시간은 모의고사에서 연습)
+  const respSecs = responseSeconds(q);
+  const timerCard = `
+      <div class="card resp-timer">
+        <div class="card-label">응답 시간 연습 · ${respSecs}초</div>
+        <div id="rtBox"></div>
+        <button class="speak-btn" id="rtBtn">⏱ 말하기 시작</button>
+        <p class="desc small" id="rtNote">실제 시험의 응답 시간(${respSecs}초)만큼 소리 내어 답해 보세요. 준비 시간은 없습니다.</p>
+      </div>`;
+
   root.innerHTML = `
     <div class="topbar"><button class="back" id="detailBack">←</button><h2>질문 상세</h2>
       ${pos >= 0 ? `<span class="detail-pos">${escapeHtml(navTitle)}</span>` : ''}</div>
@@ -217,6 +229,7 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <button class="speak-btn ghost" id="shadowBtn">🗣 문장별 따라 읽기</button>
         <div class="shadow-now hidden" id="shadowNow"></div>
       </div>
+      ${timerCard}
       <div class="card">
         <div class="card-label">끊어 읽기 가이드</div>
         <div class="card-en guide">${guideHtml(q.guide || q.questionEnglish)}</div>
@@ -232,7 +245,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
         <div class="card-en">${escapeHtml(q.questionEnglish)}</div>
         <div class="card-ko set-ko">${escapeHtml(q.questionKorean)}</div>
         ${s.beginnerMode && hint ? `<div class="hint">💡 ${escapeHtml(hint)}</div>` : ''}
-      </div>` : `
+      </div>
+      ${timerCard}` : `
       <div class="card q-box">
         <div class="card-label">Question${q.qNo ? ' ' + q.qNo : ''}</div>
         <div class="card-en big">${highlightKey(q.questionEnglish, q.keyExpression, s.beginnerMode)}</div>
@@ -244,7 +258,8 @@ export function renderStudyDetail(root, id, ctx = {}) {
       <div class="card">
         <div class="card-label">질문 해석</div>
         <div class="card-ko">${escapeHtml(q.questionKorean)}</div>
-      </div>`}
+      </div>
+      ${timerCard}`}
 
       ${q.part === 1 ? '' : `
       <div class="card">
@@ -284,12 +299,16 @@ export function renderStudyDetail(root, id, ctx = {}) {
 
   const $ = (sel) => root.querySelector(sel);
 
+  // 화면이 바뀌면 타이머도 멈춘다 (이전/다음 이동·목록 복귀)
+  bindResponseTimer(root, respSecs, { beep: s.beepAfterQuestion !== false });
+
   function showAnswer(level) {
     if (!$('#ansNote')) return; // Part 1은 모범답변 카드가 없다 (지문 자체가 모범 낭독)
     const a = store.getAnswer(q, level, persona);
     current = a.level;
     const L = LEVELS[a.level];
-    $('#ansNote').textContent = `${a.persona === 'student' ? '대학생 · ' : ''}${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
+    const who = personaLabel(a);
+    $('#ansNote').textContent = `${who ? who + ' · ' : ''}${a.level} · ${L.score} · ${wordCount(a.en)}단어 · 원어민 속도 약 ${speakSeconds(a.en)}초`;
     // IH·AL은 고급 표현을 강조하고 뜻을 목록으로 (AL 포인트)
     const adv = a.level === 'IH' || a.level === 'AL';
     if (adv) {

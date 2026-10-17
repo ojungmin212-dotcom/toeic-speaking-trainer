@@ -6,9 +6,10 @@ import * as tts from '../tts.js';
 import { TEST_TIMING, REPEATED_QNO, PART4_READING_SECONDS } from '../seed-data.js';
 import { MOCK_DIRECTIONS, MOCK_CUES } from '../mock-data.js';
 import {
-  escapeHtml, scheduleHtml, qNoBadge, toast, levelPickerHtml, bindLevelPicker, personaPickerHtml, guideHtml,
+  escapeHtml, scheduleHtml, qNoBadge, toast, levelPickerHtml, bindLevelPicker, personaPickerHtml, personaLabel, guideHtml,
 } from '../ui.js';
 import { backBar } from './study.js';
+import { timerHtml } from '../timer.js';
 
 // 검증용: 타이머 배율 (1 = 실제 시간)
 export const _test = { scale: 1 };
@@ -87,13 +88,6 @@ const ICONS = {
   next: '<path d="M4 12h15M13 6l6 6-6 6"/>',
 };
 const svg = (n) => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
-
-function timerHtml(label, seconds) {
-  const s = Math.max(0, seconds);
-  const p = (n) => String(n).padStart(2, '0');
-  return `<div class="ex-timer"><div class="ex-timer-label">${label}</div>` +
-    `<div class="ex-timer-time">${p(Math.floor(s / 3600))} : ${p(Math.floor((s % 3600) / 60))} : ${p(s % 60)}</div></div>`;
-}
 
 class MockRun {
   constructor(root, built, scopeKey) {
@@ -404,7 +398,7 @@ export function renderMockResult(root) {
         ? `<div class="passage guide">${q.guide ? guideHtml(q.guide) : escapeHtml(q.questionEnglish)}</div>
            <div class="card-ko">${escapeHtml(q.questionKorean)}</div>`
         : `${q.part === 2 ? `<img class="mr-photo" src="${escapeHtml(q.image)}" alt="" loading="lazy">` : `<div class="card-en">${escapeHtml(q.questionEnglish)}</div><div class="card-ko">${escapeHtml(q.questionKorean)}</div>`}
-           <div class="mr-ans"><span class="lv-tag">${escapeHtml(a.level)}</span>${a.persona === 'student' ? ' <span class="mr-persona">대학생</span>' : ''}
+           <div class="mr-ans"><span class="lv-tag">${escapeHtml(a.level)}</span>${personaLabel(a) ? ` <span class="mr-persona">${escapeHtml(personaLabel(a))}</span>` : ''}
              <div class="card-en answer-text">${escapeHtml(a.en)}</div><div class="card-ko">${escapeHtml(a.ko)}</div></div>`;
       return `${head}<div class="card mr-q" data-id="${escapeHtml(q.id)}">
         <div class="q-item-top">${qNoBadge(q, { timing: false })}</div>

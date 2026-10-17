@@ -637,3 +637,8 @@ body.exam-mode { background: #fff; }
 .mr-ans { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-soft); }
 .mr-persona { font-size: 12px; color: var(--green); font-weight: 700; }
 .mr-set { background: var(--head); }
+
+/* 파트·레벨별 학습: 응답 시간 연습 카드 (모의고사와 같은 타이머 상자) */
+.resp-timer .ex-timer { margin: 12px auto 14px; font-family: Arial, Helvetica, 'Nanum Barun Gothic', sans-serif; }
+.resp-timer .speak-btn.is-running { background: var(--gray-btn); }
+.resp-timer .desc { margin-top: 10px; }

@@ -74,6 +74,10 @@ export function checkQuestion(q, set = null) {
     if (!kos[i]) errors.push(`${LV[i]} 한국어 해석 없음`);
     else if (!/(다|요|오)[.!]?["'”]?$|까\?$/.test(kos[i].trim())) warns.push(`${LV[i]} 한국어 끝맺음 확인: "…${kos[i].slice(-12)}"`);
   });
+  // Part 2 IL: 초보용 안전한 시작 틀 — 주인공과 행동을 먼저 말하는 'This picture shows …' (능동 현재형, 장소를 몰라도 쓸 수 있다)
+  if (q.part === 2 && !/^This (picture|photo) shows /.test(String(q.answerEnglish || ''))) {
+    errors.push('Part 2 IL은 "This picture shows …"로 시작해야 함');
+  }
   // Part 3 Q7(30초): 실제 시험처럼 보기 세 개를 주고 이유를 묻는다. 답변은 그중 하나를 골라 이유를 말한다.
   if (q.part === 3 && q.qNo === 7) {
     const opts = optionsOf(q.questionEnglish);
